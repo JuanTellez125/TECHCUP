@@ -43,4 +43,11 @@ Actualmente, el torneo presenta las siguientes dificultades:
 
 ● Esto ocasiona retrasos, errores administrativos y conflictos entre los participantes.
 
+## Índice
+
+### **- Diagrama de contexto:**
+
+![Captura](/docs/uml/DiagramaContextoTECHCUP.png)
+
+
 
