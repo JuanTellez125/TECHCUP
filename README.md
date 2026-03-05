@@ -128,4 +128,33 @@ fecha, hora, cancha y equipos participantes, permitiendo su consulta dentro del 
 
 **- No funcionales:**
 
+**- RNF01 – Seguridad y autenticación** El sistema debe autenticar a los usuarios según su tipo: correo institucional para 
+estudiantes, graduados y personal de la Escuela; correo Gmail para familiares. Debe implementarse control de roles y 
+permisos por tipo de actor.
+**- RNF02 – Auditoría** El sistema debe registrar un log de las acciones relevantes realizadas por los usuarios (creación de 
+equipos, aprobación de pagos, registro de resultados, etc.) para trazabilidad.
+**- RNF03 – Arquitectura por capas** El backend debe desarrollarse en Spring Boot con separación clara en capas: 
+controladores, adaptadores, lógica de negocio y acceso a datos. La comunicación con el frontend se realizará mediante 
+una API REST.
+**- RNF05 – Seguridad de almacenamiento de contraseñas** Las contraseñas deben almacenarse utilizando un algoritmo de hashing
+seguro (por ejemplo, BCrypt), garantizando que no se almacenen en texto plano.
+**- RNF06 – Usabilidad** La plataforma debe ser lo suficientemente intuitiva para que estudiantes sin experiencia técnica 
+avanzada puedan inscribirse, unirse a equipos y consultar información del torneo sin asistencia externa.
+**- RNF07 – Disponibilidad** La plataforma debe estar disponible durante todo el período del torneo, especialmente en fechas 
+clave como cierre de inscripciones y registro de resultados.
+**- RNF08 – Escalabilidad básica** El sistema debe soportar la carga de todos los equipos participantes en un torneo semestral
+sin degradación notable del rendimiento.
+**- RNF09 – Compatibilidad** La aplicación debe ser compatible con las versiones actuales de los navegadores Google Chrome, 
+Microsoft Edge y Mozilla Firefox.
+**- RNF10 – Respaldo de información** La base de datos debe contar con respaldo automático diario para garantizar la 
+recuperación de información ante fallos del sistema.
+**- RNF11 – Escalabilidad básica** La arquitectura del sistema debe permitir aumentar la capacidad de usuarios concurrentes 
+mediante escalamiento vertical del servidor sin necesidad de rediseño estructural.
 
+## - Análisis de requerimientos
+
+## Mockup
+
+## Manual de identidad
+
+## Link de Jira
