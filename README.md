@@ -155,10 +155,13 @@ mediante escalamiento vertical del servidor sin necesidad de rediseño estructur
 
 ## - Análisis de requerimientos
 
-[Documento Word](docs/requirements/Analisis de Requerimientos.docx)
+[Documento Analisis de Requerimientos](docs/requirements/Analisis de Requerimientos.docx)
 
 ## Mockup
 
+[Link figma](https://www.figma.com/make/iNFDp9vxvZuaEXe6Ln2Wg4/TechCup?fullscreen=1&t=fOZUprzpMq85sMYq-1)
+
 ## Manual de identidad
+
 
 ## Link de Jira
