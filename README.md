@@ -155,6 +155,8 @@ mediante escalamiento vertical del servidor sin necesidad de rediseño estructur
 
 ## - Análisis de requerimientos
 
+[Documento Word](docs/requirements/Analisis de Requerimientos.docx)
+
 ## Mockup
 
 ## Manual de identidad
