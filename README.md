@@ -10,7 +10,9 @@
 
 **- Javier Mauricio Deaquiz Romero**
 
-**- Juan Esteban Tellez Valencia** 
+**- Juan Esteban Tellez Valencia**
+
+**- Juan Sebastian González Aranguren**
 
 ## Titulo del proyecto
 **TECHCUP**
