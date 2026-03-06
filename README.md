@@ -165,3 +165,4 @@ mediante escalamiento vertical del servidor sin necesidad de rediseño estructur
 [Documento Manual de Identidad](/docs/identityManual/Manual de identidad.pdf)
 
 ## Link de Jira
+[Link Proyecto en Jira](https://team-dosw-cristian.atlassian.net/jira/software/projects/TDJ/boards/68?atlOrigin=eyJpIjoiZDBhMWQzNzllZTExNGY2YWE5ZmI3MGI5YjEwYjdiMDUiLCJwIjoiaiJ9)
