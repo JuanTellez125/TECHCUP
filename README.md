@@ -10,7 +10,9 @@
 
 **- Javier Mauricio Deaquiz Romero**
 
-**- Juan Esteban Tellez Valencia** 
+**- Juan Esteban Tellez Valencia**
+
+**- Juan Sebastian González Aranguren**
 
 ## Titulo del proyecto
 **TECHCUP**
@@ -152,6 +154,8 @@ recuperación de información ante fallos del sistema.
 mediante escalamiento vertical del servidor sin necesidad de rediseño estructural.
 
 ## - Análisis de requerimientos
+
+[Documento Word](docs/requirements/Analisis de Requerimientos.docx)
 
 ## Mockup
 
