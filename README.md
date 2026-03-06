@@ -162,6 +162,6 @@ mediante escalamiento vertical del servidor sin necesidad de rediseño estructur
 [Link figma](https://www.figma.com/make/iNFDp9vxvZuaEXe6Ln2Wg4/TechCup?fullscreen=1&t=fOZUprzpMq85sMYq-1)
 
 ## Manual de identidad
-
+[Documento Manual de Identidad](/docs/identityManual/Manual de identidad.pdf)
 
 ## Link de Jira
