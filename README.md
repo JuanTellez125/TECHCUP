@@ -155,14 +155,14 @@ mediante escalamiento vertical del servidor sin necesidad de rediseño estructur
 
 ## - Análisis de requerimientos
 
-[Documento Analisis de Requerimientos](docs/requirements/Analisis de Requerimientos.docx)
+[Documento Analisis de Requerimientos](docs/requirements/Analisis%20de%20Requerimientos.docx)
 
 ## Mockup
 
 [Link figma](https://www.figma.com/make/iNFDp9vxvZuaEXe6Ln2Wg4/TechCup?fullscreen=1&t=fOZUprzpMq85sMYq-1)
 
 ## Manual de identidad
-[Documento Manual de Identidad](/docs/identityManual/Manual de identidad.pdf)
+[Documento Manual de Identidad](/docs/identityManual/Manual%20de%20identidad.pdf)
 
 ## Link de Jira
 [Link Proyecto en Jira](https://team-dosw-cristian.atlassian.net/jira/software/projects/TDJ/boards/68?atlOrigin=eyJpIjoiZDBhMWQzNzllZTExNGY2YWE5ZmI3MGI5YjEwYjdiMDUiLCJwIjoiaiJ9)
