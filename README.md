@@ -219,3 +219,7 @@ modificar el usuario que lo contiene.
 ## - Diagrama de componentes generales
 
 ![DiagramaComponentesGenerales](/docs/uml/DiagramaComponentesGeneralesTECHCUP.png)
+
+## - Diagrama de componentes especifico
+
+![DiagramaComponentesEspecifico](/docs/uml/DiagramaDeComponentesEspecifico.png)
