@@ -215,3 +215,7 @@ Strategy resuelve esto porque el comportamiento del rol se encapsula en un objet
 modificar el usuario que lo contiene.
 
 ![Strategy](docs/uml/UsuarioStrategy.png)
+
+## - Diagrama de componentes generales
+
+![DiagramaComponentesGenerales](/docs/uml/DiagramaComponentesGeneralesTECHCUP.png)
