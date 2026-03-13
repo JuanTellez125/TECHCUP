@@ -1,4 +1,4 @@
-package edu.dosw.TECHCUP.dto;
+package edu.dosw.TECHCUP.controller.dto;
 
 import lombok.Getter;
 import lombok.Setter;

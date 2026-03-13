@@ -1,6 +1,6 @@
 package edu.dosw.TECHCUP.util;
 
-import edu.dosw.TECHCUP.dto.TorneoResponseDTO;
+import edu.dosw.TECHCUP.controller.dto.TorneoResponseDTO;
 import edu.dosw.TECHCUP.model.Torneo;
 
 public class TorneoMapper {
