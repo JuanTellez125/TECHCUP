@@ -165,12 +165,53 @@ carga base sin cambios en el código.
 
 [Documento Analisis de Requerimientos](docs/requirements/Analisis%20de%20Requerimientos.docx)
 
-## Mockup
+## - Diagrama de clases
 
-[Link figma](https://www.figma.com/make/iNFDp9vxvZuaEXe6Ln2Wg4/TechCup?fullscreen=1&t=fOZUprzpMq85sMYq-1)
+![Diagrama de Clases](/docs/uml/DiagramaDeClasesTECHCUP.png)
 
-## Manual de identidad
-[Documento Manual de Identidad](/docs/identityManual/Manual%20de%20identidad.pdf)
+**Patrones de Diseño**
 
-## Link de Jira
-[Link Proyecto en Jira](https://team-dosw-cristian.atlassian.net/jira/software/projects/TDJ/boards/68?atlOrigin=eyJpIjoiZDBhMWQzNzllZTExNGY2YWE5ZmI3MGI5YjEwYjdiMDUiLCJwIjoiaiJ9)
+**- Builder:**
+El sistema TECHCUP maneja varias entidades con una característica común: todas tienen atributos obligatorios que siempre
+deben estar presentes y atributos opcionales que el usuario puede o no diligenciar. Sin Builder, la única alternativa 
+sería un constructor con todos los parámetros posibles, lo que en Java generaría métodos como:
+
+    new Jugador("juan@escuelaing.edu.co", "Juan Pérez", null, null, null, false)
+
+Ese código es ilegible, propenso a errores al invertir el orden de los parámetros, y no garantiza que el objeto se 
+construya en un estado válido. Builder resuelve exactamente ese problema.
+
+El como ayuda a resolver el problema: Se aplicó en tres entidades distintas del sistema, cada una con su propia 
+justificación:
+
+Torneo: El organizador debe ingresar obligatoriamente fecha inicial, fecha final, cantidad de equipos y costo por 
+equipo. Sin embargo, el reglamento y el cierre de inscripciones son opcionales al momento de la creación y pueden 
+configurarse después. Builder permite que el torneo siempre se cree en estado BORRADOR con los campos mínimos válidos, 
+sin forzar al organizador a tener todo definido desde el primer momento.
+
+![TorneoBuilder](/docs/uml/TorneoBuilder.png)
+
+Usuario: El registro inicial solo requiere correo y nombre. La foto, el dorsal, las posiciones de juego y la 
+disponibilidad son datos del perfil deportivo que el jugador completa progresivamente. Builder separa claramente qué es 
+obligatorio al registrarse y qué puede configurarse después, sin que el objeto quede en un estado inválido en ningún 
+momento.
+
+![UsuarioBuilder](/docs/uml/UsuarioBuilder.png)
+
+
+Equipo: El capitán debe definir obligatoriamente el nombre del equipo al crearlo. El escudo y los colores del uniforme 
+son opcionales. 
+
+![EquipoBuilder](/docs/uml/EquipoBuilder.png)
+
+**- Stategy:**
+El sistema tiene cinco tipos de actores: Jugador, Capitán, Organizador, Árbitro y Administrador. La solución más 
+intuitiva sería crear una clase separada por cada rol mediante herencia, pero esto genera un problema estructural 
+importante: un mismo usuario puede cambiar de rol en tiempo de ejecución. El caso más claro del sistema es el Capitán, 
+que es un Jugador que creó un equipo y vuelve a ser Jugador si lo abandona. Con herencia eso es imposible porque el 
+tipo de un objeto no cambia después de su creación.
+
+Strategy resuelve esto porque el comportamiento del rol se encapsula en un objeto separado que puede intercambiarse sin 
+modificar el usuario que lo contiene.
+
+![Strategy](docs/uml/UsuarioStrategy.png)
