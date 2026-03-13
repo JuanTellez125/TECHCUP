@@ -2,9 +2,10 @@ package edu.dosw.TECHCUP.service;
 
 import edu.dosw.TECHCUP.controller.dto.TorneoRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.TorneoResponseDTO;
-import edu.dosw.TECHCUP.exception.TorneoNotFoundException;
-import edu.dosw.TECHCUP.exception.TorneoValidationException;
-import edu.dosw.TECHCUP.model.EstadoTorneo;
+import edu.dosw.TECHCUP.core.exception.TorneoNotFoundException;
+import edu.dosw.TECHCUP.core.exception.TorneoValidationException;
+import edu.dosw.TECHCUP.core.model.EstadoTorneo;
+import edu.dosw.TECHCUP.core.service.TorneoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,12 +1,15 @@
-package edu.dosw.TECHCUP.service;
+package edu.dosw.TECHCUP.core.service;
 
 import edu.dosw.TECHCUP.controller.dto.TorneoRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.TorneoResponseDTO;
-import edu.dosw.TECHCUP.exception.TorneoNotFoundException;
-import edu.dosw.TECHCUP.exception.TorneoValidationException;
-import edu.dosw.TECHCUP.model.*;
-import edu.dosw.TECHCUP.util.TorneoMapper;
-import edu.dosw.TECHCUP.util.TorneoValidator;
+import edu.dosw.TECHCUP.core.exception.TorneoNotFoundException;
+import edu.dosw.TECHCUP.core.exception.TorneoValidationException;
+import edu.dosw.TECHCUP.core.model.EstadoTorneo;
+import edu.dosw.TECHCUP.core.model.Torneo;
+import edu.dosw.TECHCUP.core.model.TorneoFactory;
+import edu.dosw.TECHCUP.core.model.TorneoRelampagoBuilder;
+import edu.dosw.TECHCUP.controller.mapper.TorneoMapper;
+import edu.dosw.TECHCUP.core.validator.TorneoValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

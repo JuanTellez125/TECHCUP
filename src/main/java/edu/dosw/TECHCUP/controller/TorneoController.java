@@ -2,7 +2,7 @@ package edu.dosw.TECHCUP.controller;
 
 import edu.dosw.TECHCUP.controller.dto.TorneoRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.TorneoResponseDTO;
-import edu.dosw.TECHCUP.service.TorneoService;
+import edu.dosw.TECHCUP.core.service.TorneoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
