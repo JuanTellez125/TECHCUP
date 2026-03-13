@@ -136,37 +136,30 @@ fecha, hora, cancha y equipos participantes, permitiendo su consulta dentro del 
 
 **- No funcionales:**
 
-**- RNF01 – Seguridad y autenticación** El sistema debe autenticar a los usuarios según su tipo: correo institucional para 
-estudiantes, graduados y personal de la Escuela; correo Gmail para familiares. Debe implementarse control de roles y 
-permisos por tipo de actor.
+**- RNF01 – Auditoría** El sistema debe registrar un log de las acciones relevantes realizadas por los usuarios 
+(creación de equipos, aprobación de pagos, registro de resultados). Los registros deben conservarse durante todo el 
+período del torneo y ser accesibles únicamente por el administrador del sistema.
 
-**- RNF02 – Auditoría** El sistema debe registrar un log de las acciones relevantes realizadas por los usuarios (creación de 
-equipos, aprobación de pagos, registro de resultados, etc.) para trazabilidad.
+**- RNF02 – Usabilidad** Un usuario sin experiencia técnica avanzada debe ser capaz de completar el flujo de inscripción
+(registro, creación de perfil y unión a equipo) en un máximo de 10 minutos, sin requerir asistencia externa ni 
+documentación adicional.
 
-**- RNF03 – Arquitectura por capas** El backend debe desarrollarse en Spring Boot con separación clara en capas: 
-controladores, adaptadores, lógica de negocio y acceso a datos. La comunicación con el frontend se realizará mediante 
-una API REST.
+**- RNF03 – Disponibilidad** La plataforma debe garantizar una disponibilidad mínima del 95% durante el período activo 
+del torneo. En fechas críticas (cierre de inscripciones y registro de resultados) no deben presentarse interrupciones 
+planificadas.
 
-**- RNF05 – Seguridad de almacenamiento de contraseñas** Las contraseñas deben almacenarse utilizando un algoritmo de hashing
-seguro (por ejemplo, BCrypt), garantizando que no se almacenen en texto plano.
+**- RNF04 – Capacidad de carga** El sistema debe soportar al menos 200 usuarios simultáneos sin que el tiempo de 
+respuesta de las operaciones principales supere los 3 segundos, considerando la participación máxima esperada del torneo.
 
-**- RNF06 – Usabilidad** La plataforma debe ser lo suficientemente intuitiva para que estudiantes sin experiencia técnica 
-avanzada puedan inscribirse, unirse a equipos y consultar información del torneo sin asistencia externa.
+**- RNF05 – Compatibilidad** La aplicación debe ser compatible con las versiones estables actuales de Google Chrome, 
+Microsoft Edge y Mozilla Firefox, tanto en dispositivos de escritorio como móviles.
 
-**- RNF07 – Disponibilidad** La plataforma debe estar disponible durante todo el período del torneo, especialmente en fechas 
-clave como cierre de inscripciones y registro de resultados.
+**- RNF06 – Respaldo de información** La base de datos debe contar con respaldo automático diario. En caso de fallo, el 
+sistema debe poder restaurarse en un máximo de 24 horas con una pérdida de información no mayor a un día de operación.
 
-**- RNF08 – Escalabilidad básica** El sistema debe soportar la carga de todos los equipos participantes en un torneo semestral
-sin degradación notable del rendimiento.
-
-**- RNF09 – Compatibilidad** La aplicación debe ser compatible con las versiones actuales de los navegadores Google Chrome, 
-Microsoft Edge y Mozilla Firefox.
-
-**- RNF10 – Respaldo de información** La base de datos debe contar con respaldo automático diario para garantizar la 
-recuperación de información ante fallos del sistema.
-
-**- RNF11 – Escalabilidad básica** La arquitectura del sistema debe permitir aumentar la capacidad de usuarios concurrentes 
-mediante escalamiento vertical del servidor sin necesidad de rediseño estructural.
+**- RNF07 – Escalabilidad** La arquitectura del sistema debe permitir aumentar la capacidad de usuarios concurrentes 
+mediante escalamiento vertical del servidor sin necesidad de rediseño estructural, soportando al menos el doble de la 
+carga base sin cambios en el código.
 
 ## - Análisis de requerimientos
 
