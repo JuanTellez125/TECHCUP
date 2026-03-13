@@ -1,4 +1,4 @@
-package edu.dosw.TECHCUP.model;
+package edu.dosw.TECHCUP.core.model;
 
 import lombok.Getter;
 import lombok.Setter;
