@@ -20,7 +20,7 @@ public class TorneoService {
     // Simulamos una base de datos en memoria (luego se reemplaza con un Repository)
     private final Map<Long, Torneo> torneos = new HashMap<>();
     private Long contadorId = 1L;
-    private TorneoValidator torneoValidator;
+    private TorneoValidator torneoValidator = new TorneoValidator();
     private final TorneoFactory torneoFactory;
 
     public TorneoService() {
@@ -90,6 +90,7 @@ public class TorneoService {
                     ". Los estados válidos son: BORRADOR, ACTIVO, PROGRESO, FINALIZADO");
         }
 
+        torneoValidator.validarTransicionEstado(torneo.getEstado(), estadoEnum);
         torneo.setEstado(estadoEnum);
 
         TorneoResponseDTO dto = TorneoMapper.toResponseDTO(torneo);

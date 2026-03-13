@@ -2,6 +2,7 @@ package edu.dosw.TECHCUP.util;
 
 import edu.dosw.TECHCUP.controller.dto.TorneoRequestDTO;
 import edu.dosw.TECHCUP.exception.TorneoValidationException;
+import edu.dosw.TECHCUP.model.EstadoTorneo;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -41,6 +42,22 @@ public class TorneoValidator {
     private void validarCostoInscripcion(double costo) {
         if (costo < 0) {
             throw new TorneoValidationException("El costo de inscripción no puede ser negativo.");
+        }
+    }
+
+    public void validarTransicionEstado(EstadoTorneo estadoActual, EstadoTorneo estadoNuevo) {
+        boolean transicionValida = switch (estadoActual) {
+            case BORRADOR -> estadoNuevo == EstadoTorneo.ACTIVO;
+            case ACTIVO -> estadoNuevo == EstadoTorneo.PROGRESO;
+            case PROGRESO -> estadoNuevo == EstadoTorneo.FINALIZADO;
+            case FINALIZADO -> false;
+        };
+
+        if (!transicionValida) {
+            throw new TorneoValidationException(
+                    "No se puede cambiar de " + estadoActual + " a " + estadoNuevo +
+                            ". El flujo correcto es: BORRADOR → ACTIVO → PROGRESO → FINALIZADO"
+            );
         }
     }
 }
