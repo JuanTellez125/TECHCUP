@@ -1,7 +1,7 @@
 package edu.dosw.TECHCUP.service;
 
-import edu.dosw.TECHCUP.dto.TorneoRequestDTO;
-import edu.dosw.TECHCUP.dto.TorneoResponseDTO;
+import edu.dosw.TECHCUP.controller.dto.TorneoRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.TorneoResponseDTO;
 import edu.dosw.TECHCUP.exception.TorneoNotFoundException;
 import edu.dosw.TECHCUP.exception.TorneoValidationException;
 import edu.dosw.TECHCUP.model.*;
@@ -9,7 +9,6 @@ import edu.dosw.TECHCUP.util.TorneoMapper;
 import edu.dosw.TECHCUP.util.TorneoValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,7 @@ public class TorneoService {
     // Simulamos una base de datos en memoria (luego se reemplaza con un Repository)
     private final Map<Long, Torneo> torneos = new HashMap<>();
     private Long contadorId = 1L;
-
+    private TorneoValidator torneoValidator;
     private final TorneoFactory torneoFactory;
 
     public TorneoService() {
@@ -30,7 +29,7 @@ public class TorneoService {
 
     public TorneoResponseDTO crearTorneo(TorneoRequestDTO request) {
         // 1. Validar los datos de entrada
-        TorneoValidator.validar(request);
+        torneoValidator.validar(request);
 
         // 2. Usar el Builder para construir el Torneo
         Torneo torneo = new Torneo();
@@ -96,5 +95,6 @@ public class TorneoService {
         TorneoResponseDTO dto = TorneoMapper.toResponseDTO(torneo);
         dto.setId(id);
         return dto;
+
     }
 }
