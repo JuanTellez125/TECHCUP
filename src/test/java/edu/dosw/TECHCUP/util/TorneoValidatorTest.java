@@ -1,7 +1,8 @@
 package edu.dosw.TECHCUP.util;
 
 import edu.dosw.TECHCUP.controller.dto.TorneoRequestDTO;
-import edu.dosw.TECHCUP.exception.TorneoValidationException;
+import edu.dosw.TECHCUP.core.validator.TorneoValidator;
+import edu.dosw.TECHCUP.core.exception.TorneoValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

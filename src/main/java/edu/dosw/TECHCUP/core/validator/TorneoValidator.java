@@ -1,8 +1,8 @@
-package edu.dosw.TECHCUP.util;
+package edu.dosw.TECHCUP.core.validator;
 
 import edu.dosw.TECHCUP.controller.dto.TorneoRequestDTO;
-import edu.dosw.TECHCUP.exception.TorneoValidationException;
-import edu.dosw.TECHCUP.model.EstadoTorneo;
+import edu.dosw.TECHCUP.core.exception.TorneoValidationException;
+import edu.dosw.TECHCUP.core.model.EstadoTorneo;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
