@@ -3,12 +3,14 @@ package edu.dosw.TECHCUP.controller;
 import edu.dosw.TECHCUP.controller.dto.TorneoRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.TorneoResponseDTO;
 import edu.dosw.TECHCUP.core.service.TorneoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/torneos")
 public class TorneoController {
