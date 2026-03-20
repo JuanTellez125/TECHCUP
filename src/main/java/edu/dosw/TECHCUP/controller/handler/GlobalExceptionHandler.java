@@ -2,7 +2,9 @@ package edu.dosw.TECHCUP.controller.handler;
 
 import edu.dosw.TECHCUP.controller.dto.ErrorResponseDTO;
 import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
+import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
+import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    @ExceptionHandler(TournamentValidationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleTournamentValidation(TournamentValidationException ex){
+        log.warn("Validacion de torneo fallida: {}", ex.getMessage());
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                "Error de validacion de torneo",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
-
+    @ExceptionHandler(UserValidationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUserValidation(UserValidationException ex){
+        log.warn("Validacion de usuario fallida: {}", ex.getMessage());
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                "Error de validacion de usuario",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+    
 }
