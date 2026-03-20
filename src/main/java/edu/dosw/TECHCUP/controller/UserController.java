@@ -24,7 +24,6 @@ public class UserController {
 
     private final UserMapper userMapper = UserMapper.INSTANCE;
 
-    // POST /api/usuarios
     @PostMapping
     public ResponseEntity<UserResponseDTO> crearUsuario(@RequestBody UserRequestDTO request) {
         User user = userService.crearUsuario(request);
@@ -32,7 +31,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // GET /api/usuarios
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> listarUsuarios() {
         List<UserResponseDTO> response = userService.listarUsuarios()
@@ -42,7 +40,6 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // GET /api/usuarios/{id}
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> obtenerUsuario(@PathVariable Long id) {
         User user = userService.obtenerUsuarioPorId(id);

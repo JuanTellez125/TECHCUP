@@ -6,7 +6,6 @@ public class UserBasicBuilder implements UserBuilder{
         this.user = user;
     }
 
-
     @Override
     public void buildName(String name) {user.setName(name);}
 
