@@ -58,9 +58,7 @@ public class TournamentValidator {
     }
 
     public void validarTransicionEstado(TournamentStatus estadoActual, TournamentStatus estadoNuevo) {
-
         log.debug("Validating state transition: {} → {}", estadoActual, estadoNuevo);
-
         boolean transicionValida = switch (estadoActual) {
             case BORRADOR -> estadoNuevo == TournamentStatus.ACTIVO;
             case ACTIVO -> estadoNuevo == TournamentStatus.PROGRESO;
@@ -69,9 +67,7 @@ public class TournamentValidator {
         };
 
         if (!transicionValida) {
-
             log.warn("Invalid state transition: {} → {}", estadoActual, estadoNuevo);
-
             throw new TournamentValidationException(
                     "No se puede cambiar de " + estadoActual + " a " + estadoNuevo +
                             ". El flujo correcto es: BORRADOR → ACTIVO → PROGRESO → FINALIZADO"
