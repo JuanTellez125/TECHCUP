@@ -3,9 +3,9 @@ package edu.dosw.TECHCUP.core.model;
 import java.time.LocalDate;
 
 public class TournamentLightningBuilder implements TournamentBuilder {
-    private Torneo torneo;
+    private Tournament torneo;
 
-    public TournamentLightningBuilder(Torneo torneo){
+    public TournamentLightningBuilder(Tournament torneo){
         this.torneo = torneo;
     };
     @Override
@@ -26,7 +26,7 @@ public class TournamentLightningBuilder implements TournamentBuilder {
         torneo.setCostoInscripcion(costoInscripcion);
     }
 
-    public Torneo getResult(){
+    public Tournament getResult(){
         return torneo;
     }
 
