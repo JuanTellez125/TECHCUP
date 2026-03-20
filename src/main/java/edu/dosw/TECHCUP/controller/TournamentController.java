@@ -24,21 +24,18 @@ public class TournamentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // GET /api/torneos
     @GetMapping
     public ResponseEntity<List<TournamentResponseDTO>> listarTorneos() {
         List<TournamentResponseDTO> torneos = tournamentService.listarTorneos();
         return ResponseEntity.ok(torneos);
     }
 
-    // GET /api/torneos/{id}
     @GetMapping("/{id}")
     public ResponseEntity<TournamentResponseDTO> obtenerTorneo(@PathVariable Long id) {
         TournamentResponseDTO torneo = tournamentService.obtenerTorneoPorId(id);
         return ResponseEntity.ok(torneo);
     }
 
-    // PATCH /api/torneos/{id}/estado
     @PatchMapping("/{id}/estado")
     public ResponseEntity<TournamentResponseDTO> cambiarEstado(
             @PathVariable Long id,

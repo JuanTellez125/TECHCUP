@@ -24,10 +24,7 @@ public class UserService {
     private final UserFactory userFactory = new UserFactory();
 
     public User crearUsuario(UserRequestDTO request) {
-        // 1. Validar los datos de entrada
         userValidator.validar(request);
-
-        // 2. Construir el User usando Builder + Factory
         User user = new User();
         UserBasicBuilder builder = new UserBasicBuilder(user);
         userFactory.createUser(builder);
@@ -36,7 +33,6 @@ public class UserService {
         builder.buildEmail(request.getEmail());
         builder.buildPassword(request.getPassword());
 
-        // 3. Asignar ID y persistir en "base de datos"
         user.setId(contadorId);
         users.put(contadorId, user);
         contadorId++;
@@ -44,17 +40,11 @@ public class UserService {
         return user;
     }
 
-    /**
-     * Devuelve todos los usuarios almacenados.
-     */
     public List<User> listarUsuarios() {
         return users.values().stream()
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Busca un usuario por su ID.
-     */
     public User obtenerUsuarioPorId(Long id) {
         User user = users.get(id);
         if (user == null) {

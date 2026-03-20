@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @Service
 public class TournamentService {
 
-    // Simulamos una base de datos en memoria (luego se reemplaza con un Repository)
     private final Map<Long, Torneo> torneos = new HashMap<>();
     private Long contadorId = 1L;
     private TorneoValidator torneoValidator = new TorneoValidator();
@@ -31,10 +30,8 @@ public class TournamentService {
     }
 
     public TournamentResponseDTO crearTorneo(TournamentRequestDTO request) {
-        // 1. Validar los datos de entrada
         torneoValidator.validar(request);
 
-        // 2. Usar el Builder para construir el Torneo
         Torneo torneo = new Torneo();
         TournamentLightningBuilder builder = new TournamentLightningBuilder(torneo);
         tournamentFactory.crearTorneoBuilder(builder);
@@ -43,14 +40,11 @@ public class TournamentService {
         builder.buildCantidadEquipos(request.getCantidadEquipos());
         builder.buildCostoInscripcion(request.getCostoInscripcion());
 
-        // 3. Obtener el torneo construido y asignar estado inicial
         Torneo torneoCreado = builder.getResult();
         torneoCreado.setEstado(TournamentStatus.BORRADOR);
 
-        // 4. Guardar en "base de datos"
         torneos.put(contadorId, torneoCreado);
 
-        // 5. Mapear a DTO de respuesta
         TournamentResponseDTO response = TournamentMapper.toResponseDTO(torneoCreado);
         response.setId(contadorId);
         contadorId++;
@@ -84,7 +78,6 @@ public class TournamentService {
             throw new TournamentNotFoundException(id);
         }
 
-        // Validar que el estado recibido sea válido
         TournamentStatus estadoEnum;
         try {
             estadoEnum = TournamentStatus.valueOf(nuevoEstado.toUpperCase());
