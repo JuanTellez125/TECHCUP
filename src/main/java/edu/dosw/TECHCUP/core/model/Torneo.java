@@ -12,7 +12,7 @@ public class Torneo {
     private LocalDate fechaFinal;
     private int cantidadEquipos;
     private double costoInscripcion;
-    private EstadoTorneo estado;
+    private TournamentStatus estado;
 
 
     public void showInfo(){
