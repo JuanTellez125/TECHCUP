@@ -1,0 +1,4 @@
+2026-03-19T21:47:54.620-05:00  INFO 26520 --- [TECHCUP] [main] e.dosw.TECHCUP.TechcupApplicationTests   : Starting TechcupApplicationTests using Java 21.0.10 with PID 26520 (started by guerr in C:\Users\guerr\OneDrive\Escritorio\TECHCUP-BackEnd)
+2026-03-19T21:47:54.621-05:00 DEBUG 26520 --- [TECHCUP] [main] e.dosw.TECHCUP.TechcupApplicationTests   : Running with Spring Boot v4.0.3, Spring v7.0.5
+2026-03-19T21:47:54.624-05:00  INFO 26520 --- [TECHCUP] [main] e.dosw.TECHCUP.TechcupApplicationTests   : No active profile set, falling back to 1 default profile: "default"
+2026-03-19T21:47:56.346-05:00  INFO 26520 --- [TECHCUP] [main] e.dosw.TECHCUP.TechcupApplicationTests   : Started TechcupApplicationTests in 2.461 seconds (process running for 5.126)
