@@ -1,8 +1,8 @@
 package edu.dosw.TECHCUP.util;
 
-import edu.dosw.TECHCUP.controller.dto.TorneoRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.TournamentRequestDTO;
 import edu.dosw.TECHCUP.core.validator.TorneoValidator;
-import edu.dosw.TECHCUP.core.exception.TorneoValidationException;
+import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,11 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TorneoValidatorTest {
 
-    private TorneoRequestDTO dto;
+    private TournamentRequestDTO dto;
     private TorneoValidator torneoValidator = new TorneoValidator();
     @BeforeEach
     void setUp() {
-        dto = new TorneoRequestDTO();
+        dto = new TournamentRequestDTO();
         dto.setFechaInicio(LocalDate.now().plusDays(1));
         dto.setFechaFinal(LocalDate.now().plusDays(5));
         dto.setCantidadEquipos(8);
@@ -43,8 +43,8 @@ class TorneoValidatorTest {
     void validar_conFechaInicioNula_debeLanzarExcepcion() {
         dto.setFechaInicio(null);
 
-        TorneoValidationException ex = assertThrows(
-                TorneoValidationException.class,
+        TournamentValidationException ex = assertThrows(
+                TournamentValidationException.class,
                 () -> torneoValidator.validar(dto)
         );
         assertEquals("La fecha de inicio no puede ser nula.", ex.getMessage());
@@ -55,8 +55,8 @@ class TorneoValidatorTest {
     void validar_conFechaFinalNula_debeLanzarExcepcion() {
         dto.setFechaFinal(null);
 
-        TorneoValidationException ex = assertThrows(
-                TorneoValidationException.class,
+        TournamentValidationException ex = assertThrows(
+                TournamentValidationException.class,
                 () -> torneoValidator.validar(dto)
         );
         assertEquals("La fecha final no puede ser nula.", ex.getMessage());
@@ -67,8 +67,8 @@ class TorneoValidatorTest {
     void validar_conFechaInicioEnElPasado_debeLanzarExcepcion() {
         dto.setFechaInicio(LocalDate.now().minusDays(1));
 
-        TorneoValidationException ex = assertThrows(
-                TorneoValidationException.class,
+        TournamentValidationException ex = assertThrows(
+                TournamentValidationException.class,
                 () -> torneoValidator.validar(dto)
         );
         assertEquals("La fecha de inicio no puede ser en el pasado.", ex.getMessage());
@@ -80,8 +80,8 @@ class TorneoValidatorTest {
         dto.setFechaInicio(LocalDate.now().plusDays(5));
         dto.setFechaFinal(LocalDate.now().plusDays(1));
 
-        TorneoValidationException ex = assertThrows(
-                TorneoValidationException.class,
+        TournamentValidationException ex = assertThrows(
+                TournamentValidationException.class,
                 () -> torneoValidator.validar(dto)
         );
         assertEquals("La fecha final no puede ser anterior a la fecha de inicio.", ex.getMessage());
@@ -92,8 +92,8 @@ class TorneoValidatorTest {
     void validar_conCantidadEquiposCero_debeLanzarExcepcion() {
         dto.setCantidadEquipos(0);
 
-        TorneoValidationException ex = assertThrows(
-                TorneoValidationException.class,
+        TournamentValidationException ex = assertThrows(
+                TournamentValidationException.class,
                 () -> torneoValidator.validar(dto)
         );
         assertEquals("La cantidad de equipos debe ser mayor a 0.", ex.getMessage());
@@ -105,8 +105,8 @@ class TorneoValidatorTest {
     void validar_conCostoNegativo_debeLanzarExcepcion() {
         dto.setCostoInscripcion(-1000);
 
-        TorneoValidationException ex = assertThrows(
-                TorneoValidationException.class,
+        TournamentValidationException ex = assertThrows(
+                TournamentValidationException.class,
                 () -> torneoValidator.validar(dto)
         );
         assertEquals("El costo de inscripción no puede ser negativo.", ex.getMessage());

@@ -1,11 +1,11 @@
 package edu.dosw.TECHCUP.service;
 
-import edu.dosw.TECHCUP.controller.dto.TorneoRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.TorneoResponseDTO;
-import edu.dosw.TECHCUP.core.exception.TorneoNotFoundException;
-import edu.dosw.TECHCUP.core.exception.TorneoValidationException;
-import edu.dosw.TECHCUP.core.model.EstadoTorneo;
-import edu.dosw.TECHCUP.core.service.TorneoService;
+import edu.dosw.TECHCUP.controller.dto.TournamentRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.TournamentResponseDTO;
+import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
+import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
+import edu.dosw.TECHCUP.core.model.TournamentStatus;
+import edu.dosw.TECHCUP.core.service.TournamentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,18 +14,18 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TorneoServiceTest {
+class TournamentServiceTest {
 
-    private TorneoService torneoService;
-    private TorneoRequestDTO requestValido;
+    private TournamentService tournamentService;
+    private TournamentRequestDTO requestValido;
 
     // Se ejecuta antes de CADA prueba
     @BeforeEach
     void setUp() {
-        torneoService = new TorneoService();
+        tournamentService = new TournamentService();
 
         // DTO válido base para reutilizar en los tests
-        requestValido = new TorneoRequestDTO();
+        requestValido = new TournamentRequestDTO();
         requestValido.setFechaInicio(LocalDate.now().plusDays(1));
         requestValido.setFechaFinal(LocalDate.now().plusDays(5));
         requestValido.setCantidadEquipos(8);
@@ -39,11 +39,11 @@ class TorneoServiceTest {
     // CP-001: Crear torneo con datos válidos
     @Test
     void crearTorneo_conDatosValidos_debeRetornarTorneoEnBorrador() {
-        TorneoResponseDTO response = torneoService.crearTorneo(requestValido);
+        TournamentResponseDTO response = tournamentService.crearTorneo(requestValido);
 
         assertNotNull(response);
         assertNotNull(response.getId());
-        assertEquals(EstadoTorneo.BORRADOR, response.getEstado());
+        assertEquals(TournamentStatus.BORRADOR, response.getEstado());
         assertEquals(requestValido.getFechaInicio(), response.getFechaInicio());
         assertEquals(requestValido.getFechaFinal(), response.getFechaFinal());
         assertEquals(requestValido.getCantidadEquipos(), response.getCantidadEquipos());
@@ -53,10 +53,10 @@ class TorneoServiceTest {
     // CP-002: Listar todos los torneos
     @Test
     void listarTorneos_conTorneosCreados_debeRetornarLista() {
-        torneoService.crearTorneo(requestValido);
-        torneoService.crearTorneo(requestValido);
+        tournamentService.crearTorneo(requestValido);
+        tournamentService.crearTorneo(requestValido);
 
-        List<TorneoResponseDTO> torneos = torneoService.listarTorneos();
+        List<TournamentResponseDTO> torneos = tournamentService.listarTorneos();
 
         assertEquals(2, torneos.size());
     }
@@ -64,7 +64,7 @@ class TorneoServiceTest {
     // CC-006: Listar torneos cuando no hay ninguno
     @Test
     void listarTorneos_sinTorneosCreados_debeRetornarListaVacia() {
-        List<TorneoResponseDTO> torneos = torneoService.listarTorneos();
+        List<TournamentResponseDTO> torneos = tournamentService.listarTorneos();
 
         assertNotNull(torneos);
         assertTrue(torneos.isEmpty());
@@ -73,9 +73,9 @@ class TorneoServiceTest {
     // CP-003: Obtener torneo por id existente
     @Test
     void obtenerTorneoPorId_conIdExistente_debeRetornarTorneo() {
-        TorneoResponseDTO creado = torneoService.crearTorneo(requestValido);
+        TournamentResponseDTO creado = tournamentService.crearTorneo(requestValido);
 
-        TorneoResponseDTO encontrado = torneoService.obtenerTorneoPorId(creado.getId());
+        TournamentResponseDTO encontrado = tournamentService.obtenerTorneoPorId(creado.getId());
 
         assertNotNull(encontrado);
         assertEquals(creado.getId(), encontrado.getId());
@@ -84,34 +84,34 @@ class TorneoServiceTest {
     // CP-004: Cambiar estado de BORRADOR a ACTIVO
     @Test
     void cambiarEstado_deBorradorAActivo_debeActualizarEstado() {
-        TorneoResponseDTO creado = torneoService.crearTorneo(requestValido);
+        TournamentResponseDTO creado = tournamentService.crearTorneo(requestValido);
 
-        TorneoResponseDTO actualizado = torneoService.cambiarEstado(creado.getId(), "ACTIVO");
+        TournamentResponseDTO actualizado = tournamentService.cambiarEstado(creado.getId(), "ACTIVO");
 
-        assertEquals(EstadoTorneo.ACTIVO, actualizado.getEstado());
+        assertEquals(TournamentStatus.ACTIVO, actualizado.getEstado());
     }
 
     // CP-005: Cambiar estado de ACTIVO a PROGRESO
     @Test
     void cambiarEstado_deActivoAProgreso_debeActualizarEstado() {
-        TorneoResponseDTO creado = torneoService.crearTorneo(requestValido);
-        torneoService.cambiarEstado(creado.getId(), "ACTIVO");
+        TournamentResponseDTO creado = tournamentService.crearTorneo(requestValido);
+        tournamentService.cambiarEstado(creado.getId(), "ACTIVO");
 
-        TorneoResponseDTO actualizado = torneoService.cambiarEstado(creado.getId(), "PROGRESO");
+        TournamentResponseDTO actualizado = tournamentService.cambiarEstado(creado.getId(), "PROGRESO");
 
-        assertEquals(EstadoTorneo.PROGRESO, actualizado.getEstado());
+        assertEquals(TournamentStatus.PROGRESO, actualizado.getEstado());
     }
 
     // CP-006: Cambiar estado de PROGRESO a FINALIZADO
     @Test
     void cambiarEstado_deProgresoAFinalizado_debeActualizarEstado() {
-        TorneoResponseDTO creado = torneoService.crearTorneo(requestValido);
-        torneoService.cambiarEstado(creado.getId(), "ACTIVO");
-        torneoService.cambiarEstado(creado.getId(), "PROGRESO");
+        TournamentResponseDTO creado = tournamentService.crearTorneo(requestValido);
+        tournamentService.cambiarEstado(creado.getId(), "ACTIVO");
+        tournamentService.cambiarEstado(creado.getId(), "PROGRESO");
 
-        TorneoResponseDTO actualizado = torneoService.cambiarEstado(creado.getId(), "FINALIZADO");
+        TournamentResponseDTO actualizado = tournamentService.cambiarEstado(creado.getId(), "FINALIZADO");
 
-        assertEquals(EstadoTorneo.FINALIZADO, actualizado.getEstado());
+        assertEquals(TournamentStatus.FINALIZADO, actualizado.getEstado());
     }
 
 
@@ -120,8 +120,8 @@ class TorneoServiceTest {
     void crearTorneo_sinFechaInicio_debeLanzarExcepcion() {
         requestValido.setFechaInicio(null);
 
-        assertThrows(TorneoValidationException.class,
-                () -> torneoService.crearTorneo(requestValido));
+        assertThrows(TournamentValidationException.class,
+                () -> tournamentService.crearTorneo(requestValido));
     }
 
     // CE-002: Crear torneo sin fecha final
@@ -129,8 +129,8 @@ class TorneoServiceTest {
     void crearTorneo_sinFechaFinal_debeLanzarExcepcion() {
         requestValido.setFechaFinal(null);
 
-        assertThrows(TorneoValidationException.class,
-                () -> torneoService.crearTorneo(requestValido));
+        assertThrows(TournamentValidationException.class,
+                () -> tournamentService.crearTorneo(requestValido));
     }
 
     // CE-003: Crear torneo con cantidad de equipos cero
@@ -138,8 +138,8 @@ class TorneoServiceTest {
     void crearTorneo_conCantidadEquiposCero_debeLanzarExcepcion() {
         requestValido.setCantidadEquipos(0);
 
-        assertThrows(TorneoValidationException.class,
-                () -> torneoService.crearTorneo(requestValido));
+        assertThrows(TournamentValidationException.class,
+                () -> tournamentService.crearTorneo(requestValido));
     }
 
     // CE-004: Crear torneo con costo negativo
@@ -147,24 +147,24 @@ class TorneoServiceTest {
     void crearTorneo_conCostoNegativo_debeLanzarExcepcion() {
         requestValido.setCostoInscripcion(-1000);
 
-        assertThrows(TorneoValidationException.class,
-                () -> torneoService.crearTorneo(requestValido));
+        assertThrows(TournamentValidationException.class,
+                () -> tournamentService.crearTorneo(requestValido));
     }
 
     // CE-005: Obtener torneo con id inexistente
     @Test
     void obtenerTorneoPorId_conIdInexistente_debeLanzarExcepcion() {
-        assertThrows(TorneoNotFoundException.class,
-                () -> torneoService.obtenerTorneoPorId(99L));
+        assertThrows(TournamentNotFoundException.class,
+                () -> tournamentService.obtenerTorneoPorId(99L));
     }
 
     // CE-006: Cambiar estado con valor inválido
     @Test
     void cambiarEstado_conEstadoInvalido_debeLanzarExcepcion() {
-        TorneoResponseDTO creado = torneoService.crearTorneo(requestValido);
+        TournamentResponseDTO creado = tournamentService.crearTorneo(requestValido);
 
-        TorneoValidationException ex = assertThrows(TorneoValidationException.class,
-                () -> torneoService.cambiarEstado(creado.getId(), "INVENTADO"));
+        TournamentValidationException ex = assertThrows(TournamentValidationException.class,
+                () -> tournamentService.cambiarEstado(creado.getId(), "INVENTADO"));
 
         assertTrue(ex.getMessage().contains("Estado inválido"));
     }
@@ -178,8 +178,8 @@ class TorneoServiceTest {
     void crearTorneo_conFechaInicioEnElPasado_debeLanzarExcepcion() {
         requestValido.setFechaInicio(LocalDate.now().minusDays(1));
 
-        assertThrows(TorneoValidationException.class,
-                () -> torneoService.crearTorneo(requestValido));
+        assertThrows(TournamentValidationException.class,
+                () -> tournamentService.crearTorneo(requestValido));
     }
 
     // CC-002: Fecha final antes que fecha inicio
@@ -188,8 +188,8 @@ class TorneoServiceTest {
         requestValido.setFechaInicio(LocalDate.now().plusDays(5));
         requestValido.setFechaFinal(LocalDate.now().plusDays(1));
 
-        assertThrows(TorneoValidationException.class,
-                () -> torneoService.crearTorneo(requestValido));
+        assertThrows(TournamentValidationException.class,
+                () -> tournamentService.crearTorneo(requestValido));
     }
 
 
@@ -198,7 +198,7 @@ class TorneoServiceTest {
     void crearTorneo_conCostoCero_debeCrearseSinError() {
         requestValido.setCostoInscripcion(0);
 
-        TorneoResponseDTO response = torneoService.crearTorneo(requestValido);
+        TournamentResponseDTO response = tournamentService.crearTorneo(requestValido);
 
         assertNotNull(response);
         assertEquals(0, response.getCostoInscripcion());
@@ -207,9 +207,9 @@ class TorneoServiceTest {
     // CC-005: No se puede saltar estados (BORRADOR → FINALIZADO)
     @Test
     void cambiarEstado_deBorradorAFinalizado_debeLanzarExcepcion() {
-        TorneoResponseDTO creado = torneoService.crearTorneo(requestValido);
+        TournamentResponseDTO creado = tournamentService.crearTorneo(requestValido);
 
-        assertThrows(TorneoValidationException.class,
-                () -> torneoService.cambiarEstado(creado.getId(), "FINALIZADO"));
+        assertThrows(TournamentValidationException.class,
+                () -> tournamentService.cambiarEstado(creado.getId(), "FINALIZADO"));
     }
 }

@@ -1,6 +1,6 @@
 package edu.dosw.TECHCUP.core.model;
 
-public enum EstadoTorneo {
+public enum TournamentStatus {
     BORRADOR,
     ACTIVO,
     PROGRESO,
