@@ -6,6 +6,7 @@ import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.UserBasicBuilder;
 import edu.dosw.TECHCUP.core.model.UserFactory;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -24,7 +26,9 @@ public class UserService {
     private final UserFactory userFactory = new UserFactory();
 
     public User crearUsuario(UserRequestDTO request) {
+        log.debug("Starting user creation - email: {}", request.getEmail());
         userValidator.validar(request);
+        log.debug("Validation passed for new user");
         User user = new User();
         UserBasicBuilder builder = new UserBasicBuilder(user);
         userFactory.createUser(builder);
@@ -36,18 +40,22 @@ public class UserService {
         user.setId(contadorId);
         users.put(contadorId, user);
         contadorId++;
+        log.info("User created with id: {}", user.getId());
 
         return user;
     }
 
     public List<User> listarUsuarios() {
+        log.debug("Listing users - total in memory: {}", users.size());
         return users.values().stream()
                 .collect(Collectors.toList());
     }
 
     public User obtenerUsuarioPorId(Long id) {
+        log.debug("Looking for user with id: {}", id);
         User user = users.get(id);
         if (user == null) {
+            log.warn("User with id {} not found in the system", id);
             throw new UserNotFoundException(id);
         }
         return user;
