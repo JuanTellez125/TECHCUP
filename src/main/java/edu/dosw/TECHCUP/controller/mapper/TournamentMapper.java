@@ -1,17 +1,14 @@
 package edu.dosw.TECHCUP.controller.mapper;
 
 import edu.dosw.TECHCUP.controller.dto.TournamentResponseDTO;
-import edu.dosw.TECHCUP.core.model.Torneo;
+import edu.dosw.TECHCUP.core.model.Tournament;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
+@Mapper
+public interface TournamentMapper {
 
-public class TournamentMapper {
-    public static TournamentResponseDTO toResponseDTO(Torneo torneo) {
-        TournamentResponseDTO dto = new TournamentResponseDTO();
-        dto.setFechaInicio(torneo.getFechaInicio());
-        dto.setFechaFinal(torneo.getFechaFinal());
-        dto.setCantidadEquipos(torneo.getCantidadEquipos());
-        dto.setCostoInscripcion(torneo.getCostoInscripcion());
-        dto.setEstado(torneo.getEstado());
-        return dto;
-    }
+    TournamentMapper INSTANCE = Mappers.getMapper(TournamentMapper.class);
+
+    TournamentResponseDTO toResponseDTO(Tournament tournament);
 }

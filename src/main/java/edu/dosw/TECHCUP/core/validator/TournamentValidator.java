@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 @Component
-public class TorneoValidator {
+public class TournamentValidator {
 
     public void validar(TournamentRequestDTO dto) {
         validarFechas(dto.getFechaInicio(), dto.getFechaFinal());

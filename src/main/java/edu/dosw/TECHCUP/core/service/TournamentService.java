@@ -1,15 +1,13 @@
 package edu.dosw.TECHCUP.core.service;
 
 import edu.dosw.TECHCUP.controller.dto.TournamentRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.TournamentResponseDTO;
 import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
 import edu.dosw.TECHCUP.core.model.TournamentStatus;
-import edu.dosw.TECHCUP.core.model.Torneo;
+import edu.dosw.TECHCUP.core.model.Tournament;
 import edu.dosw.TECHCUP.core.model.TournamentFactory;
 import edu.dosw.TECHCUP.core.model.TournamentLightningBuilder;
-import edu.dosw.TECHCUP.controller.mapper.TournamentMapper;
-import edu.dosw.TECHCUP.core.validator.TorneoValidator;
+import edu.dosw.TECHCUP.core.validator.TournamentValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -20,19 +18,19 @@ import java.util.stream.Collectors;
 @Service
 public class TournamentService {
 
-    private final Map<Long, Torneo> torneos = new HashMap<>();
+    private final Map<Long, Tournament> torneos = new HashMap<>();
     private Long contadorId = 1L;
-    private TorneoValidator torneoValidator = new TorneoValidator();
+    private TournamentValidator tournamentValidator = new TournamentValidator();
     private final TournamentFactory tournamentFactory;
 
     public TournamentService() {
         this.tournamentFactory = new TournamentFactory();
     }
 
-    public TournamentResponseDTO crearTorneo(TournamentRequestDTO request) {
-        torneoValidator.validar(request);
+    public Tournament crearTorneo(TournamentRequestDTO request) {
+        tournamentValidator.validar(request);
 
-        Torneo torneo = new Torneo();
+        Tournament torneo = new Tournament();
         TournamentLightningBuilder builder = new TournamentLightningBuilder(torneo);
         tournamentFactory.crearTorneoBuilder(builder);
         builder.buildFechaInicio(request.getFechaInicio());
@@ -40,40 +38,31 @@ public class TournamentService {
         builder.buildCantidadEquipos(request.getCantidadEquipos());
         builder.buildCostoInscripcion(request.getCostoInscripcion());
 
-        Torneo torneoCreado = builder.getResult();
+        Tournament torneoCreado = builder.getResult();
         torneoCreado.setEstado(TournamentStatus.BORRADOR);
+        torneoCreado.setId(contadorId);
 
         torneos.put(contadorId, torneoCreado);
-
-        TournamentResponseDTO response = TournamentMapper.toResponseDTO(torneoCreado);
-        response.setId(contadorId);
         contadorId++;
 
-        return response;
+        return torneoCreado;
     }
 
-    public List<TournamentResponseDTO> listarTorneos() {
-        return torneos.entrySet().stream()
-                .map(entry -> {
-                    TournamentResponseDTO dto = TournamentMapper.toResponseDTO(entry.getValue());
-                    dto.setId(entry.getKey());
-                    return dto;
-                })
+    public List<Tournament> listarTorneos() {
+        return torneos.values().stream()
                 .collect(Collectors.toList());
     }
 
-    public TournamentResponseDTO obtenerTorneoPorId(Long id) {
-        Torneo torneo = torneos.get(id);
+    public Tournament obtenerTorneoPorId(Long id) {
+        Tournament torneo = torneos.get(id);
         if (torneo == null) {
             throw new TournamentNotFoundException(id);
         }
-        TournamentResponseDTO dto = TournamentMapper.toResponseDTO(torneo);
-        dto.setId(id);
-        return dto;
+        return torneo;
     }
 
-    public TournamentResponseDTO cambiarEstado(Long id, String nuevoEstado) {
-        Torneo torneo = torneos.get(id);
+    public Tournament cambiarEstado(Long id, String nuevoEstado) {
+        Tournament torneo = torneos.get(id);
         if (torneo == null) {
             throw new TournamentNotFoundException(id);
         }
@@ -86,12 +75,9 @@ public class TournamentService {
                     ". Los estados válidos son: BORRADOR, ACTIVO, PROGRESO, FINALIZADO");
         }
 
-        torneoValidator.validarTransicionEstado(torneo.getEstado(), estadoEnum);
+        tournamentValidator.validarTransicionEstado(torneo.getEstado(), estadoEnum);
         torneo.setEstado(estadoEnum);
 
-        TournamentResponseDTO dto = TournamentMapper.toResponseDTO(torneo);
-        dto.setId(id);
-        return dto;
-
+        return torneo;
     }
 }
