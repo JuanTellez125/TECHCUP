@@ -1,0 +1,211 @@
+2026-03-20T13:36:51.760-05:00  INFO 7932 --- [TECHCUP] [main] e.dosw.TECHCUP.TechcupApplicationTests   : Starting TechcupApplicationTests using Java 21.0.10 with PID 7932 (started by guerr in C:\Users\guerr\OneDrive\Escritorio\TECHCUP-BackEnd)
+2026-03-20T13:36:51.778-05:00 DEBUG 7932 --- [TECHCUP] [main] e.dosw.TECHCUP.TechcupApplicationTests   : Running with Spring Boot v3.2.5, Spring v6.1.6
+2026-03-20T13:36:51.779-05:00  INFO 7932 --- [TECHCUP] [main] e.dosw.TECHCUP.TechcupApplicationTests   : No active profile set, falling back to 1 default profile: "default"
+2026-03-20T13:36:53.065-05:00  INFO 7932 --- [TECHCUP] [main] e.dosw.TECHCUP.TechcupApplicationTests   : Started TechcupApplicationTests in 1.679 seconds (process running for 3.375)
+2026-03-20T13:36:53.953-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Starting validation TournamentRequestDTO
+2026-03-20T13:36:53.953-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : TournamentRequestDTO validation successfully completed
+2026-03-20T13:36:53.956-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Starting validation TournamentRequestDTO
+2026-03-20T13:36:53.956-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Validation failed: costoInscripcion= -1000.0 cannot be negative
+2026-03-20T13:36:53.960-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Starting validation TournamentRequestDTO
+2026-03-20T13:36:53.960-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Validation failed: finalDate is null
+2026-03-20T13:36:53.962-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Starting validation TournamentRequestDTO
+2026-03-20T13:36:53.964-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Validation failed: quantityEquipment= 0 must be greater than 0
+2026-03-20T13:36:53.966-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Starting validation TournamentRequestDTO
+2026-03-20T13:36:53.967-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : TournamentRequestDTO validation successfully completed
+2026-03-20T13:36:53.970-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Starting validation TournamentRequestDTO
+2026-03-20T13:36:53.971-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Validation failed: initialDate 2026-03-19 is the past
+2026-03-20T13:36:53.974-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Starting validation TournamentRequestDTO
+2026-03-20T13:36:53.974-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Validation failed: endDate 2026-03-21 is earlier than startDate 2026-03-25
+2026-03-20T13:36:53.978-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Starting validation TournamentRequestDTO
+2026-03-20T13:36:53.979-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.c.validator.TournamentValidator    : Validation failed: startdate is null
+2026-03-20T13:36:53.985-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.core.validator.UserValidator       : Validation failed: username is null or empty
+2026-03-20T13:36:53.989-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.core.validator.UserValidator       : Validation failed: Invalid email format - 'juancorreo.com'
+2026-03-20T13:36:53.992-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.core.validator.UserValidator       : Validation failed: password with less than 6 characters (length: 3)
+2026-03-20T13:36:53.995-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.core.validator.UserValidator       : Validation failed: null or empty email
+2026-03-20T13:36:53.998-05:00 DEBUG 7932 --- [TECHCUP] [main] e.d.T.core.validator.UserValidator       : UserRequestDTO validation completed successfully
+2026-03-20T13:36:54.001-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.core.validator.UserValidator       : Validation failed: Invalid email format - 'juan@'
+2026-03-20T13:36:54.005-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.core.validator.UserValidator       : Validation failed: username is null or empty
+2026-03-20T13:36:54.016-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.core.validator.UserValidator       : Validation failed: null or empty password
+2026-03-20T13:36:54.023-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.core.validator.UserValidator       : Validation failed: null or empty password
+2026-03-20T13:36:54.026-05:00  WARN 7932 --- [TECHCUP] [main] e.d.T.core.validator.UserValidator       : Validation failed: null or empty email
+2026-03-20T13:41:54.074-05:00  INFO 9260 --- [TECHCUP] [main] edu.dosw.TECHCUP.TechcupApplication      : Starting TechcupApplication using Java 21.0.10 with PID 9260 (C:\Users\guerr\OneDrive\Escritorio\TECHCUP-BackEnd\target\classes started by guerr in C:\Users\guerr\OneDrive\Escritorio\TECHCUP-BackEnd)
+2026-03-20T13:41:54.075-05:00 DEBUG 9260 --- [TECHCUP] [main] edu.dosw.TECHCUP.TechcupApplication      : Running with Spring Boot v3.2.5, Spring v6.1.6
+2026-03-20T13:41:54.077-05:00  INFO 9260 --- [TECHCUP] [main] edu.dosw.TECHCUP.TechcupApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-03-20T13:41:55.275-05:00  INFO 9260 --- [TECHCUP] [main] edu.dosw.TECHCUP.TechcupApplication      : Started TechcupApplication in 1.615 seconds (process running for 2.14)
+2026-03-20T13:48:48.687-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-6] e.d.TECHCUP.controller.UserController    : POST /api/usuarios - Request to create user
+2026-03-20T13:48:48.687-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-6] e.dosw.TECHCUP.core.service.UserService  : Starting user creation - email: carlos@techcup.co
+2026-03-20T13:48:48.688-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-6] e.d.T.core.validator.UserValidator       : UserRequestDTO validation completed successfully
+2026-03-20T13:48:48.688-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-6] e.dosw.TECHCUP.core.service.UserService  : Validation passed for new user
+2026-03-20T13:48:48.689-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-6] e.dosw.TECHCUP.core.service.UserService  : User created with id: 1
+2026-03-20T13:58:05.971-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-9] e.d.TECHCUP.controller.UserController    : POST /api/usuarios - Request to create user
+2026-03-20T13:58:05.972-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-9] e.dosw.TECHCUP.core.service.UserService  : Starting user creation - email: Adrian@techcup.co
+2026-03-20T13:58:05.972-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-9] e.d.T.core.validator.UserValidator       : UserRequestDTO validation completed successfully
+2026-03-20T13:58:05.972-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-9] e.dosw.TECHCUP.core.service.UserService  : Validation passed for new user
+2026-03-20T13:58:05.972-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-9] e.dosw.TECHCUP.core.service.UserService  : User created with id: 2
+2026-03-20T13:58:22.936-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.d.TECHCUP.controller.UserController    : POST /api/usuarios - Request to create user
+2026-03-20T13:58:22.936-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.dosw.TECHCUP.core.service.UserService  : Starting user creation - email: Juan@techcup.co
+2026-03-20T13:58:22.936-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.d.T.core.validator.UserValidator       : UserRequestDTO validation completed successfully
+2026-03-20T13:58:22.936-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.dosw.TECHCUP.core.service.UserService  : Validation passed for new user
+2026-03-20T13:58:22.937-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.dosw.TECHCUP.core.service.UserService  : User created with id: 3
+2026-03-20T13:59:12.230-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-1] e.d.TECHCUP.controller.UserController    : POST /api/usuarios - Request to create user
+2026-03-20T13:59:12.232-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-1] e.dosw.TECHCUP.core.service.UserService  : Starting user creation - email: Cristian@techcup.co
+2026-03-20T13:59:12.232-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-1] e.d.T.core.validator.UserValidator       : UserRequestDTO validation completed successfully
+2026-03-20T13:59:12.232-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-1] e.dosw.TECHCUP.core.service.UserService  : Validation passed for new user
+2026-03-20T13:59:12.232-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-1] e.dosw.TECHCUP.core.service.UserService  : User created with id: 4
+2026-03-20T13:59:29.448-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.d.TECHCUP.controller.UserController    : POST /api/usuarios - Request to create user
+2026-03-20T13:59:29.448-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.dosw.TECHCUP.core.service.UserService  : Starting user creation - email: Javier@techcup.co
+2026-03-20T13:59:29.448-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.d.T.core.validator.UserValidator       : UserRequestDTO validation completed successfully
+2026-03-20T13:59:29.448-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.dosw.TECHCUP.core.service.UserService  : Validation passed for new user
+2026-03-20T13:59:29.448-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.dosw.TECHCUP.core.service.UserService  : User created with id: 5
+2026-03-20T14:03:31.379-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-4] e.d.TECHCUP.controller.UserController    : GET /api/usuarios - Listing all users
+2026-03-20T14:03:31.380-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-4] e.dosw.TECHCUP.core.service.UserService  : Listing users - total in memory: 5
+2026-03-20T14:03:31.382-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-4] e.d.TECHCUP.controller.UserController    : 5 users were returned
+2026-03-20T14:04:39.320-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-8] e.d.TECHCUP.controller.UserController    : GET /api/usuarios/2 - Searching for user by ID
+2026-03-20T14:04:39.322-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-8] e.dosw.TECHCUP.core.service.UserService  : Looking for user with id: 2
+2026-03-20T14:19:08.859-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-1] e.d.T.controller.TournamentController    : GET /api/torneos - Listing all tournaments
+2026-03-20T14:19:08.859-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-1] e.d.T.core.service.TournamentService     : Listando torneos - total en memoria: 0
+2026-03-20T14:19:08.862-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-1] e.d.T.controller.TournamentController    : 0 Tournaments were returned
+2026-03-20T14:19:30.260-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.d.T.controller.TournamentController    : POST /api/torneos - Request to create tournament
+2026-03-20T14:19:30.260-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.d.T.core.service.TournamentService     : Starting tournament creation - startDate: 2026-03-20, teams: 8
+2026-03-20T14:19:30.261-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.d.T.c.validator.TournamentValidator    : Starting validation TournamentRequestDTO
+2026-03-20T14:19:30.261-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.d.T.c.validator.TournamentValidator    : TournamentRequestDTO validation successfully completed
+2026-03-20T14:19:30.261-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.d.T.core.service.TournamentService     : Validation passed for new tournament
+2026-03-20T14:19:30.262-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.d.T.core.service.TournamentService     : Tournament created with id: 1 and state: BORRADOR
+2026-03-20T14:19:30.262-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-2] e.d.T.controller.TournamentController    : Tournament successfully created with id: 1
+2026-03-20T14:20:09.539-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-3] e.d.T.controller.TournamentController    : POST /api/torneos - Request to create tournament
+2026-03-20T14:20:09.540-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-3] e.d.T.core.service.TournamentService     : Starting tournament creation - startDate: 2026-08-30, teams: 12
+2026-03-20T14:20:09.540-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-3] e.d.T.c.validator.TournamentValidator    : Starting validation TournamentRequestDTO
+2026-03-20T14:20:09.540-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-3] e.d.T.c.validator.TournamentValidator    : TournamentRequestDTO validation successfully completed
+2026-03-20T14:20:09.540-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-3] e.d.T.core.service.TournamentService     : Validation passed for new tournament
+2026-03-20T14:20:09.540-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-3] e.d.T.core.service.TournamentService     : Tournament created with id: 2 and state: BORRADOR
+2026-03-20T14:20:09.540-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-3] e.d.T.controller.TournamentController    : Tournament successfully created with id: 2
+2026-03-20T14:20:29.035-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-5] e.d.T.controller.TournamentController    : GET /api/torneos - Listing all tournaments
+2026-03-20T14:20:29.035-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-5] e.d.T.core.service.TournamentService     : Listando torneos - total en memoria: 2
+2026-03-20T14:20:29.035-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-5] e.d.T.controller.TournamentController    : 2 Tournaments were returned
+2026-03-20T14:20:52.285-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-4] e.d.T.controller.TournamentController    : GET /api/torneos/1 - Searching for tournament by Id
+2026-03-20T14:20:52.285-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-4] e.d.T.core.service.TournamentService     : Looking for tournament with id: 1
+2026-03-20T14:27:00.774-05:00  WARN 9260 --- [TECHCUP] [http-nio-8080-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter 'estado' for method parameter type String is not present]
+2026-03-20T14:28:39.865-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.d.T.controller.TournamentController    : PATCH /api/torneos/1/estado - Requesting a change of status to 'ACTIVO'
+2026-03-20T14:28:39.865-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.d.T.core.service.TournamentService     : Trying to change the tournament status 1 a ''ACTIVO
+2026-03-20T14:28:39.865-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.d.T.c.validator.TournamentValidator    : Validating state transition: BORRADOR → ACTIVO
+2026-03-20T14:28:39.867-05:00 DEBUG 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.d.T.c.validator.TournamentValidator    : State transition BORRADOR → ACTIVO is valid
+2026-03-20T14:28:39.867-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.d.T.core.service.TournamentService     : Estado del torneo 1 cambiado de ACTIVO a ACTIVO
+2026-03-20T14:28:39.868-05:00  INFO 9260 --- [TECHCUP] [http-nio-8080-exec-10] e.d.T.controller.TournamentController    : Tournament status 1 successfully updated a 'ACTIVO'
+2026-03-20T21:51:10.595-05:00  INFO 7756 --- [TECHCUP] [main] edu.dosw.TECHCUP.TechcupApplication      : Starting TechcupApplication using Java 21.0.10 with PID 7756 (C:\Users\guerr\OneDrive\Escritorio\TECHCUP-BackEnd\target\classes started by guerr in C:\Users\guerr\OneDrive\Escritorio\TECHCUP-BackEnd)
+2026-03-20T21:51:10.597-05:00 DEBUG 7756 --- [TECHCUP] [main] edu.dosw.TECHCUP.TechcupApplication      : Running with Spring Boot v3.2.5, Spring v6.1.6
+2026-03-20T21:51:10.598-05:00  INFO 7756 --- [TECHCUP] [main] edu.dosw.TECHCUP.TechcupApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-03-20T21:51:12.243-05:00  INFO 7756 --- [TECHCUP] [main] edu.dosw.TECHCUP.TechcupApplication      : Started TechcupApplication in 2.231 seconds (process running for 2.762)
+2026-03-20T21:52:23.970-05:00 DEBUG 7756 --- [TECHCUP] [http-nio-8080-exec-1] e.d.T.controller.TournamentController    : GET /api/torneos/1 - Searching for tournament by Id
+2026-03-20T21:52:23.972-05:00 DEBUG 7756 --- [TECHCUP] [http-nio-8080-exec-1] e.d.T.core.service.TournamentService     : Looking for tournament with id: 1
+2026-03-20T21:52:23.972-05:00  WARN 7756 --- [TECHCUP] [http-nio-8080-exec-1] e.d.T.core.service.TournamentService     : Tournament with id 1 not found in the system
+2026-03-20T21:52:23.975-05:00 ERROR 7756 --- [TECHCUP] [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: edu.dosw.TECHCUP.core.exception.TournamentNotFoundException: 1] with root cause
+
+edu.dosw.TECHCUP.core.exception.TournamentNotFoundException: 1
+	at edu.dosw.TECHCUP.core.service.TournamentService.obtenerTorneoPorId(TournamentService.java:68) ~[classes/:na]
+	at edu.dosw.TECHCUP.controller.TournamentController.obtenerTorneo(TournamentController.java:51) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-03-20T21:53:30.802-05:00 DEBUG 7756 --- [TECHCUP] [http-nio-8080-exec-4] e.d.TECHCUP.controller.UserController    : GET /api/usuarios/1 - Searching for user by ID
+2026-03-20T21:53:30.804-05:00 DEBUG 7756 --- [TECHCUP] [http-nio-8080-exec-4] e.dosw.TECHCUP.core.service.UserService  : Looking for user with id: 1
+2026-03-20T21:53:30.804-05:00  WARN 7756 --- [TECHCUP] [http-nio-8080-exec-4] e.dosw.TECHCUP.core.service.UserService  : User with id 1 not found in the system
+2026-03-20T21:53:30.805-05:00 ERROR 7756 --- [TECHCUP] [http-nio-8080-exec-4] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: edu.dosw.TECHCUP.core.exception.UserNotFoundException: Usuario con id 1 no encontrado.] with root cause
+
+edu.dosw.TECHCUP.core.exception.UserNotFoundException: Usuario con id 1 no encontrado.
+	at edu.dosw.TECHCUP.core.service.UserService.obtenerUsuarioPorId(UserService.java:59) ~[classes/:na]
+	at edu.dosw.TECHCUP.controller.UserController.obtenerUsuario(UserController.java:49) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.6.jar:6.1.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.20.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.6.jar:6.1.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.20.jar:10.1.20]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+

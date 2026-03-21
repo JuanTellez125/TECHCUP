@@ -7,12 +7,13 @@ import java.time.LocalDate;
 
 @Setter
 @Getter
-public class Torneo {
+public class Tournament {
+    private long id;
     private LocalDate fechaInicio;
     private LocalDate fechaFinal;
     private int cantidadEquipos;
     private double costoInscripcion;
-    private EstadoTorneo estado;
+    private TournamentStatus estado;
 
 
     public void showInfo(){

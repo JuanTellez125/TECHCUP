@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 
-public class TorneoRequestDTO {
+public class TournamentRequestDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFinal;
     private int cantidadEquipos;
