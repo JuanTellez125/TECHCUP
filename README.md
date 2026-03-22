@@ -223,3 +223,7 @@ modificar el usuario que lo contiene.
 ## - Diagrama de componentes especifico
 
 ![DiagramaComponentesEspecifico](/docs/uml/DiagramaDeComponentesEspecifico.png)
+
+## - Diagramas de secuencia
+
+![DiagramasDeSecuencia](/docs/uml/DiagramasDeSecuencias.png)
