@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.controller.dto;
 
-import edu.dosw.TECHCUP.core.model.TournamentStatus;
 import lombok.Getter;
 import lombok.Setter;
 

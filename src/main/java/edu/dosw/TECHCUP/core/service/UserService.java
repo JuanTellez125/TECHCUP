@@ -3,12 +3,9 @@ package edu.dosw.TECHCUP.core.service;
 import edu.dosw.TECHCUP.controller.dto.UserRequestDTO;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.model.User;
-import edu.dosw.TECHCUP.core.model.UserBasicBuilder;
-import edu.dosw.TECHCUP.core.model.UserFactory;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

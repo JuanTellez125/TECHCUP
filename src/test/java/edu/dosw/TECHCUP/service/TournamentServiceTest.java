@@ -4,7 +4,6 @@ import edu.dosw.TECHCUP.controller.dto.TournamentRequestDTO;
 import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
 import edu.dosw.TECHCUP.core.model.Tournament;
-import edu.dosw.TECHCUP.core.model.TournamentStatus;
 import edu.dosw.TECHCUP.core.service.TournamentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
