@@ -1,12 +1,13 @@
 package edu.dosw.TECHCUP.core.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
+
 
 import java.time.LocalDate;
 
-@Setter
-@Getter
+@Data
+@Builder
 public class Tournament {
     private long id;
     private LocalDate fechaInicio;
