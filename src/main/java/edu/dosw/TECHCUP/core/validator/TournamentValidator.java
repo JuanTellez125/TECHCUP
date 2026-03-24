@@ -1,6 +1,6 @@
 package edu.dosw.TECHCUP.core.validator;
 
-import edu.dosw.TECHCUP.controller.dto.TournamentRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.request.TournamentRequestDTO;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
 import org.springframework.stereotype.Component;
 

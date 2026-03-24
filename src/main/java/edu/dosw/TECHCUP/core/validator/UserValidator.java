@@ -1,7 +1,7 @@
 package edu.dosw.TECHCUP.core.validator;
 
 
-import edu.dosw.TECHCUP.controller.dto.UserRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 
 public class UserValidator {

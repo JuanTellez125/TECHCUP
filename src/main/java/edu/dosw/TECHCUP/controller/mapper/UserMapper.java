@@ -1,16 +1,17 @@
 package edu.dosw.TECHCUP.controller.mapper;
 
-import edu.dosw.TECHCUP.controller.dto.UserRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.UserResponseDTO;
+import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.core.model.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    @Mapping(source = "id", target = "id")
+    UserResponseDTO toDto(User user);
 
-    UserResponseDTO toResponseDTO(User user);
+    User toEntity(UserResponseDTO dto);
 
 }

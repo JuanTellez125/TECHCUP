@@ -1,6 +1,6 @@
 package edu.dosw.TECHCUP.service;
 
-import edu.dosw.TECHCUP.controller.dto.TournamentRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.request.TournamentRequestDTO;
 import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
 import edu.dosw.TECHCUP.core.model.Tournament;
