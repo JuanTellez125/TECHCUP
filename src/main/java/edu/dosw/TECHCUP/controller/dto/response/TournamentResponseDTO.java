@@ -1,18 +1,17 @@
-package edu.dosw.TECHCUP.core.model;
+package edu.dosw.TECHCUP.controller.dto.response;
 
-import lombok.Builder;
-import lombok.Data;
-import org.springframework.data.annotation.Id;
-
+import edu.dosw.TECHCUP.core.model.TournamentStatus;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.time.LocalDate;
 
-
 @Data
 @Builder
-public class Tournament {
+@NoArgsConstructor
+@AllArgsConstructor
+public class TournamentResponseDTO {
 
-    @Id
     private String id;
 
     private LocalDate startDate;
@@ -24,5 +23,4 @@ public class Tournament {
     private double registrationCost;
 
     private TournamentStatus status;
-
 }

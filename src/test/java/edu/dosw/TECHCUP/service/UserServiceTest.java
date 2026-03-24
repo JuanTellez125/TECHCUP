@@ -1,6 +1,6 @@
 package edu.dosw.TECHCUP.service;
 
-import edu.dosw.TECHCUP.controller.dto.UserRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.User;

@@ -1,6 +1,6 @@
 package edu.dosw.TECHCUP.validator;
 
-import edu.dosw.TECHCUP.controller.dto.UserRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
