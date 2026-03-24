@@ -5,6 +5,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 
+import javax.swing.text.Position;
+
 
 @Data
 @Builder
@@ -15,7 +17,6 @@ public class User {
     private String name;
 
     @Indexed(unique = true)
-
     private String email;
 
     private String password;
@@ -23,5 +24,13 @@ public class User {
     private Byte[] userPhoto;
 
     private Role role;
+
+    private int dorsal;
+
+    private Position mainPosition;
+
+    private Position secundaryPosition;
+
+
 
 }

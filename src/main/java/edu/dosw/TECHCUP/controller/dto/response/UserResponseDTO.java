@@ -1,8 +1,11 @@
 package edu.dosw.TECHCUP.controller.dto.response;
 
 
+import edu.dosw.TECHCUP.core.model.Role;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import javax.swing.text.Position;
 
 @Data
 @Builder
@@ -19,5 +22,13 @@ public class UserResponseDTO {
     private String password;
 
     private Byte[] userPhoto;
+
+    private Role role;
+
+    private int dorsal;
+
+    private Position mainPosition;
+
+    private Position secundaryPosition;
 
 }
