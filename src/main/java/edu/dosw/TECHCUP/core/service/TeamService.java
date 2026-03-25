@@ -9,6 +9,7 @@ import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.Team;
 import edu.dosw.TECHCUP.core.model.User;
+import edu.dosw.TECHCUP.core.model.enums.PlayerAvailable;
 import edu.dosw.TECHCUP.core.model.enums.Position;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.model.enums.TeamStatus;
@@ -55,7 +56,7 @@ public class TeamService {
                 .captainId(captainId)
                 .teamName(dto.getTeamName())
                 .mainColor(dto.getMainColor())
-                .secondaryColor(dto.getSecondaryColor())
+                .secundaryColor(dto.getSecundaryColor())
                 .teamStatus(TeamStatus.ACTIVE)
                 .build();
 
@@ -102,14 +103,14 @@ public class TeamService {
 
     public List<UserResponseDTO> searchAvailablePlayers(Position position, String name) {
         List<User> allAvailable = userRepository.findAll().stream()
-                .filter(u -> u.getTeam() == null)
+                .filter(u -> PlayerAvailable.AVAILABLE.equals(u.getPlayerAvailable()))
                 .filter(u -> u.getRole() == Role.PLAYER || u.getRole() == Role.CAPTAIN)
                 .collect(Collectors.toList());
 
         if (position != null) {
             allAvailable = allAvailable.stream()
                     .filter(u -> position.equals(u.getMainPosition())
-                            || position.equals(u.getSecondaryPosition()))
+                            || position.equals(u.getSecundaryPosition()))
                     .collect(Collectors.toList());
         }
 
