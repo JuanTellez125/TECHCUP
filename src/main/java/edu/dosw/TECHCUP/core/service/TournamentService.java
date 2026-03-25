@@ -116,6 +116,13 @@ public class TournamentService {
                 .collect(Collectors.toList());
     }
 
+    public List<TournamentResponseDTO> getFinalizedTournaments() {
+        return tournamentRepository.findAllByStatus(TournamentStatus.FINALIZED)
+                .stream()
+                .map(tournamentMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 
 
 }
