@@ -23,4 +23,12 @@ public class TournamentResponseDTO {
     private double registrationCost;
 
     private TournamentStatus status;
+
+    private String rules;
+
+    private LocalDate registrationCloseDate;
+
+    private String fields;
+
+    private String sanctions;
 }
