@@ -40,6 +40,12 @@ public class TournamentController {
         return ResponseEntity.ok(tournamentService.getAllTournaments());
     }
 
+    @Operation(summary = "Historial de torneos finalizados")
+    @GetMapping("/history")
+    public ResponseEntity<List<TournamentResponseDTO>> getFinalizedTournaments() {
+        return ResponseEntity.ok(tournamentService.getFinalizedTournaments());
+    }
+
     @Operation(summary = "Iniciar torneo: SKETCH → ACTIVE")
     @PatchMapping("/{id}/start")
     public ResponseEntity<TournamentResponseDTO> startTournament(
@@ -72,4 +78,5 @@ public class TournamentController {
         return ResponseEntity.ok(
                 tournamentService.configTournament(organizerId, id));
     }
+
 }
