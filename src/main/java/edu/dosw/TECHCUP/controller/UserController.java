@@ -3,6 +3,7 @@ package edu.dosw.TECHCUP.controller;
 import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.core.model.enums.PlayerAvailable;
+import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.service.impl.AdministratorService;
 import edu.dosw.TECHCUP.core.service.impl.CaptainService;
 import edu.dosw.TECHCUP.core.service.impl.PlayerService;
@@ -134,4 +135,12 @@ public class UserController {
         administratorService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Asignar rol a un usuario (RF21, solo admin)")
+    @PatchMapping("/admins/{adminId}/assign-role")
+    public ResponseEntity<UserResponseDTO> assignRole(@PathVariable String adminId, @RequestParam String targetUserId,
+            @RequestParam Role newRole) {
+        return ResponseEntity.ok(administratorService.assignRole(adminId, targetUserId, newRole));
+    }
+
 }
