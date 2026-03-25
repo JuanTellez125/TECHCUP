@@ -1,10 +1,9 @@
 package edu.dosw.TECHCUP.controller.dto.request;
 
-import edu.dosw.TECHCUP.core.model.Team;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import edu.dosw.TECHCUP.core.model.enums.MatchPhase;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -12,12 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MatchRequestDTO {
 
-    private String referee_id;
+    private String refereeId;
 
-    private Team localTeam;
+    private String localTeamId;
 
-    private Team awayTeam;
+    private String awayTeamId;
 
     private int numberField;
 
+    private MatchPhase matchPhase;
+
+    private LocalDateTime matchDateTime;
+
+    private String tournamentId;
 }
