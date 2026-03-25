@@ -47,6 +47,12 @@ public class MatchController {
         return ResponseEntity.ok(matchService.getMatchesByReferee(refereeId));
     }
 
+    @Operation(summary = "Consultar partidos de un torneo")
+    @GetMapping("/tournament/{tournamentId}")
+    public ResponseEntity<List<MatchResponseDTO>> getMatchesByTournament(@PathVariable String tournamentId) {
+        return ResponseEntity.ok(matchService.getMatchesByTournament(tournamentId));
+    }
+
 
 
 
