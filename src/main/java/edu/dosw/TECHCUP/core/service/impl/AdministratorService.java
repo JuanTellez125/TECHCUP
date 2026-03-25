@@ -85,5 +85,18 @@ public class AdministratorService implements UserService {
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public UserResponseDTO assignRole(String adminId, String targetUserId, Role newRole) {
+        userRepository.findByRoleAndId(Role.ADMINISTRATOR, adminId)
+                .orElseThrow(() -> new UserValidationException("Solo un administrador puede asignar roles."));
+
+        User target = userRepository.findById(targetUserId).orElseThrow(() -> new UserNotFoundException(targetUserId));
+
+        target.setRole(newRole);
+        User updated = userRepository.save(target);
+        log.info("Rol actualizado para usuario {}: {}", targetUserId, newRole);
+        return userMapper.toDto(updated);
+    }
 }
 
