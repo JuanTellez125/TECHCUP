@@ -1,5 +1,6 @@
 package edu.dosw.TECHCUP.core.service;
 
+import edu.dosw.TECHCUP.controller.dto.request.TournamentConfigRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.TournamentRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentResponseDTO;
 import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
@@ -95,12 +96,19 @@ public class TournamentService {
     }
 
     @Transactional
-    public TournamentResponseDTO configTournament(String organizerId, String tournamentId) {
-
+    public TournamentResponseDTO configTournament(String organizerId, String tournamentId,
+                                                  TournamentConfigRequestDTO dto) {
         Tournament tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TournamentNotFoundException(Long.parseLong(tournamentId)));
 
-        return tournamentMapper.toDto(tournamentRepository.save(tournament));
+        if (dto.getRules() != null)                  tournament.setRules(dto.getRules());
+        if (dto.getRegistrationCloseDate() != null)  tournament.setRegistrationCloseDate(dto.getRegistrationCloseDate());
+        if (dto.getFields() != null)                 tournament.setFields(dto.getFields());
+        if (dto.getSanctions() != null)              tournament.setSanctions(dto.getSanctions());
+
+        Tournament saved = tournamentRepository.save(tournament);
+        log.info("Torneo {} configurado por organizador {}", tournamentId, organizerId);
+        return tournamentMapper.toDto(saved);
     }
 
     public TournamentResponseDTO getTournamentById(String tournamentId) {
