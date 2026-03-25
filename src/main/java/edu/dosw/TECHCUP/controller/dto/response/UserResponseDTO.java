@@ -34,4 +34,10 @@ public class UserResponseDTO {
 
     private PlayerAvailable playerAvailable;
 
+    private String gender;
+
+    private String identification;
+
+    private int semester;
+
 }
