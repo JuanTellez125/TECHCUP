@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.awt.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -24,7 +25,7 @@ public class Match{
     @Id
     private String id;
 
-    private String referee_id;
+    private String refereeIid;
 
     private Team localTeam;
 
@@ -41,5 +42,13 @@ public class Match{
     private int localScore;
 
     private int awayScore;
+
+    private LocalDateTime matchDateTime;
+
+    private List<String> scorerIds;
+
+    private List<String> yellowCardPlayerIds;
+
+    private List<String> redCardPlayerIds;
 
 }
