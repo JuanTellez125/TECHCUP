@@ -50,7 +50,11 @@ public class TeamController {
     @GetMapping("/players/search")
     public ResponseEntity<List<UserResponseDTO>> searchPlayers(
             @RequestParam(required = false) Position position,
-            @RequestParam(required = false) String name) {
-        return ResponseEntity.ok(teamService.searchAvailablePlayers(position, name));
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String identification,
+            @RequestParam(required = false) Integer semester) {
+        return ResponseEntity.ok(
+                teamService.searchAvailablePlayers(position, name, gender, identification, semester));
     }
 }
