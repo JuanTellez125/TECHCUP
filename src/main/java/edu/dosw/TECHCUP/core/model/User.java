@@ -1,22 +1,30 @@
 package edu.dosw.TECHCUP.core.model;
 
+import edu.dosw.TECHCUP.core.model.enums.PlayerAvailable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-
-import javax.swing.text.Position;
-
+import edu.dosw.TECHCUP.core.model.enums.Role;
+import edu.dosw.TECHCUP.core.model.enums.Position;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table (name = "users")
+@Entity
 public class User {
+
     @Id
-    private long id;
+    private String id;
 
     private String name;
 
-    @Indexed(unique = true)
     private String email;
 
     private String password;
@@ -31,6 +39,8 @@ public class User {
 
     private Position secundaryPosition;
 
+    private PlayerAvailable playerAvailable;
 
+    private Team team;
 
 }

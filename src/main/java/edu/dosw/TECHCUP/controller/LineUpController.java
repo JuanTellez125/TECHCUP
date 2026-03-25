@@ -1,4 +1,4 @@
 package edu.dosw.TECHCUP.controller;
 
-public class UserController {
+public class LineUpController {
 }

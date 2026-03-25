@@ -1,16 +1,16 @@
 package edu.dosw.TECHCUP.controller.mapper;
 
+import edu.dosw.TECHCUP.controller.dto.response.MatchResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentResponseDTO;
+import edu.dosw.TECHCUP.core.model.Match;
 import edu.dosw.TECHCUP.core.model.Tournament;
 import org.mapstruct.Mapper;
 
-
 @Mapper(componentModel = "spring")
-public interface TournamentMapper {
+public interface MatchMapper {
 
-    Tournament toEntity(TournamentResponseDTO dto);
+    Match toEntity(MatchResponseDTO dto);
 
-    TournamentResponseDTO toDto(Tournament entity);
-
+    MatchResponseDTO toDto(Match entity);
 
 }

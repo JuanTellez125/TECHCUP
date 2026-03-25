@@ -2,60 +2,58 @@ package edu.dosw.TECHCUP.core.validator;
 
 import edu.dosw.TECHCUP.controller.dto.request.TournamentRequestDTO;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
+import edu.dosw.TECHCUP.core.model.enums.TournamentStatus;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 @Component
 public class TournamentValidator {
 
-    public void validar(TournamentRequestDTO dto) {
-        validarFechas(dto.getFechaInicio(), dto.getFechaFinal());
-        validarCantidadEquipos(dto.getCantidadEquipos());
-        validarCostoInscripcion(dto.getCostoInscripcion());
-
+    public void validate(TournamentRequestDTO dto) {
+        validateDates(dto.getStartDate(), dto.getEndDate());
+        validateTotalTeams(dto.getTotalTeams());
+        validateRegistrationCost(dto.getRegistrationCost());
     }
 
-
-    private void validarFechas(LocalDate fechaInicio, LocalDate fechaFinal) {
-        if (fechaInicio == null) {
+    private void validateDates(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null) {
             throw new TournamentValidationException("La fecha de inicio no puede ser nula.");
         }
-        if (fechaFinal == null) {
+        if (endDate == null) {
             throw new TournamentValidationException("La fecha final no puede ser nula.");
         }
-        if (fechaInicio.isBefore(LocalDate.now())) {
+        if (startDate.isBefore(LocalDate.now())) {
             throw new TournamentValidationException("La fecha de inicio no puede ser en el pasado.");
         }
-        if (fechaFinal.isBefore(fechaInicio)) {
+        if (endDate.isBefore(startDate)) {
             throw new TournamentValidationException("La fecha final no puede ser anterior a la fecha de inicio.");
         }
     }
 
-    private void validarCantidadEquipos(int cantidadEquipos) {
-        if (cantidadEquipos <= 0) {
+    private void validateTotalTeams(int totalTeams) {
+        if (totalTeams <= 0) {
             throw new TournamentValidationException("La cantidad de equipos debe ser mayor a 0.");
         }
-
     }
 
-    private void validarCostoInscripcion(double costo) {
-        if (costo < 0) {
+    private void validateRegistrationCost(double cost) {
+        if (cost < 0) {
             throw new TournamentValidationException("El costo de inscripción no puede ser negativo.");
         }
     }
 
-    public void validarTransicionEstado(TournamentStatus estadoActual, TournamentStatus estadoNuevo) {
-        boolean transicionValida = switch (estadoActual) {
-            case BORRADOR -> estadoNuevo == TournamentStatus.ACTIVO;
-            case ACTIVO -> estadoNuevo == TournamentStatus.PROGRESO;
-            case PROGRESO -> estadoNuevo == TournamentStatus.FINALIZADO;
-            case FINALIZADO -> false;
+    public void validateStatusTransition(TournamentStatus currentStatus, TournamentStatus newStatus) {
+        boolean validTransition = switch (currentStatus) {
+            case SKETCH     -> newStatus == TournamentStatus.ACTIVE;
+            case ACTIVE     -> newStatus == TournamentStatus.INPROGRESS;
+            case INPROGRESS -> newStatus == TournamentStatus.FINALIZED;
+            case FINALIZED  -> false;
         };
 
-        if (!transicionValida) {
+        if (!validTransition) {
             throw new TournamentValidationException(
-                    "No se puede cambiar de " + estadoActual + " a " + estadoNuevo +
-                            ". El flujo correcto es: BORRADOR → ACTIVO → PROGRESO → FINALIZADO"
+                    "No se puede cambiar de " + currentStatus + " a " + newStatus +
+                            ". El flujo correcto es: SKETCH → ACTIVE → INPROGRESS → FINALIZED"
             );
         }
     }

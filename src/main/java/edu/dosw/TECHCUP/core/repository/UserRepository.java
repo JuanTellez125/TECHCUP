@@ -1,13 +1,16 @@
 package edu.dosw.TECHCUP.core.repository;
 
-import edu.dosw.TECHCUP.core.model.Role;
+import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.model.User;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends MongoRepository<User,String> {
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends JpaRepository<User,String> {
 
     Optional<User> findById(String id);
 
