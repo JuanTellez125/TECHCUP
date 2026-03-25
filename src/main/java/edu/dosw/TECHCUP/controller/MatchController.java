@@ -41,6 +41,12 @@ public class MatchController {
         ));
     }
 
+    @Operation(summary = "Consultar partidos asignados a un arbitro")
+    @GetMapping("/referee/{refereeId}")
+    public ResponseEntity<List<MatchResponseDTO>> getMatchesByReferee(@PathVariable String refereeId) {
+        return ResponseEntity.ok(matchService.getMatchesByReferee(refereeId));
+    }
+
 
 
 
