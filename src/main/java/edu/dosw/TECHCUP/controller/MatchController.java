@@ -59,6 +59,14 @@ public class MatchController {
         return ResponseEntity.ok(matchService.getMatchHistory(tournamentId));
     }
 
+    @Operation(summary = "Generar llaves eliminatorias")
+    @PostMapping("/tournament/{tournamentId}/bracket")
+    public ResponseEntity<List<MatchResponseDTO>> generateBracket(@PathVariable String tournamentId,
+            @RequestParam String organizerId) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(matchService.generateBracket(organizerId, tournamentId));
+    }
+
 
 
 
