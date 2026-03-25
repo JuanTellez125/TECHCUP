@@ -6,11 +6,12 @@ import edu.dosw.TECHCUP.core.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+//A tellez le gusta el pene grande 
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class captainService implements UserService {
+public class CaptainService implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;

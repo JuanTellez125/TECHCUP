@@ -6,6 +6,7 @@ import edu.dosw.TECHCUP.core.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+//A tellez le gusta el pene grande 
 
 @Service
 @Slf4j
@@ -16,3 +17,4 @@ public class OrganizerService implements UserService {
     private final UserMapper userMapper;
 
 }
+

@@ -1,15 +1,20 @@
 package edu.dosw.TECHCUP.controller.dto.request;
 
 
-import edu.dosw.TECHCUP.core.model.Role;
+import edu.dosw.TECHCUP.core.model.enums.PlayerAvailable;
+import edu.dosw.TECHCUP.core.model.enums.Role;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.swing.text.Position;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserRequestDTO {
 
     @NotNull(message = "The name cannot be blank")
@@ -34,4 +39,6 @@ public class UserRequestDTO {
     private Position mainPosition;
 
     private Position secundaryPosition;
+
+    private PlayerAvailable playerAvailable;
 }

@@ -1,6 +1,6 @@
 package edu.dosw.TECHCUP.controller.dto.response;
 
-import edu.dosw.TECHCUP.core.model.TournamentStatus;
+import edu.dosw.TECHCUP.core.model.enums.TournamentStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

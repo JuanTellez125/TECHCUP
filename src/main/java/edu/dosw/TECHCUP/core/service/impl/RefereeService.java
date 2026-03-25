@@ -4,7 +4,7 @@ import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.UserMapper;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
-import edu.dosw.TECHCUP.core.model.Role;
+import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;

@@ -4,7 +4,7 @@ import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.UserMapper;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
-import edu.dosw.TECHCUP.core.model.Role;
+import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class playerService implements UserService {
+public class PlayerService implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -48,6 +48,7 @@ public class playerService implements UserService {
         return userMapper.toDto(user);
     }
 
+    @Transactional
     public void deleteUser(String id) {
         if (!userRepository.existsById(id)) {
             throw new UserNotFoundException(id);

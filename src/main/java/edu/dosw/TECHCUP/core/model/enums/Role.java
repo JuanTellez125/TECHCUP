@@ -1,4 +1,4 @@
-package edu.dosw.TECHCUP.core.model;
+package edu.dosw.TECHCUP.core.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,5 +10,5 @@ public enum Role {
     CAPTAIN,
     ORGANIZER,
     REFEREE,
-    ADMINISTRATOR;
+    ADMINISTRATOR
 }

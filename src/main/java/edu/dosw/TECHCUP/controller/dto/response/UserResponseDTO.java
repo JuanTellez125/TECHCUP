@@ -1,7 +1,8 @@
 package edu.dosw.TECHCUP.controller.dto.response;
 
 
-import edu.dosw.TECHCUP.core.model.Role;
+import edu.dosw.TECHCUP.core.model.enums.PlayerAvailable;
+import edu.dosw.TECHCUP.core.model.enums.Role;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -30,5 +31,7 @@ public class UserResponseDTO {
     private Position mainPosition;
 
     private Position secundaryPosition;
+
+    private PlayerAvailable playerAvailable;
 
 }

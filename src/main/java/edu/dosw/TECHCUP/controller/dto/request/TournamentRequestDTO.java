@@ -1,16 +1,15 @@
 package edu.dosw.TECHCUP.controller.dto.request;
 
-import edu.dosw.TECHCUP.core.model.TournamentStatus;
+import edu.dosw.TECHCUP.core.model.enums.TournamentStatus;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TournamentRequestDTO {
 
     @NotNull (message = "The start date cannot be blank")
