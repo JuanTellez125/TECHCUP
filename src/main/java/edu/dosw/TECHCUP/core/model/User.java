@@ -43,4 +43,12 @@ public class User {
 
     private Team team;
 
+    private String gender;
+
+    private String identification;
+
+    private int semester;
+
+
+
 }
