@@ -35,4 +35,12 @@ public class Tournament {
 
     private String organizerId;
 
+    private String rules;
+
+    private LocalDate registrationCloseDate;
+
+    private String fields;
+
+    private String sanctions;
+
 }
