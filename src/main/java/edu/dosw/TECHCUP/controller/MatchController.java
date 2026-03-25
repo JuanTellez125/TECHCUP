@@ -53,6 +53,12 @@ public class MatchController {
         return ResponseEntity.ok(matchService.getMatchesByTournament(tournamentId));
     }
 
+    @Operation(summary = "Historial de partidos jugados")
+    @GetMapping("/tournament/{tournamentId}/history")
+    public ResponseEntity<List<MatchResponseDTO>> getMatchHistory(@PathVariable String tournamentId) {
+        return ResponseEntity.ok(matchService.getMatchHistory(tournamentId));
+    }
+
 
 
 
