@@ -22,11 +22,26 @@ public class MatchController {
 
     @Operation(summary = "Programar un partido")
     @PostMapping
-    public ResponseEntity<MatchResponseDTO> scheduleMatch(
-            @Valid @RequestBody MatchRequestDTO dto) {
+    public ResponseEntity<MatchResponseDTO> scheduleMatch(@Valid @RequestBody MatchRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(matchService.scheduleMatch(dto));
     }
+
+    @Operation(summary = "Registrar resultado de un partido (RF15)")
+    @PatchMapping("/{matchId}/result")
+    public ResponseEntity<MatchResponseDTO> registerResult(@PathVariable String matchId,
+            @Valid @RequestBody MatchResultRequestDTO dto) {
+        return ResponseEntity.ok(matchService.registerResult(
+                matchId,
+                dto.getLocalScore(),
+                dto.getAwayScore(),
+                dto.getScorerIds(),
+                dto.getYellowCardPlayerIds(),
+                dto.getRedCardPlayerIds()
+        ));
+    }
+
+
 
 
 }
