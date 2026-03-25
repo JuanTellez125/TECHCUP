@@ -101,7 +101,9 @@ public class TeamService {
         return teamMapper.toDto(teamRepository.findById(teamId).orElseThrow());
     }
 
-    public List<UserResponseDTO> searchAvailablePlayers(Position position, String name) {
+    public List<UserResponseDTO> searchAvailablePlayers(Position position, String name,
+                                                        String gender, String identification,
+                                                        Integer semester) {
         List<User> allAvailable = userRepository.findAll().stream()
                 .filter(u -> PlayerAvailable.AVAILABLE.equals(u.getPlayerAvailable()))
                 .filter(u -> u.getRole() == Role.PLAYER || u.getRole() == Role.CAPTAIN)
@@ -115,9 +117,27 @@ public class TeamService {
         }
 
         if (name != null && !name.isBlank()) {
-            String lowerName = name.toLowerCase();
+            String lower = name.toLowerCase();
             allAvailable = allAvailable.stream()
-                    .filter(u -> u.getName().toLowerCase().contains(lowerName))
+                    .filter(u -> u.getName().toLowerCase().contains(lower))
+                    .collect(Collectors.toList());
+        }
+
+        if (gender != null && !gender.isBlank()) {
+            allAvailable = allAvailable.stream()
+                    .filter(u -> gender.equalsIgnoreCase(u.getGender()))
+                    .collect(Collectors.toList());
+        }
+
+        if (identification != null && !identification.isBlank()) {
+            allAvailable = allAvailable.stream()
+                    .filter(u -> identification.equals(u.getIdentification()))
+                    .collect(Collectors.toList());
+        }
+
+        if (semester != null && semester > 0) {
+            allAvailable = allAvailable.stream()
+                    .filter(u -> u.getSemester() == semester)
                     .collect(Collectors.toList());
         }
 
