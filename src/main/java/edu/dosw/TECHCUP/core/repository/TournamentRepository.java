@@ -15,6 +15,10 @@ public interface TournamentRepository extends JpaRepository<Tournament, String> 
 
     List<Tournament> findAll();
 
+    List<Tournament> findAllByStatus(TournamentStatus status);
+
+
+
 
 
 }
