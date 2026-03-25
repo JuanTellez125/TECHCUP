@@ -1,5 +1,6 @@
 package edu.dosw.TECHCUP.controller;
 
+import edu.dosw.TECHCUP.controller.dto.request.TournamentConfigRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.TournamentRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentResponseDTO;
 import edu.dosw.TECHCUP.core.service.TournamentService;
@@ -70,13 +71,13 @@ public class TournamentController {
         return ResponseEntity.ok(tournamentService.finishTournament(organizerId, id));
     }
 
-    @Operation(summary = "Configurar reglamento y fechas del torneo (sección 6.6)")
+    @Operation(summary = "Configurar reglamento y fechas del torneo ")
     @PatchMapping("/{id}/config")
     public ResponseEntity<TournamentResponseDTO> configTournament(
             @PathVariable String id,
-            @RequestParam String organizerId){
-        return ResponseEntity.ok(
-                tournamentService.configTournament(organizerId, id));
+            @RequestParam String organizerId,
+            @Valid @RequestBody TournamentConfigRequestDTO dto) {
+        return ResponseEntity.ok(tournamentService.configTournament(organizerId, id, dto));
     }
 
 }
