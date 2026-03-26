@@ -14,12 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 public class LineUpRequestDTO {
 
-    private List<String> titular;
+    private List<String> titulars;
 
     private List<String> substitutes;
 
     private List<String> suspended;
 
-    private Team team;
+    private String formation;
+
+    private String teamId;
+
+    private String matchId;
 
 }

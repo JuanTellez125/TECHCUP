@@ -17,12 +17,18 @@ public class LineUpResponseDTO {
 
     private String id;
 
-    private List<String> titular;
+    private List<String> titulars;
 
     private List<String> substitutes;
 
     private List<String> suspended;
 
-    private Team team;
+    private String formation;
+
+    private String teamId;
+
+    private String teamName;
+
+    private String matchId;
 
 }
