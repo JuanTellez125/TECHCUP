@@ -20,7 +20,7 @@ public class TournamentController {
 
     private final TournamentService tournamentService;
 
-    @Operation(summary = "Crear un torneo")
+    @Operation(summary = "Create a tournament")
     @PostMapping
     public ResponseEntity<TournamentResponseDTO> createTournament(
             @RequestParam String organizerId,
@@ -29,25 +29,25 @@ public class TournamentController {
                 .body(tournamentService.createTournament(organizerId, dto));
     }
 
-    @Operation(summary = "Consultar torneo por ID")
+    @Operation(summary = "Check tournament by ID")
     @GetMapping("/{id}")
     public ResponseEntity<TournamentResponseDTO> getTournament(@PathVariable String id) {
         return ResponseEntity.ok(tournamentService.getTournamentById(id));
     }
 
-    @Operation(summary = "Listar todos los torneos")
+    @Operation(summary = "List all tournaments")
     @GetMapping
     public ResponseEntity<List<TournamentResponseDTO>> getAllTournaments() {
         return ResponseEntity.ok(tournamentService.getAllTournaments());
     }
 
-    @Operation(summary = "Historial de torneos finalizados")
+    @Operation(summary = "History of completed tournaments")
     @GetMapping("/history")
     public ResponseEntity<List<TournamentResponseDTO>> getFinalizedTournaments() {
         return ResponseEntity.ok(tournamentService.getFinalizedTournaments());
     }
 
-    @Operation(summary = "Iniciar torneo: SKETCH → ACTIVE")
+    @Operation(summary = "Start tournament: SKETCH → ACTIVE")
     @PatchMapping("/{id}/start")
     public ResponseEntity<TournamentResponseDTO> startTournament(
             @PathVariable String id,
@@ -55,7 +55,7 @@ public class TournamentController {
         return ResponseEntity.ok(tournamentService.startTournament(organizerId, id));
     }
 
-    @Operation(summary = "Poner en progreso: ACTIVE → INPROGRESS")
+    @Operation(summary = "Start progress: ACTIVE → INPROGRESS")
     @PatchMapping("/{id}/progress")
     public ResponseEntity<TournamentResponseDTO> setInProgress(
             @PathVariable String id,
@@ -63,7 +63,7 @@ public class TournamentController {
         return ResponseEntity.ok(tournamentService.setInProgress(organizerId, id));
     }
 
-    @Operation(summary = "Finalizar torneo: INPROGRESS → FINALIZED")
+    @Operation(summary = "Tournament ends: INPROGRESS → FINALIZED")
     @PatchMapping("/{id}/finish")
     public ResponseEntity<TournamentResponseDTO> finishTournament(
             @PathVariable String id,
@@ -71,7 +71,7 @@ public class TournamentController {
         return ResponseEntity.ok(tournamentService.finishTournament(organizerId, id));
     }
 
-    @Operation(summary = "Configurar reglamento y fechas del torneo ")
+    @Operation(summary = "Configure tournament rules and dates")
     @PatchMapping("/{id}/config")
     public ResponseEntity<TournamentResponseDTO> configTournament(
             @PathVariable String id,

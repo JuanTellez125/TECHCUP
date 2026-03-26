@@ -29,39 +29,39 @@ public class UserController {
     private final RefereeService refereeService;
     private final AdministratorService administratorService;
 
-    @Operation(summary = "Registrar nuevo jugador")
+    @Operation(summary = "Register new player")
     @PostMapping("/players")
     public ResponseEntity<UserResponseDTO> createPlayer(@Valid @RequestBody UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(playerService.createUser(dto));
     }
 
-    @Operation(summary = "Obtener jugador por ID")
+    @Operation(summary = "Get player by ID")
     @GetMapping("/players/{id}")
     public ResponseEntity<UserResponseDTO> getPlayer(@PathVariable String id) {
         return ResponseEntity.ok(playerService.getPlayerById(id));
     }
 
-    @Operation(summary = "Listar todos los jugadores")
+    @Operation(summary = "List all players")
     @GetMapping("/players")
     public ResponseEntity<List<UserResponseDTO>> getAllPlayers() {
         return ResponseEntity.ok(playerService.getAllPlayers());
     }
 
-    @Operation(summary = "Actualizar jugador")
+    @Operation(summary = "Update player")
     @PutMapping("/players/{id}")
     public ResponseEntity<UserResponseDTO> updatePlayer(@PathVariable String id,
                                                         @Valid @RequestBody UserRequestDTO dto) {
         return ResponseEntity.ok(playerService.updateUser(id, dto));
     }
 
-    @Operation(summary = "Eliminar jugador")
+    @Operation(summary = "Delete player")
     @DeleteMapping("/players/{id}")
     public ResponseEntity<Void> deletePlayer(@PathVariable String id) {
         playerService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Actualizar disponibilidad del jugador (sección 6.2)")
+    @Operation(summary = "Update player availability")
     @PatchMapping("/players/{id}/availability")
     public ResponseEntity<UserResponseDTO> setAvailability(@PathVariable String id,
                                                            @RequestParam PlayerAvailable availability) {
@@ -74,69 +74,69 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(captainService.createUser(dto));
     }
 
-    @Operation(summary = "Obtener capitán por ID")
+    @Operation(summary = "Register new captain")
     @GetMapping("/captains/{id}")
     public ResponseEntity<UserResponseDTO> getCaptain(@PathVariable String id) {
         return ResponseEntity.ok(captainService.getCaptainById(id));
     }
 
-    @Operation(summary = "Actualizar capitán")
+    @Operation(summary = "Update captain")
     @PutMapping("/captains/{id}")
     public ResponseEntity<UserResponseDTO> updateCaptain(@PathVariable String id,
                                                          @Valid @RequestBody UserRequestDTO dto) {
         return ResponseEntity.ok(captainService.updateUser(id, dto));
     }
 
-    @Operation(summary = "Registrar nuevo organizador")
+    @Operation(summary = "Register a new organizer")
     @PostMapping("/organizers")
     public ResponseEntity<UserResponseDTO> createOrganizer(@Valid @RequestBody UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(organizerService.createUser(dto));
     }
 
-    @Operation(summary = "Listar organizadores")
+    @Operation(summary = "List organizers")
     @GetMapping("/organizers")
     public ResponseEntity<List<UserResponseDTO>> getAllOrganizers() {
         return ResponseEntity.ok(organizerService.getAllOrganizers());
     }
 
-    @Operation(summary = "Registrar nuevo árbitro")
+    @Operation(summary = "Register a new referee")
     @PostMapping("/referees")
     public ResponseEntity<UserResponseDTO> createReferee(@Valid @RequestBody UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(refereeService.createUser(dto));
     }
 
-    @Operation(summary = "Listar árbitros")
+    @Operation(summary = "List referees")
     @GetMapping("/referees")
     public ResponseEntity<List<UserResponseDTO>> getAllReferees() {
         return ResponseEntity.ok(refereeService.getAllReferees());
     }
 
-    @Operation(summary = "Obtener árbitro por ID")
+    @Operation(summary = "Get referee by ID")
     @GetMapping("/referees/{id}")
     public ResponseEntity<UserResponseDTO> getReferee(@PathVariable String id) {
         return ResponseEntity.ok(refereeService.getRefereeById(id));
     }
 
-    @Operation(summary = "Registrar nuevo administrador")
+    @Operation(summary = "Register new administrator")
     @PostMapping("/admins")
     public ResponseEntity<UserResponseDTO> createAdmin(@Valid @RequestBody UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(administratorService.createUser(dto));
     }
 
-    @Operation(summary = "Listar todos los usuarios (solo admin)")
+    @Operation(summary = "List all users")
     @GetMapping("/admins/all")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(administratorService.getAllUsers());
     }
 
-    @Operation(summary = "Eliminar usuario (solo admin)")
+    @Operation(summary = "Delete User")
     @DeleteMapping("/admins/{id}")
     public ResponseEntity<Void> deleteByAdmin(@PathVariable String id) {
         administratorService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Asignar rol a un usuario (RF21, solo admin)")
+    @Operation(summary = "Assign a role to a user")
     @PatchMapping("/admins/{adminId}/assign-role")
     public ResponseEntity<UserResponseDTO> assignRole(@PathVariable String adminId, @RequestParam String targetUserId,
             @RequestParam Role newRole) {

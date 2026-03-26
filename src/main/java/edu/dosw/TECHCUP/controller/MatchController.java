@@ -20,14 +20,14 @@ public class MatchController {
 
     private final MatchService matchService;
 
-    @Operation(summary = "Programar un partido")
+    @Operation(summary = "Schedule a match")
     @PostMapping
     public ResponseEntity<MatchResponseDTO> scheduleMatch(@Valid @RequestBody MatchRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(matchService.scheduleMatch(dto));
     }
 
-    @Operation(summary = "Registrar resultado de un partido (RF15)")
+    @Operation(summary = "Record the result of a match")
     @PatchMapping("/{matchId}/result")
     public ResponseEntity<MatchResponseDTO> registerResult(@PathVariable String matchId,
             @Valid @RequestBody MatchResultRequestDTO dto) {
@@ -41,25 +41,25 @@ public class MatchController {
         ));
     }
 
-    @Operation(summary = "Consultar partidos asignados a un arbitro")
+    @Operation(summary = "Check matches assigned to a referee")
     @GetMapping("/referee/{refereeId}")
     public ResponseEntity<List<MatchResponseDTO>> getMatchesByReferee(@PathVariable String refereeId) {
         return ResponseEntity.ok(matchService.getMatchesByReferee(refereeId));
     }
 
-    @Operation(summary = "Consultar partidos de un torneo")
+    @Operation(summary = "Check matches in a tournament")
     @GetMapping("/tournament/{tournamentId}")
     public ResponseEntity<List<MatchResponseDTO>> getMatchesByTournament(@PathVariable String tournamentId) {
         return ResponseEntity.ok(matchService.getMatchesByTournament(tournamentId));
     }
 
-    @Operation(summary = "Historial de partidos jugados")
+    @Operation(summary = "History of matches played")
     @GetMapping("/tournament/{tournamentId}/history")
     public ResponseEntity<List<MatchResponseDTO>> getMatchHistory(@PathVariable String tournamentId) {
         return ResponseEntity.ok(matchService.getMatchHistory(tournamentId));
     }
 
-    @Operation(summary = "Generar llaves eliminatorias")
+    @Operation(summary = "Generate knockout brackets")
     @PostMapping("/tournament/{tournamentId}/bracket")
     public ResponseEntity<List<MatchResponseDTO>> generateBracket(@PathVariable String tournamentId,
             @RequestParam String organizerId) {

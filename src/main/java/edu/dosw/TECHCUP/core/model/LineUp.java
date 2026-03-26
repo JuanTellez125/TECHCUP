@@ -17,19 +17,22 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name="lineUps")
 @Entity
-public class LineUp{
+public class LineUp {
 
     @Id
     private String id;
 
-    private List<String> titular;
+    private List<String> titulars;
 
     private List<String> substitutes;
 
     private List<String> suspended;
 
+    private String formation;
+
     private Team team;
 
 
+    private Match match;
 
 }

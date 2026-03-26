@@ -19,4 +19,5 @@ public class MatchResultRequestDTO {
     private List<String> yellowCardPlayerIds;
 
     private List<String> redCardPlayerIds;
+
 }
