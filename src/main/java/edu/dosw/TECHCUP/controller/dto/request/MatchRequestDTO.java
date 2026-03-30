@@ -1,6 +1,7 @@
 package edu.dosw.TECHCUP.controller.dto.request;
 
 import edu.dosw.TECHCUP.core.model.enums.MatchPhase;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,17 +12,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class MatchRequestDTO {
 
-    private String refereeId;
+    @NotNull(message = "El ID del torneo no puede estar vacío")
+    private Long tournamentId;
 
-    private String localTeamId;
+    @NotNull(message = "El equipo 1 no puede estar vacío")
+    private Long team1Id;
 
-    private String awayTeamId;
+    @NotNull(message = "El equipo 2 no puede estar vacío")
+    private Long team2Id;
 
-    private int numberField;
+    @NotNull(message = "La cancha no puede estar vacía")
+    private Long venueId;
 
-    private MatchPhase matchPhase;
+    private Long refereeId;
 
-    private LocalDateTime matchDateTime;
+    @NotNull(message = "La fase del partido no puede estar vacía")
+    private MatchPhase phase;
 
-    private String tournamentId;
+    @NotNull(message = "La fecha del partido no puede estar vacía")
+    private LocalDateTime scheduledAt;
 }

@@ -11,21 +11,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PaymentResponseDTO {
 
-    private String id;
+    private Long id;
 
-    private String captainId;
+    private Long registrationId;
 
-    private String teamId;
+    private String fileUrl;
 
-    private String teamName;
+    private String paymentMethod;
 
-    private String tournamentId;
+    private PaymentStatus status;
 
-    private PaymentStatus paymentStatus;
+    private String rejectionReason;
 
     private LocalDateTime submittedAt;
 
     private LocalDateTime reviewedAt;
-
-    private String rejectionNotes;
 }

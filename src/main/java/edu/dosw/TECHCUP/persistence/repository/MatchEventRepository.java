@@ -1,0 +1,18 @@
+package edu.dosw.TECHCUP.persistence.repository;
+
+import edu.dosw.TECHCUP.core.model.MatchEvent;
+import edu.dosw.TECHCUP.core.model.enums.Event;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface MatchEventRepository extends JpaRepository<MatchEvent, Long> {
+
+    List<MatchEvent> findAllByMatch_Match_id(Long matchId);
+
+    List<MatchEvent> findAllByMatch_Match_idAndEventType(Long matchId, Event eventType);
+
+    List<MatchEvent> findAllByEventTypeAndMatch_Tournament_Tournament_id(Event eventType, Long tournamentId);
+}

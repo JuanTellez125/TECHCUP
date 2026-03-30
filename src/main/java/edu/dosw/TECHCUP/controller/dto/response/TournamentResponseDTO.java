@@ -1,7 +1,6 @@
 package edu.dosw.TECHCUP.controller.dto.response;
 
 import edu.dosw.TECHCUP.core.model.enums.TournamentStatus;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -12,7 +11,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class TournamentResponseDTO {
 
-    private String id;
+    private Long id;
+
+    private Long organizerId;
+
+    private String organizerName;
 
     private LocalDate startDate;
 
@@ -23,12 +26,4 @@ public class TournamentResponseDTO {
     private double registrationCost;
 
     private TournamentStatus status;
-
-    private String rules;
-
-    private LocalDate registrationCloseDate;
-
-    private String fields;
-
-    private String sanctions;
 }

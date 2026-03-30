@@ -1,12 +1,7 @@
 package edu.dosw.TECHCUP.controller.dto.response;
 
-
-import edu.dosw.TECHCUP.core.model.enums.PlayerAvailable;
 import edu.dosw.TECHCUP.core.model.enums.Role;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import javax.swing.text.Position;
 
 @Data
 @Builder
@@ -14,30 +9,17 @@ import javax.swing.text.Position;
 @AllArgsConstructor
 public class UserResponseDTO {
 
-    private String id;
+    private Long id;
 
-    private String name;
+    private String firstName;
+
+    private String lastName;
 
     private String email;
 
-    private String password;
+    private String documentId;
 
-    private Byte[] userPhoto;
+    private Role userType;
 
-    private Role role;
-
-    private int dorsal;
-
-    private Position mainPosition;
-
-    private Position secundaryPosition;
-
-    private PlayerAvailable playerAvailable;
-
-    private String gender;
-
-    private String identification;
-
-    private int semester;
-
+    private boolean active;
 }

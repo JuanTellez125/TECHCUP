@@ -1,15 +1,10 @@
 package edu.dosw.TECHCUP.controller.dto.request;
 
-
-import edu.dosw.TECHCUP.core.model.enums.PlayerAvailable;
 import edu.dosw.TECHCUP.core.model.enums.Role;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.swing.text.Position;
+import lombok.*;
 
 @Data
 @Builder
@@ -17,28 +12,22 @@ import javax.swing.text.Position;
 @NoArgsConstructor
 public class UserRequestDTO {
 
-    @NotNull(message = "The name cannot be blank")
-    private String name;
+    @NotBlank(message = "El nombre no puede estar vacío")
+    private String firstName;
 
-    @NotNull(message = "The email cannot be blank")
+    @NotBlank(message = "El apellido no puede estar vacío")
+    private String lastName;
+
+    @NotBlank(message = "El correo no puede estar vacío")
+    @Email(message = "El correo no tiene un formato válido")
     private String email;
 
-    @NotNull(message = "The password cannot be blank")
+    @NotBlank(message = "La contraseña no puede estar vacía")
     private String password;
 
-    @NotNull(message = "The user photo cannot be blank")
-    private Byte[] userPhoto;
+    @NotBlank(message = "El documento no puede estar vacío")
+    private String documentId;
 
-    @NotNull(message = "The role cannot be blank")
-    private Role role;
-
-    @NotNull(message = "The dorsal cannot be blank")
-    private int dorsal;
-
-    @NotNull(message = "The mainPosition cannot be blank")
-    private Position mainPosition;
-
-    private Position secundaryPosition;
-
-    private PlayerAvailable playerAvailable;
+    @NotNull(message = "El tipo de usuario no puede estar vacío")
+    private Role userType;
 }

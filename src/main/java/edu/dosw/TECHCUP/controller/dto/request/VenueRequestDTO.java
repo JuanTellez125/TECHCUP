@@ -7,14 +7,12 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeamRequestDTO {
+public class VenueRequestDTO {
 
-    @NotBlank(message = "El nombre del equipo no puede estar vacío")
+    @NotBlank(message = "El nombre de la cancha no puede estar vacío")
     private String name;
 
-    private String shieldUrl;
+    private String location;
 
-    private String mainColor;
-
-    private String secondaryColor;
+    private String description;
 }

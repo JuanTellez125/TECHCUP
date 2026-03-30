@@ -1,11 +1,9 @@
 package edu.dosw.TECHCUP.controller.dto.response;
 
-import edu.dosw.TECHCUP.core.model.Team;
 import edu.dosw.TECHCUP.core.model.enums.MatchPhase;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder
@@ -13,29 +11,29 @@ import java.util.List;
 @AllArgsConstructor
 public class MatchResponseDTO {
 
-    private String id;
+    private Long id;
 
-    private String refereeId;
+    private Long tournamentId;
 
-    private Team localTeam;
+    private Long team1Id;
 
-    private Team awayTeam;
+    private String team1Name;
 
-    private int numberField;
+    private Long team2Id;
 
-    private MatchPhase matchPhase;
+    private String team2Name;
 
-    private LocalDateTime matchDateTime;
+    private Long venueId;
 
-    private boolean isPlayed;
+    private String venueName;
 
-    private int localScore;
+    private Long refereeId;
 
-    private int awayScore;
+    private String refereeName;
 
-    private List<String> scorerIds;
+    private MatchPhase phase;
 
-    private List<String> yellowCardPlayerIds;
+    private LocalDateTime scheduledAt;
 
-    private List<String> redCardPlayerIds;
+    private MatchPhase status;
 }

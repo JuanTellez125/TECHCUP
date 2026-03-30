@@ -1,8 +1,8 @@
 package edu.dosw.TECHCUP.controller.dto.request;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -10,14 +10,12 @@ import java.util.List;
 @NoArgsConstructor
 public class MatchResultRequestDTO {
 
-    private int localScore;
+    @NotNull(message = "El ID del partido no puede estar vacío")
+    private Long matchId;
 
-    private int awayScore;
+    @PositiveOrZero(message = "Los goles no pueden ser negativos")
+    private int team1Goals;
 
-    private List<String> scorerIds;
-
-    private List<String> yellowCardPlayerIds;
-
-    private List<String> redCardPlayerIds;
-
+    @PositiveOrZero(message = "Los goles no pueden ser negativos")
+    private int team2Goals;
 }
