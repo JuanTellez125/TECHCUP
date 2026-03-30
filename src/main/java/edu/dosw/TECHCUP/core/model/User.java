@@ -1,15 +1,10 @@
 package edu.dosw.TECHCUP.core.model;
 
-import edu.dosw.TECHCUP.core.model.enums.PlayerAvailable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import edu.dosw.TECHCUP.core.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import edu.dosw.TECHCUP.core.model.enums.Role;
-import edu.dosw.TECHCUP.core.model.enums.Position;
 
 @Data
 @Builder
@@ -24,6 +19,4 @@ public class User {
     private String lastName;
     private Role userType;
     private boolean active;
-
-
 }

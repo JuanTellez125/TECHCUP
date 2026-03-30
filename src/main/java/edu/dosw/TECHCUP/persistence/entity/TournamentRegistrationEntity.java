@@ -22,7 +22,7 @@ public class TournamentRegistrationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long TournamentRegistration_id;
+    private Long tournamentRegistration_id;
 
     @ManyToOne
     @JoinColumn(name = "tournament_id")

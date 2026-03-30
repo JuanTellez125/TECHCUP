@@ -18,7 +18,7 @@ public class StandingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Standing_id;
+    private Long standing_id;
 
     @ManyToOne
     @JoinColumn(name = "tournament_id")
