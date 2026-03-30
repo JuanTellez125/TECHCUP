@@ -5,7 +5,7 @@ import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.service.impl.AdministratorService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,36 +16,50 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/administrators")
 @RequiredArgsConstructor
+@Tag(name = "Administrator", description = "Gestión de administradores")
 public class AdministratorController {
 
     private final AdministratorService administratorService;
 
-    @Operation(summary = "Register new administrator")
-    @PostMapping("/admins")
-    public ResponseEntity<UserResponseDTO> createAdmin(@Valid @RequestBody UserRequestDTO dto) {
+    @PostMapping
+    @Operation(summary = "Crear administrador")
+    public ResponseEntity<UserResponseDTO> createAdministrator(@RequestBody UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(administratorService.createUser(dto));
     }
 
-    @Operation(summary = "List all users")
-    @GetMapping("/admins/all")
+    @GetMapping
+    @Operation(summary = "Obtener todos los usuarios")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(administratorService.getAllUsers());
     }
 
-    @Operation(summary = "Delete User")
-    @DeleteMapping("/admins/{id}")
-    public ResponseEntity<Void> deleteByAdmin(@PathVariable String id) {
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtener administrador por ID")
+    public ResponseEntity<UserResponseDTO> getAdminById(@PathVariable Long id) {
+        return ResponseEntity.ok(administratorService.getAdminById(id));
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar administrador")
+    public ResponseEntity<UserResponseDTO> updateAdministrator(
+            @PathVariable Long id,
+            @RequestBody UserRequestDTO dto) {
+        return ResponseEntity.ok(administratorService.updateUser(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar administrador")
+    public ResponseEntity<Void> deleteAdministrator(@PathVariable Long id) {
         administratorService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Assign a role to a user")
-    @PatchMapping("/admins/{adminId}/assign-role")
-    public ResponseEntity<UserResponseDTO> assignRole(@PathVariable String adminId, @RequestParam String targetUserId,
-                                                      @RequestParam Role newRole) {
+    @PatchMapping("/{adminId}/assign-role")
+    @Operation(summary = "Asignar rol a un usuario")
+    public ResponseEntity<UserResponseDTO> assignRole(
+            @PathVariable Long adminId,
+            @RequestParam Long targetUserId,
+            @RequestParam Role newRole) {
         return ResponseEntity.ok(administratorService.assignRole(adminId, targetUserId, newRole));
     }
-
-
-
 }

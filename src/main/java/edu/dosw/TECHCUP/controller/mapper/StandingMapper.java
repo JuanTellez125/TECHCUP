@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface StandingMapper {
 
-    @Mapping(source = "Standing_id",                  target = "id")
+    @Mapping(source = "standing_id",                  target = "id")
     @Mapping(source = "tournament.tournament_id",     target = "tournamentId")
     @Mapping(source = "team.id",                      target = "teamId")
     @Mapping(source = "team.name",                    target = "teamName")

@@ -3,6 +3,7 @@ package edu.dosw.TECHCUP.core.service;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.LineUpResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.LineUpMapper;
+import edu.dosw.TECHCUP.core.exception.TeamNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.LineUp;
@@ -10,10 +11,7 @@ import edu.dosw.TECHCUP.core.model.Match;
 import edu.dosw.TECHCUP.core.model.Team;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
-import edu.dosw.TECHCUP.persistence.repository.LineUpRepository;
-import edu.dosw.TECHCUP.persistence.repository.MatchRepository;
-import edu.dosw.TECHCUP.persistence.repository.TeamRepository;
-import edu.dosw.TECHCUP.persistence.repository.UserRepository;
+import edu.dosw.TECHCUP.persistence.repository.*;
 import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,56 +27,59 @@ public class LineUpService {
     private final LineUpMapper lineUpMapper;
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
+    private final TeamMemberRepository teamMemberRepository;
     private final UserRepository userRepository;
 
     @Transactional
-    public LineUpResponseDTO saveLineUp(String captainId, LineUpRequestDTO dto) {
+    public LineUpResponseDTO saveLineUp(Long captainId, LineUpRequestDTO dto) {
         User captain = userRepository.findById(captainId)
                 .orElseThrow(() -> new UserNotFoundException(captainId));
 
-        if (!captain.getRole().equals(Role.CAPTAIN)) {
-            throw new UserValidationException(
-                    "Solo el capitán puede definir la alineación.");
-        }
-
-        Team team = teamRepository.findById(dto.getTeamId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
-
-        if (!team.getCaptainId().equals(captainId)) {
-            throw new UserValidationException(
-                    "Solo el capitán de este equipo puede definir su alineación.");
-        }
+        if (captain.getUserType() != Role.CAPTAIN)
+            throw new UserValidationException("Solo el capitán puede definir la alineación.");
 
         Match match = matchRepository.findById(dto.getMatchId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
 
-        if (dto.getTitulars() == null || dto.getTitulars().size() != 7) {
-            throw new UserValidationException(
-                    "La alineación debe tener exactamente 7 titulares.");
-        }
+        Team team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+                .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
 
-        LineUp lineUp = lineUpRepository
-                .findByTeamIdAndMatchId(dto.getTeamId(), dto.getMatchId())
-                .orElse(LineUp.builder()
-                        .id(IdGeneratorUtil.generateId())
-                        .team(team)
-                        .match(match)
-                        .build());
+        if (!team.getCaptain().getUser_id().equals(captainId))
+            throw new UserValidationException("Solo el capitán de este equipo puede definir su alineación.");
 
-        lineUp.setTitulars(dto.getTitulars());
-        lineUp.setSubstitutes(dto.getSubstitutes());
-        lineUp.setSuspended(dto.getSuspended());
-        lineUp.setFormation(dto.getFormation());
+
+        User player = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
+
+        if (!teamMemberRepository.existsByTeam_IdAndUser_User_id(team.getId(), player.getUser_id()))
+            throw new UserValidationException("El jugador no pertenece a este equipo.");
+
+        boolean alreadyRegistered = lineUpRepository
+                .findAllByMatch_Match_idAndTeam_Id(dto.getMatchId(), dto.getTeamId())
+                .stream()
+                .anyMatch(l -> l.getUser().getUser_id().equals(player.getUser_id()));
+
+        if (alreadyRegistered)
+            throw new UserValidationException("El jugador ya está registrado en la alineación de este partido.");
+
+        LineUp lineUp = LineUp.builder()
+                .match(match)
+                .team(team)
+                .user(player)
+                .role(dto.getRole())
+                .position(dto.getPosition())
+                .jerseyNumber(dto.getJerseyNumber())
+                .build();
 
         LineUp saved = lineUpRepository.save(lineUp);
-        log.info("Alineación guardada para equipo {} en partido {}", dto.getTeamId(), dto.getMatchId());
+        log.info("Jugador {} agregado a alineación del equipo {} en partido {} como {}",
+                player.getUser_id(), team.getId(), match.getMatch_id(), dto.getRole());
         return lineUpMapper.toDto(saved);
     }
 
-    public LineUpResponseDTO getLineUp(String teamId, String matchId) {
+    public LineUpResponseDTO getLineUp(Long teamId, Long matchId) {
         LineUp lineUp = lineUpRepository.findByTeamIdAndMatchId(teamId, matchId)
-                .orElseThrow(() -> new UserNotFoundException(
-                        "Alineación no encontrada para equipo " + teamId + " en partido " + matchId));
+                .orElseThrow(() -> new TeamNotFoundException(teamId, matchId));
         return lineUpMapper.toDto(lineUp);
     }
 }

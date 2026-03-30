@@ -10,6 +10,6 @@ public interface VenueMapper {
 
     @Mapping(source = "vanue_id",               target = "id")
     @Mapping(source = "tournament.tournament_id", target = "tournamentId")
-    @Mapping(source = "Location",               target = "location")
+    //@Mapping(source = "location",               target = "location")
     VenueResponseDTO toDto(Venue venue);
 }

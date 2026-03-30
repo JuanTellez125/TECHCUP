@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface MatchResultMapper {
 
-    @Mapping(source = "MatchResult_id",   target = "id")
+    @Mapping(source = "matchResult_id",   target = "id")
     @Mapping(source = "match.match_id",   target = "matchId")
     MatchResultResponseDTO toDto(MatchResult matchResult);
 }

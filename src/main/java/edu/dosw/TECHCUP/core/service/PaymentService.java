@@ -43,12 +43,12 @@ public class PaymentService {
     public TournamentRegistrationResponseDTO registerTeam(Long captainId,
                                                           TournamentRegistrationRequestDTO dto) {
         User captain = userRepository.findById(captainId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(captainId)));
+                .orElseThrow(() -> new UserNotFoundException(captainId));
         if (captain.getUserType() != Role.CAPTAIN)
             throw new UserValidationException("Solo el capitán puede inscribir el equipo.");
 
-        Team team = teamRepository.findById(dto.getTeamId())
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(dto.getTeamId())));
+        Team team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+                .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
             throw new UserValidationException("No eres el capitán de este equipo.");
@@ -74,12 +74,12 @@ public class PaymentService {
     @Transactional
     public PaymentResponseDTO submitPayment(Long captainId, PaymentRequestDTO dto) {
         User captain = userRepository.findById(captainId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(captainId)));
+                .orElseThrow(() -> new UserNotFoundException(captainId));
         if (captain.getUserType() != Role.CAPTAIN)
             throw new UserValidationException("Solo el capitán puede subir el comprobante.");
 
         TournamentRegistration registration = registrationRepository.findById(dto.getRegistrationId())
-                .orElseThrow(() -> new UserNotFoundException("Inscripción no encontrada: " + dto.getRegistrationId()));
+                .orElseThrow(() -> new UserNotFoundException(dto.getRegistrationId()));
 
         if (!registration.getTeam().getCaptain().getUser_id().equals(captainId))
             throw new UserValidationException("No eres el capitán de este equipo.");
@@ -108,7 +108,7 @@ public class PaymentService {
         validateOrganizer(organizerId);
 
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new UserNotFoundException("Pago no encontrado: " + paymentId));
+                .orElseThrow(() -> new UserNotFoundException(paymentId));
 
         payment.setStatus(PaymentStatus.APPROVED);
         payment.setReviewedBy(userRepository.findById(organizerId).orElse(null));
@@ -124,7 +124,7 @@ public class PaymentService {
         validateOrganizer(organizerId);
 
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new UserNotFoundException("Pago no encontrado: " + paymentId));
+                .orElseThrow(() -> new UserNotFoundException(paymentId));
 
         payment.setStatus(PaymentStatus.REJECTED);
         payment.setRejectionReason(reason);
@@ -149,7 +149,7 @@ public class PaymentService {
 
     private void validateOrganizer(Long organizerId) {
         User organizer = userRepository.findById(organizerId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(organizerId)));
+                .orElseThrow(() -> new UserNotFoundException(organizerId));
         if (organizer.getUserType() != Role.ORGANIZER)
             throw new TournamentValidationException("El usuario no tiene permisos de organizador.");
     }

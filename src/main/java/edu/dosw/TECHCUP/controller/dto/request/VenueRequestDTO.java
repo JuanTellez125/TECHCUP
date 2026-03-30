@@ -12,7 +12,7 @@ public class VenueRequestDTO {
     @NotBlank(message = "El nombre de la cancha no puede estar vacío")
     private String name;
 
-    private String Location;
+    private String venueLocation;
 
     private String description;
 }

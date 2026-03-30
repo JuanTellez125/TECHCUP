@@ -7,9 +7,8 @@ import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
-import edu.dosw.TECHCUP.core.repository.UserRepository;
+import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;
-import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +54,7 @@ public class RefereeService implements UserService {
     @Override
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id)));
+                .orElseThrow(() -> new UserNotFoundException(id));
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
@@ -67,13 +66,13 @@ public class RefereeService implements UserService {
     @Override
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id))
-            throw new UserNotFoundException(String.valueOf(id));
+            throw new UserNotFoundException(id);
         userRepository.deleteById(id);
     }
 
     public UserResponseDTO getRefereeById(Long id) {
         return userMapper.toDto(userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id))));
+                .orElseThrow(() -> new UserNotFoundException(id)));
     }
 
     public List<UserResponseDTO> getAllReferees() {
