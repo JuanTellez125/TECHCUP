@@ -45,7 +45,7 @@ public class LineUpService {
         MatchEntity match = matchRepository.findById(dto.getMatchId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
 
-        TeamEntity team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+        TeamEntity team = teamRepository.findById(dto.getTeamId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
@@ -82,7 +82,7 @@ public class LineUpService {
     }
 
     public LineUpResponseDTO getLineUp(Long teamId, Long matchId) {
-        LineUpEntity lineUp = lineUpRepository.findByTeamIdAndMatchId(teamId, matchId)
+        LineUpEntity lineUp = lineUpRepository.findByMatchAndTeam(teamId, matchId)
                 .orElseThrow(() -> new TeamNotFoundException(teamId, matchId));
         return lineUpMapper.toDto(lineUp);
     }

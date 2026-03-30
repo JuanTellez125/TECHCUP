@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.persistence.repository;
 
-import edu.dosw.TECHCUP.core.model.Venue;
 import edu.dosw.TECHCUP.persistence.entity.VenueEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

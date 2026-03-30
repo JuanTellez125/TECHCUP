@@ -80,7 +80,7 @@ public class TeamService {
     }
 
     public TeamResponseDTO getTeamById(Long teamId) {
-        TeamEntity team = teamRepository.findById(String.valueOf(teamId))
+        TeamEntity team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new UserNotFoundException(teamId));
         return teamMapper.toDto(team);
     }
@@ -91,7 +91,7 @@ public class TeamService {
                 .orElseThrow(() -> new UserNotFoundException(captainId));
         teamValidator.validateCaptainRole(captain);
 
-        TeamEntity team = teamRepository.findById(String.valueOf(teamId))
+        TeamEntity team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new UserNotFoundException(teamId));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
@@ -176,7 +176,7 @@ public class TeamService {
                 .stream().map(invitationMapper::toDto).collect(Collectors.toList());
     }
 
-    public List<TeamResponseDTO> getTeamsByTournament(String tournamentId) {
+    public List<TeamResponseDTO> getTeamsByTournament(Long tournamentId) {
         return teamRepository.findAllByTournamentId(tournamentId)
                 .stream()
                 .map(teamMapper::toDto)

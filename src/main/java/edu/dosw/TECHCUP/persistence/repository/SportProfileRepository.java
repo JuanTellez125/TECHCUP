@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.persistence.repository;
 
-import edu.dosw.TECHCUP.core.model.SportProfile;
 import edu.dosw.TECHCUP.core.model.enums.Position;
 import edu.dosw.TECHCUP.persistence.entity.SportProfileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

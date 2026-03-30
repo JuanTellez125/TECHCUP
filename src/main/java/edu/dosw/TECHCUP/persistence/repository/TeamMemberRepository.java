@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.persistence.repository;
 
-import edu.dosw.TECHCUP.core.model.TeamMember;
 import edu.dosw.TECHCUP.persistence.entity.TeamMemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -3,7 +3,9 @@ package edu.dosw.TECHCUP.core.validator;
 
 import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserValidator {
 
     public void validate(UserRequestDTO request) {

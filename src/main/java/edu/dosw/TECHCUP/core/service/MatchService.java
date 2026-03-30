@@ -1,5 +1,6 @@
 package edu.dosw.TECHCUP.core.service;
 
+//import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchEventRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchRequestDTO;
@@ -51,9 +52,9 @@ public class MatchService {
     public MatchResponseDTO scheduleMatch(MatchRequestDTO dto) {
         TournamentEntity tournament = tournamentRepository.findById(dto.getTournamentId())
                 .orElseThrow(() -> new TournamentNotFoundException(dto.getTournamentId()));
-        TeamEntity team1 = teamRepository.findById(String.valueOf(dto.getTeam1Id()))
+        TeamEntity team1 = teamRepository.findById(dto.getTeam1Id())
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeam1Id()));
-        TeamEntity team2 = teamRepository.findById(String.valueOf(dto.getTeam2Id()))
+        TeamEntity team2 = teamRepository.findById(dto.getTeam2Id())
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeam2Id()));
         VenueEntity venue = venueRepository.findById(dto.getVenueId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getVenueId()));
@@ -115,7 +116,7 @@ public class MatchService {
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
         UserEntity user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
-        TeamEntity team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+        TeamEntity team = teamRepository.findById(dto.getTeamId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
 
         MatchEventEntity event = MatchEventEntity.builder()
@@ -138,7 +139,7 @@ public class MatchService {
 
         MatchEntity match = matchRepository.findById(dto.getMatchId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
-        TeamEntity team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+        TeamEntity team = teamRepository.findById(dto.getTeamId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
         UserEntity player = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));

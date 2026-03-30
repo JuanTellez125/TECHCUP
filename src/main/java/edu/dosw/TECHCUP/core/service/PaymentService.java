@@ -48,7 +48,7 @@ public class PaymentService {
         if (captain.getUserType() != Role.CAPTAIN)
             throw new UserValidationException("Solo el capitán puede inscribir el equipo.");
 
-        TeamEntity team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+        TeamEntity team = teamRepository.findById(dto.getTeamId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
