@@ -23,15 +23,15 @@ public class PaymentEntity {
 
     @ManyToOne
     @JoinColumn(name = "registration_id")
-    private TournamentRegistration registration;
+    private TournamentRegistrationEntity registration;
 
     @ManyToOne
     @JoinColumn(name = "uploaded_by")
-    private User uploadedBy;
+    private UserEntity uploadedBy;
 
     @ManyToOne
     @JoinColumn(name = "reviewed_by")
-    private User reviewedBy;
+    private UserEntity reviewedBy;
 
     private String fileUrl;
     private String paymentMethod;

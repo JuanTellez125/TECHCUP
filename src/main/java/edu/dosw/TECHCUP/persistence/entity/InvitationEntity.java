@@ -22,15 +22,15 @@ public class InvitationEntity {
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    private Team team;
+    private TeamEntity team;
 
     @ManyToOne
     @JoinColumn(name = "invited_user_id")
-    private User invitedUser;
+    private UserEntity invitedUser;
 
     @ManyToOne
     @JoinColumn(name = "invited_by")
-    private User invitedBy;
+    private UserEntity invitedBy;
 
     @Enumerated(EnumType.STRING)
     private InvitationStatus status;

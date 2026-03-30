@@ -24,7 +24,7 @@ public class TeamEntity {
 
     @ManyToOne
     @JoinColumn(name = "captain_id")
-    private User captain;
+    private UserEntity captain;
 
     @Column(unique = true)
     private String name;
@@ -35,5 +35,5 @@ public class TeamEntity {
     private boolean active;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<TeamMember> members;
+    private List<TeamMemberEntity> members;
 }

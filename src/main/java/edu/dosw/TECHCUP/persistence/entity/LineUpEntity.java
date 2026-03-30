@@ -24,15 +24,15 @@ public class LineUpEntity {
 
     @ManyToOne
     @JoinColumn(name = "match_id")
-    private Match match;
+    private MatchEntity match;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    private Team team;
+    private TeamEntity team;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @Enumerated(EnumType.STRING)
     private LineUpRole role;

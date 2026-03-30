@@ -26,11 +26,11 @@ public class TournamentRegistrationEntity {
 
     @ManyToOne
     @JoinColumn(name = "tournament_id")
-    private Tournament tournament;
+    private TournamentEntity tournament;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    private Team team;
+    private TeamEntity team;
 
     @Enumerated(EnumType.STRING)
     private RegisterTournamentStatus status;

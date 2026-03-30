@@ -24,7 +24,7 @@ public class SportProfileEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @Enumerated(EnumType.STRING)
     private Position primaryPosition;

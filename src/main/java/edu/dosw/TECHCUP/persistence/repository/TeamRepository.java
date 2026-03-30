@@ -2,6 +2,7 @@ package edu.dosw.TECHCUP.persistence.repository;
 
 import edu.dosw.TECHCUP.core.model.Team;
 import edu.dosw.TECHCUP.core.model.enums.TeamStatus;
+import edu.dosw.TECHCUP.persistence.entity.TeamEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,17 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TeamRepository extends JpaRepository<Team, String> {
+public interface TeamRepository extends JpaRepository<TeamEntity, String> {
 
-    Optional<Team> findByCaptainId(String captainId);
+    Optional<TeamEntity> findByCaptainId(String captainId);
 
-    List<Team> findAllByTournamentId(String tournamentId);
+    List<TeamEntity> findAllByTournamentId(String tournamentId);
 
-    List<Team> findAllByTeamStatus(TeamStatus status);
+    List<TeamEntity> findAllByTeamStatus(TeamStatus status);
 
     boolean existsByTeamName(String teamName);
 
-    List<Team> findAllByTournamentIdAndTeamStatus(String tournamentId, TeamStatus status);
+    List<TeamEntity> findAllByTournamentIdAndTeamStatus(String tournamentId, TeamStatus status);
 
     boolean existsByName(String name);
 }
