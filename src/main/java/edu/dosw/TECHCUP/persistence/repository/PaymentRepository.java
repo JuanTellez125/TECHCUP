@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.persistence.repository;
 
-import edu.dosw.TECHCUP.core.model.Payment;
 import edu.dosw.TECHCUP.core.model.enums.PaymentStatus;
 import edu.dosw.TECHCUP.persistence.entity.PaymentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

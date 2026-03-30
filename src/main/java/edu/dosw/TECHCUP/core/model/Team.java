@@ -2,7 +2,7 @@ package edu.dosw.TECHCUP.core.model;
 
 
 import edu.dosw.TECHCUP.core.model.enums.TeamStatus;
-import edu.dosw.TECHCUP.core.model.LineUp;
+//import edu.dosw.TECHCUP.core.model.LineUp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;

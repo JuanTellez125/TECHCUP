@@ -109,10 +109,23 @@ public class PlayerService implements UserService {
 
     @Transactional
     public List<UserResponseDTO> getAllPlayers() {
-        return userRepository.findAllByRole(Role.PLAYER)
+        return userRepository.findAllByUserType(Role.PLAYER)
                 .stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public SportProfileResponseDTO saveSportProfile(Long userId, SportProfileRequestDTO dto) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        SportProfileEntity profile = sportProfileRepository.findByUser_User_id(userId)
+                .orElse(SportProfileEntity.builder().user(user).build());
+
+        profile.setPrimaryPosition(dto.getPrimaryPosition());
+        profile.setAvailable(dto.isAvailable());
+
+        return sportProfileMapper.toDto(sportProfileRepository.save(profile));
+    }
 }

@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.persistence.repository;
 
-import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,21 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity,Long> {
-
-    Optional<UserEntity> findById(Long id);
-
-    User findByRole(Role role);
-
-    Optional<UserEntity> findByRoleAndId(Role role, Long id);
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByEmail(String email);
 
-    List<UserEntity> findAll();
+    Optional<UserEntity> findByUserType(Role userType);
 
-    List<UserEntity> findAllByRole(Role role);
-
-    Optional<UserEntity> findAllByUserType(Role role);
+    List<UserEntity> findAllByUserType(Role userType);
 
     boolean existsByEmail(String email);
 

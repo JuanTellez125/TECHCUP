@@ -39,7 +39,7 @@ public class TeamController {
 
     @GetMapping("/tournament/{tournamentId}")
     @Operation(summary = "Obtener equipos por torneo")
-    public ResponseEntity<List<TeamResponseDTO>> getTeamsByTournament(@PathVariable String tournamentId) {
+    public ResponseEntity<List<TeamResponseDTO>> getTeamsByTournament(@PathVariable Long tournamentId) {
         return ResponseEntity.ok(teamService.getTeamsByTournament(tournamentId));
     }
 

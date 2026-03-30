@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.persistence.repository;
 
-import edu.dosw.TECHCUP.core.model.MatchEvent;
 import edu.dosw.TECHCUP.core.model.enums.Event;
 import edu.dosw.TECHCUP.persistence.entity.MatchEventEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

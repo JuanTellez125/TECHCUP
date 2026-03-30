@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.persistence.repository;
 
-import edu.dosw.TECHCUP.core.model.TournamentRegistration;
 import edu.dosw.TECHCUP.core.model.enums.RegisterTournamentStatus;
 import edu.dosw.TECHCUP.persistence.entity.TournamentRegistrationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

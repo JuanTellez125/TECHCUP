@@ -31,5 +31,5 @@ public class Match{
     private String status;
     private MatchResult result;
     private List<MatchEvent> events;
-    private  List<LineUp> lineups;
+//    private  List<LineUp> lineups;
 }
