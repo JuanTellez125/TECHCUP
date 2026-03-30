@@ -2,6 +2,7 @@ package edu.dosw.TECHCUP.controller.mapper;
 
 import edu.dosw.TECHCUP.controller.dto.response.LineUpResponseDTO;
 import edu.dosw.TECHCUP.core.model.LineUp;
+import edu.dosw.TECHCUP.persistence.entity.LineUpEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,5 +16,5 @@ public interface LineUpMapper {
     @Mapping(source = "user.user_id",    target = "userId")
     @Mapping(source = "user.firstName",  target = "userName")
     //@Mapping(source = "role.name",       target = "role")
-    LineUpResponseDTO toDto(LineUp lineUp);
+    LineUpResponseDTO toDto(LineUpEntity lineUp);
 }

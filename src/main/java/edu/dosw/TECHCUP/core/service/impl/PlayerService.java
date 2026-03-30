@@ -11,7 +11,8 @@ import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.SportProfile;
 import edu.dosw.TECHCUP.core.model.enums.Role;
-import edu.dosw.TECHCUP.core.model.User;
+import edu.dosw.TECHCUP.persistence.entity.SportProfileEntity;
+import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
@@ -45,7 +46,7 @@ public class PlayerService implements UserService {
         if (userRepository.existsByDocumentId(dto.getDocumentId()))
             throw new UserValidationException("Ya existe un usuario con el documento: " + dto.getDocumentId());
 
-        User player = User.builder()
+        UserEntity player = UserEntity.builder()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
@@ -55,7 +56,7 @@ public class PlayerService implements UserService {
                 .active(true)
                 .build();
 
-        User saved = userRepository.save(player);
+        UserEntity saved = userRepository.save(player);
         log.info("Jugador creado con ID: {}", saved.getUser_id());
         return userMapper.toDto(saved);
     }
@@ -63,7 +64,7 @@ public class PlayerService implements UserService {
     @Transactional
     @Override
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
-        User user = userRepository.findById(id)
+        UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
         user.setFirstName(dto.getFirstName());
@@ -84,46 +85,29 @@ public class PlayerService implements UserService {
     }
 
     @Transactional
-    public SportProfileResponseDTO saveSportProfile(Long userId, SportProfileRequestDTO dto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-
-        SportProfile profile = sportProfileRepository.findByUser_User_id(userId)
-                .orElse(SportProfile.builder().user(user).build());
-
-        profile.setPrimaryPosition(dto.getPrimaryPosition());
-        profile.setSecondaryPosition(dto.getSecondaryPosition());
-        profile.setJerseyNumber(dto.getJerseyNumber());
-        profile.setPhotoUrl(dto.getPhotoUrl());
-        profile.setBirthDate(dto.getBirthDate());
-        profile.setAvailable(dto.isAvailable());
-
-        SportProfile saved = sportProfileRepository.save(profile);
-        log.info("Perfil deportivo guardado para usuario: {}", userId);
-        return sportProfileMapper.toDto(saved);
-    }
-
-    @Transactional
     public SportProfileResponseDTO setAvailability(Long userId, boolean available) {
-        SportProfile profile = sportProfileRepository.findByUser_User_id(userId)
+        SportProfileEntity profile = sportProfileRepository.findByUser_User_id(userId)
                 .orElseThrow(() -> new SportProfileException( userId));
 
         profile.setAvailable(available);
         return sportProfileMapper.toDto(sportProfileRepository.save(profile));
     }
 
+    @Transactional
     public SportProfileResponseDTO getSportProfile(Long userId) {
-        SportProfile profile = sportProfileRepository.findByUser_User_id(userId)
+        SportProfileEntity profile = sportProfileRepository.findByUser_User_id(userId)
                 .orElseThrow(() -> new SportProfileException( userId));
         return sportProfileMapper.toDto(profile);
     }
 
+    @Transactional
     public UserResponseDTO getPlayerById(Long id) {
-        User user = userRepository.findById(id)
+        UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         return userMapper.toDto(user);
     }
 
+    @Transactional
     public List<UserResponseDTO> getAllPlayers() {
         return userRepository.findAllByRole(Role.PLAYER)
                 .stream()

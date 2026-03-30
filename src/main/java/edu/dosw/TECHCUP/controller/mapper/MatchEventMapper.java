@@ -2,6 +2,7 @@ package edu.dosw.TECHCUP.controller.mapper;
 
 import edu.dosw.TECHCUP.controller.dto.response.MatchEventResponseDTO;
 import edu.dosw.TECHCUP.core.model.MatchEvent;
+import edu.dosw.TECHCUP.persistence.entity.MatchEventEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,5 +16,5 @@ public interface MatchEventMapper {
     @Mapping(source = "team.id",          target = "teamId")
     @Mapping(source = "team.name",        target = "teamName")
    // @Mapping(source = "eventType.name",   target = "eventType")
-    MatchEventResponseDTO toDto(MatchEvent matchEvent);
+    MatchEventResponseDTO toDto(MatchEventEntity matchEvent);
 }

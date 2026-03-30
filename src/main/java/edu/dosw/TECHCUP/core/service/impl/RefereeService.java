@@ -7,6 +7,7 @@ import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
+import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
@@ -35,7 +36,7 @@ public class RefereeService implements UserService {
         if (userRepository.existsByEmail(dto.getEmail()))
             throw new UserValidationException("Ya existe un usuario con el email: " + dto.getEmail());
 
-        User referee = User.builder()
+        UserEntity referee = UserEntity.builder()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
@@ -45,7 +46,7 @@ public class RefereeService implements UserService {
                 .active(true)
                 .build();
 
-        User saved = userRepository.save(referee);
+        UserEntity saved = userRepository.save(referee);
         log.info("Árbitro creado con ID: {}", saved.getUser_id());
         return userMapper.toDto(saved);
     }
@@ -53,7 +54,7 @@ public class RefereeService implements UserService {
     @Transactional
     @Override
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
-        User user = userRepository.findById(id)
+        UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());

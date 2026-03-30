@@ -13,6 +13,7 @@ import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.*;
 import edu.dosw.TECHCUP.core.model.enums.*;
+import edu.dosw.TECHCUP.persistence.entity.*;
 import edu.dosw.TECHCUP.persistence.repository.TeamRepository;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
@@ -45,7 +46,7 @@ public class TeamService {
 
     @Transactional
     public TeamResponseDTO createTeam(Long captainId, TeamRequestDTO dto) {
-        User captain = userRepository.findById(captainId)
+        UserEntity captain = userRepository.findById(captainId)
                 .orElseThrow(() -> new UserNotFoundException(captainId));
 
         teamValidator.validateCaptainRole(captain);
@@ -57,16 +58,16 @@ public class TeamService {
         if (teamMemberRepository.existsByTeam_IdAndUser_User_id(null, captainId))
             throw new UserValidationException("El capitán ya pertenece a otro equipo.");
 
-        Team team = Team.builder()
+        TeamEntity team = TeamEntity.builder()
                 .captain(captain)
                 .name(dto.getName())
                 .shieldUrl(dto.getShieldUrl())
                 .active(true)
                 .build();
 
-        Team saved = teamRepository.save(team);
+        TeamEntity saved = teamRepository.save(team);
 
-        TeamMember captainMember = TeamMember.builder()
+        TeamMemberEntity captainMember = TeamMemberEntity.builder()
                 .team(saved)
                 .user(captain)
                 .status(TeamMemberStatus.ACEPTADO)
@@ -79,24 +80,24 @@ public class TeamService {
     }
 
     public TeamResponseDTO getTeamById(Long teamId) {
-        Team team = teamRepository.findById(String.valueOf(teamId))
+        TeamEntity team = teamRepository.findById(String.valueOf(teamId))
                 .orElseThrow(() -> new UserNotFoundException(teamId));
         return teamMapper.toDto(team);
     }
 
     @Transactional
     public InvitationResponseDTO invitePlayer(Long captainId, Long teamId, Long playerId) {
-        User captain = userRepository.findById(captainId)
+        UserEntity captain = userRepository.findById(captainId)
                 .orElseThrow(() -> new UserNotFoundException(captainId));
         teamValidator.validateCaptainRole(captain);
 
-        Team team = teamRepository.findById(String.valueOf(teamId))
+        TeamEntity team = teamRepository.findById(String.valueOf(teamId))
                 .orElseThrow(() -> new UserNotFoundException(teamId));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
             throw new UserValidationException("No eres el capitán de este equipo.");
 
-        User player = userRepository.findById(playerId)
+        UserEntity player = userRepository.findById(playerId)
                 .orElseThrow(() -> new UserNotFoundException(playerId));
 
         if (teamMemberRepository.existsByTeam_IdAndUser_User_id(teamId, playerId))
@@ -106,21 +107,21 @@ public class TeamService {
         if (currentMembers >= 12)
             throw new UserValidationException("El equipo ya tiene el máximo de 12 jugadores.");
 
-        Invitation invitation = Invitation.builder()
+        InvitationEntity invitation = InvitationEntity.builder()
                 .team(team)
                 .invitedUser(player)
                 .invitedBy(captain)
                 .status(InvitationStatus.PENDIENTE)
                 .build();
 
-        Invitation saved = invitationRepository.save(invitation);
+        InvitationEntity saved = invitationRepository.save(invitation);
         log.info("Invitación enviada al jugador {} para el equipo {}", playerId, teamId);
         return invitationMapper.toDto(saved);
     }
 
     @Transactional
     public InvitationResponseDTO respondInvitation(Long playerId, Long invitationId, boolean accept) {
-        Invitation invitation = invitationRepository.findById(invitationId)
+        InvitationEntity invitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new UserNotFoundException(invitationId));
 
         if (!invitation.getInvitedUser().getUser_id().equals(playerId))
@@ -131,7 +132,7 @@ public class TeamService {
 
         if (accept) {
             invitation.setStatus(InvitationStatus.ACEPTADA);
-            TeamMember member = TeamMember.builder()
+            TeamMemberEntity member = TeamMemberEntity.builder()
                     .team(invitation.getTeam())
                     .user(invitation.getInvitedUser())
                     .status(TeamMemberStatus.ACEPTADO)
@@ -149,7 +150,7 @@ public class TeamService {
     public List<SportProfileResponseDTO> searchAvailablePlayers(Position position, String name,
                                                                 String gender, String identification,
                                                                 Integer semester) {
-        List<SportProfile> profiles = position != null
+        List<SportProfileEntity> profiles = position != null
                 ? sportProfileRepository.findAllByPrimaryPositionAndAvailableTrue(position)
                 : sportProfileRepository.findAllByAvailableTrue();
 
@@ -165,9 +166,9 @@ public class TeamService {
     }
 
     public void validateTeam(Long teamId) {
-        List<TeamMember> members = teamMemberRepository.findAllByTeam_Id(teamId);
+        List<TeamMemberEntity> members = teamMemberRepository.findAllByTeam_Id(teamId);
         teamValidator.validateTeamSize(members.stream()
-                .map(TeamMember::getUser).collect(Collectors.toList()));
+                .map(TeamMemberEntity::getUser).collect(Collectors.toList()));
     }
 
     public List<InvitationResponseDTO> getInvitationsByPlayer(Long playerId) {

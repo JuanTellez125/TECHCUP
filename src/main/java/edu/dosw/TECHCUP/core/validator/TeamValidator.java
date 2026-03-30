@@ -6,6 +6,8 @@ import edu.dosw.TECHCUP.core.model.TeamMember;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.model.enums.TeamMemberStatus;
+import edu.dosw.TECHCUP.persistence.entity.TeamMemberEntity;
+import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,24 +32,25 @@ public class TeamValidator {
                     "El nombre del equipo no puede superar " + MAX_NAME_LENGTH + " caracteres.");
     }
 
-    public void validateCaptainRole(User user) {
+    public void validateCaptainRole(UserEntity user) {
         if (user.getUserType() != Role.CAPTAIN)
             throw new UserValidationException(
                     "El usuario " + user.getFirstName() + " " + user.getLastName()
                             + " no tiene el rol de Capitán.");
     }
 
-    public void validateTeamSize(List<User> activeMembers) {
-        if (activeMembers == null || activeMembers.size() < MIN_PLAYERS)
+    public void validateTeamSize(List<UserEntity> members) {
+        if (members == null || members.size() < MIN_PLAYERS) {
             throw new UserValidationException(
-                    "El equipo debe tener al menos " + MIN_PLAYERS + " jugadores activos.");
-
-        if (activeMembers.size() > MAX_PLAYERS)
+                    "El equipo debe tener al menos " + MIN_PLAYERS + " jugadores.");
+        }
+        if (members.size() > MAX_PLAYERS) {
             throw new UserValidationException(
                     "El equipo no puede tener más de " + MAX_PLAYERS + " jugadores.");
+        }
     }
 
-    public void validateTeamCapacity(List<TeamMember> members) {
+    public void validateTeamCapacity(List<TeamMemberEntity> members) {
         long accepted = members.stream()
                 .filter(m -> m.getStatus() == TeamMemberStatus.ACEPTADO)
                 .count();
@@ -57,7 +60,7 @@ public class TeamValidator {
                     "El equipo ya tiene el máximo de " + MAX_PLAYERS + " jugadores.");
     }
 
-    public void validatePlayerRole(User user) {
+    public void validatePlayerRole(UserEntity user) {
         if (user.getUserType() != Role.PLAYER)
             throw new UserValidationException(
                     "El usuario " + user.getFirstName() + " " + user.getLastName()
