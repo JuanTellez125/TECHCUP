@@ -16,29 +16,11 @@ import java.util.List;
 @Data
 @Entity
 @Builder
-@Table(name = "teams")
 public class Team {
-
-    @Id
-    private String id;
-
-    private String captainId;
-
-    private Byte[] teamShield;
-
-    private String teamName;
-
-    private Color mainColor;
-
-    private Color secundaryColor;
-
-    private List<User> members;
-
-    private LineUp lineUp;
-
-    private TeamStatus teamStatus;
-
-
-
-    
+    private Long id;
+    private User captain;
+    private String name;
+    private String shieldUrl;
+    private boolean active;
+    private List<TeamMember> members;
 }

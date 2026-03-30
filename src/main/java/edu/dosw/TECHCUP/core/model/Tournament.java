@@ -1,6 +1,8 @@
 package edu.dosw.TECHCUP.core.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,31 +18,14 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tournaments")
-@Entity
 public class Tournament {
-
-    @Id
-    private String id;
-
+    private Long tournament_id;
     private LocalDate startDate;
-
     private LocalDate endDate;
-
     private int totalTeams;
-
     private double registrationCost;
-
     private TournamentStatus status;
-
-    private String organizerId;
-
-    private String rules;
-
-    private LocalDate registrationCloseDate;
-
-    private String fields;
-
-    private String sanctions;
+    private User organizer;
+    private TournamentConfig config;
 
 }

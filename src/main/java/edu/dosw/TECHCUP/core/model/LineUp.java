@@ -1,38 +1,21 @@
 package edu.dosw.TECHCUP.core.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import edu.dosw.TECHCUP.core.model.enums.LineUpRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.awt.*;
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="lineUps")
-@Entity
 public class LineUp {
-
-    @Id
-    private String id;
-
-    private List<String> titulars;
-
-    private List<String> substitutes;
-
-    private List<String> suspended;
-
-    private String formation;
-
-    private Team team;
-
-
+    private Long lineUp_id;
     private Match match;
-
+    private Team team;
+    private User user;
+    private LineUpRole role;
+    private String position;
+    private int jerseyNumber;
 }

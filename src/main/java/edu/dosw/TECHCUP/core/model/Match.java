@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import javax.sound.sampled.Line;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,37 +19,17 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="matches")
-@Entity
 public class Match{
-
-    @Id
-    private String id;
-
-    private String refereeIid;
-
-    private Team localTeam;
-
-    private Team awayTeam;
-
-    private int numberField;
-
-    private MatchPhase matchPhase;
-
+    private Long match_id;
     private Tournament tournament;
-
-    private boolean isPlayed;
-
-    private int localScore;
-
-    private int awayScore;
-
-    private LocalDateTime matchDateTime;
-
-    private List<String> scorerIds;
-
-    private List<String> yellowCardPlayerIds;
-
-    private List<String> redCardPlayerIds;
-
+    private Team team1;
+    private Team team2;
+    private Venue vanue;
+    private User referee;
+    private MatchPhase phase;
+    private LocalDateTime scheduledAt;
+    private String status;
+    private MatchResult result;
+    private List<MatchEvent> events;
+    private  List<LineUp> lineups;
 }
