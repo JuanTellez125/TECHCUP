@@ -49,7 +49,7 @@ Actualmente, el torneo presenta las siguientes dificultades:
 
 ### **- Diagrama de contexto:**
 
-![Captura](/docs/uml/DiagramaContextoTECHCUP.png)
+![Captura](/docs/uml/DiagramaClasesTECHCUP.png)
 
 ### **- Definicion de requerimientos:**
 

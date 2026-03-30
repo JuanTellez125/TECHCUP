@@ -1,9 +1,17 @@
 package edu.dosw.TECHCUP.core.model;
 
 import edu.dosw.TECHCUP.core.model.enums.Position;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SportProfile {
     private Long sportProfile_id;
     private User user;

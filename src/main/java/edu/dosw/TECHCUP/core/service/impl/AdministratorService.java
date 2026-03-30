@@ -29,74 +29,70 @@ public class AdministratorService implements UserService {
     private final UserValidator userValidator;
 
     @Transactional
+    @Override
     public UserResponseDTO createUser(UserRequestDTO dto) {
         userValidator.validate(dto);
 
-        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new UserValidationException(
-                    "Ya existe un usuario con el email: " + dto.getEmail());
-        }
+        if (userRepository.existsByEmail(dto.getEmail()))
+            throw new UserValidationException("Ya existe un usuario con el email: " + dto.getEmail());
 
         User admin = User.builder()
-                .id(IdGeneratorUtil.generateId())
-                .name(dto.getName())
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
-                .role(Role.ADMINISTRATOR)
+                .documentId(dto.getDocumentId())
+                .userType(Role.ADMINISTRATOR)
+                .active(true)
                 .build();
 
         User saved = userRepository.save(admin);
-        log.info("Administrador creado con ID: {}", saved.getId());
+        log.info("Administrador creado con ID: {}", saved.getUser_id());
         return userMapper.toDto(saved);
     }
 
     @Transactional
-    public UserResponseDTO updateUser(String id, UserRequestDTO dto) {
+    @Override
+    public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-
-        user.setName(dto.getName());
+                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id)));
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
-
-        User updated = userRepository.save(user);
-        log.info("Administrador actualizado: {}", id);
-        return userMapper.toDto(updated);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Transactional
-    public void deleteUser(String id) {
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException(id);
-        }
+    @Override
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id))
+            throw new UserNotFoundException(String.valueOf(id));
         userRepository.deleteById(id);
-        log.info("Administrador eliminado: {}", id);
     }
 
-    public UserResponseDTO getAdminById(String id) {
-        User admin = userRepository.findByRoleAndId(Role.ADMINISTRATOR, id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-        return userMapper.toDto(admin);
+    @Transactional
+    public UserResponseDTO assignRole(Long adminId, Long targetUserId, Role newRole) {
+        userRepository.findById(adminId)
+                .filter(u -> u.getUserType() == Role.ADMINISTRATOR)
+                .orElseThrow(() -> new UserValidationException("Solo un administrador puede asignar roles."));
+
+        User target = userRepository.findById(targetUserId)
+                .orElseThrow(() -> new UserNotFoundException(String.valueOf(targetUserId)));
+
+        target.setUserType(newRole);
+        log.info("Rol {} asignado al usuario {}", newRole, targetUserId);
+        return userMapper.toDto(userRepository.save(target));
     }
 
     public List<UserResponseDTO> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(userMapper::toDto)
-                .collect(Collectors.toList());
+        return userRepository.findAll().stream()
+                .map(userMapper::toDto).collect(Collectors.toList());
     }
 
-    @Transactional
-    public UserResponseDTO assignRole(String adminId, String targetUserId, Role newRole) {
-        userRepository.findByRoleAndId(Role.ADMINISTRATOR, adminId)
-                .orElseThrow(() -> new UserValidationException("Solo un administrador puede asignar roles."));
-
-        User target = userRepository.findById(targetUserId).orElseThrow(() -> new UserNotFoundException(targetUserId));
-
-        target.setRole(newRole);
-        User updated = userRepository.save(target);
-        log.info("Rol actualizado para usuario {}: {}", targetUserId, newRole);
-        return userMapper.toDto(updated);
+    public UserResponseDTO getAdminById(Long id) {
+        return userMapper.toDto(userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id))));
     }
 }
 
