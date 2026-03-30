@@ -1,4 +1,4 @@
-package edu.dosw.TECHCUP.controller.dto.request;
+package edu.dosw.TECHCUP.controller.dto.response;
 
 import lombok.*;
 
@@ -6,9 +6,13 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class TournamentConfigRequestDTO {
+@AllArgsConstructor
+public class TournamentConfigResponseDTO {
+
+    private Long id;
+
+    private Long tournamentId;
 
     private String rulebook;
 

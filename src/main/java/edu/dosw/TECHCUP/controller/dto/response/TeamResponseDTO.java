@@ -1,15 +1,6 @@
 package edu.dosw.TECHCUP.controller.dto.response;
 
-import edu.dosw.TECHCUP.core.model.LineUp;
-import edu.dosw.TECHCUP.core.model.User;
-import edu.dosw.TECHCUP.core.model.enums.TeamStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.awt.*;
-import java.util.List;
+import lombok.*;
 
 @Data
 @Builder
@@ -17,22 +8,19 @@ import java.util.List;
 @AllArgsConstructor
 public class TeamResponseDTO {
 
-    private String id;
+    private Long id;
 
-    private String captain_id;
+    private Long captainId;
 
-    private Byte[] teamShield;
+    private String captainName;
 
-    private String teamName;
+    private String name;
 
-    private Color mainColor;
+    private String shieldUrl;
 
-    private Color secundaryColor;
+    private String mainColor;
 
-    private List<User> members;
+    private String secondaryColor;
 
-    private LineUp lineUp;
-
-    private TeamStatus teamStatus;
-
+    private boolean active;
 }

@@ -1,12 +1,8 @@
 package edu.dosw.TECHCUP.controller.dto.request;
 
-import edu.dosw.TECHCUP.core.model.Team;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
+import edu.dosw.TECHCUP.core.model.enums.LineUpRole;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Data
 @Builder
@@ -14,16 +10,19 @@ import java.util.List;
 @NoArgsConstructor
 public class LineUpRequestDTO {
 
-    private List<String> titulars;
+    @NotNull(message = "El ID del partido no puede estar vacío")
+    private Long matchId;
 
-    private List<String> substitutes;
+    @NotNull(message = "El ID del equipo no puede estar vacío")
+    private Long teamId;
 
-    private List<String> suspended;
+    @NotNull(message = "El ID del jugador no puede estar vacío")
+    private Long userId;
 
-    private String formation;
+    @NotNull(message = "El rol no puede estar vacío")
+    private LineUpRole role;
 
-    private String teamId;
+    private String position;
 
-    private String matchId;
-
+    private int jerseyNumber;
 }

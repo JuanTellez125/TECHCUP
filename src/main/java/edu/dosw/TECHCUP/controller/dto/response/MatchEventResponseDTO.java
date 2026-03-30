@@ -6,23 +6,21 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LineUpResponseDTO {
+public class MatchEventResponseDTO {
 
     private Long id;
 
     private Long matchId;
 
-    private Long teamId;
-
-    private String teamName;
-
     private Long userId;
 
     private String userName;
 
-    private String role;
+    private Long teamId;
 
-    private String position;
+    private String teamName;
 
-    private int jerseyNumber;
+    private String eventType;
+
+    private int minute;
 }

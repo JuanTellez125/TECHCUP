@@ -1,7 +1,7 @@
 package edu.dosw.TECHCUP.controller.dto.request;
 
-import edu.dosw.TECHCUP.core.model.enums.TournamentStatus;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -12,19 +12,15 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class TournamentRequestDTO {
 
-    @NotNull (message = "The start date cannot be blank")
+    @NotNull(message = "La fecha de inicio no puede estar vacía")
     private LocalDate startDate;
 
-    @NotNull (message = "The end date cannot be blank")
+    @NotNull(message = "La fecha de fin no puede estar vacía")
     private LocalDate endDate;
 
-    @NotNull (message = "Total teams cannot be blank")
+    @Positive(message = "El número de equipos debe ser mayor a 0")
     private int totalTeams;
 
-    @NotNull (message = "The registration cost cannot be blank")
+    @Positive(message = "El costo de inscripción debe ser mayor a 0")
     private double registrationCost;
-
-    @NotNull (message = "The tournament's status cannot be blank")
-    private TournamentStatus status;
-
 }
