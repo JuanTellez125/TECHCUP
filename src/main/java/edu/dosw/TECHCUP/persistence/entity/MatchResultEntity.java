@@ -20,7 +20,7 @@ public class MatchResultEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long MatchResult_id;
+    private Long matchResult_id;
 
     @OneToOne
     @JoinColumn(name = "match_id")

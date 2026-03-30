@@ -17,7 +17,7 @@ public class BracketRoundEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long BracketRound_id;
+    private Long bracketRound_id;
 
     @ManyToOne
     @JoinColumn(name = "tournament_id")

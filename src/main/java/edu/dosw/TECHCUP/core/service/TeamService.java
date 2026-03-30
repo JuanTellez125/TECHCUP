@@ -177,7 +177,7 @@ public class TeamService {
     }
 
     public List<TeamResponseDTO> getTeamsByTournament(Long tournamentId) {
-        return teamRepository.findAllByTournamentId(tournamentId)
+        return teamRepository.findById(tournamentId)
                 .stream()
                 .map(teamMapper::toDto)
                 .collect(Collectors.toList());
