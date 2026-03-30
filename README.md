@@ -47,122 +47,57 @@ Actualmente, el torneo presenta las siguientes dificultades:
 
 ## Índice
 
-### **- Diagrama de contexto:**
+### **- Diagramas TECHCUP:**
 
-![Captura](/docs/uml/DiagramaClasesTECHCUP.png)
+[Diagramas TECHCUP](/docs/uml/README.md)
 
 ### **- Definicion de requerimientos:**
 
-**- Funcionales:**
-**- RF01 – Gestión de Torneos** El organizador puede crear un torneo con fecha inicial, fecha final, cantidad de equipos y 
-costo por equipo. El torneo tendrá estados: Borrador, Activo, En progreso y Finalizado. El organizador puede iniciar, 
-finalizar y consultar torneos.
+[Definicion Requerimientos](/docs/requirements/README.md)
 
-**- RF02 – Configuración del Torneo** El organizador puede definir reglamento, fechas importantes, cierre de inscripciones, 
-horarios de partidos, canchas disponibles y sanciones aplicables.
+### **- Patrones de diseño**
 
-**- RF03 – Registro de Usuarios** Los estudiantes y graduados se registran con correo institucional; los familiares con correo
-Gmail. Cada usuario puede crear un perfil deportivo con posición de juego, número dorsal y foto.
+**- Builder:**
+El sistema TECHCUP maneja varias entidades con una característica común: todas tienen atributos obligatorios que siempre
+deben estar presentes y atributos opcionales que el usuario puede o no diligenciar. Sin Builder, la única alternativa
+sería un constructor con todos los parámetros posibles, lo que en Java generaría métodos como:
 
-**- RF04 – Disponibilidad y búsqueda de jugadores** Un jugador puede marcarse como disponible para ser contactado. Los 
-capitanes pueden buscar jugadores por posición, semestre, edad, género, nombre e identificación.
+    new Jugador("juan@escuelaing.edu.co", "Juan Pérez", null, null, null, false)
 
-**- RF05 – Gestión de Equipos** Un capitán puede crear un equipo, asignar nombre, subir escudo y definir colores del uniforme.
-Puede invitar jugadores y estos pueden aceptar o rechazar la invitación.
+Ese código es ilegible, propenso a errores al invertir el orden de los parámetros, y no garantiza que el objeto se
+construya en un estado válido. Builder resuelve exactamente ese problema.
 
-**- RF06 – Validación de reglas de equipo** El sistema valida que el equipo tenga entre 7 y 12 jugadores, ningún jugador 
-pertenezca a dos equipos simultáneamente, más de la mitad de los miembros pertenezcan a los programas elegibles y no se 
-permitan cambios de jugadores una vez iniciado el torneo.
+El como ayuda a resolver el problema: Se aplicó en tres entidades distintas del sistema, cada una con su propia
+justificación:
 
-**- RF07 – Inscripción y pago** El capitán sube el comprobante de pago (Nequi o efectivo). El organizador revisa el 
-comprobante y cambia el estado del equipo: Pendiente a En revisión a Aprobado o Rechazado. Solo los equipos aprobados 
-participan en el torneo.
+Torneo: El organizador debe ingresar obligatoriamente fecha inicial, fecha final, cantidad de equipos y costo por
+equipo. Sin embargo, el reglamento y el cierre de inscripciones son opcionales al momento de la creación y pueden
+configurarse después. Builder permite que el torneo siempre se cree en estado BORRADOR con los campos mínimos válidos,
+sin forzar al organizador a tener todo definido desde el primer momento.
 
-**- RF08 – Gestión de alineaciones** El capitán puede seleccionar titulares y reservas, elegir formación táctica y ubicar 
-jugadores visualmente en el campo antes de cada partido. Capitanes y jugadores pueden consultar la alineación del equipo
-rival.
+![TorneoBuilder](/docs/images/TorneoBuilder.png)
 
-**- RF09 – Registro de resultados** El organizador registra marcador, goleadores, tarjetas amarillas y tarjetas rojas de cada 
-partido.
+Usuario: El registro inicial solo requiere correo y nombre. La foto, el dorsal, las posiciones de juego y la
+disponibilidad son datos del perfil deportivo que el jugador completa progresivamente. Builder separa claramente qué es
+obligatorio al registrarse y qué puede configurarse después, sin que el objeto quede en un estado inválido en ningún
+momento.
 
-**- RF10 – Consulta de partidos por árbitro** El árbitro puede consultar la fecha, hora, cancha y equipos del partido que le 
-corresponde arbitrar.
+![UsuarioBuilder](/docs/images/UsuarioBuilder.png)
 
-**- RF11 – Tabla de posiciones** El sistema calcula automáticamente por equipo: partidos jugados, ganados, empatados y 
-perdidos, goles a favor, goles en contra, diferencia de gol y puntos totales.
 
-**- RF12 – Llaves eliminatorias** El sistema genera automáticamente los cruces iniciales de forma aleatoria y avanza las 
-fases de cuartos de final, semifinal y final conforme se registran resultados.
+Equipo: El capitán debe definir obligatoriamente el nombre del equipo al crearlo. El escudo y los colores del uniforme
+son opcionales.
 
-**- RF13 – Estadísticas del torneo** El sistema permite consultar estadísticas generales del torneo activo, incluyendo el 
-listado de máximos goleadores, cantidad de goles por jugador y ranking ordenado de mayor a menor. La información se 
-actualiza automáticamente cada vez que se registran resultados de partidos.
+![EquipoBuilder](/docs/images/EquipoBuilder.png)
 
-**- RF14 – Historial de torneos** El sistema conserva la información de torneos anteriores y permite consultar por cada 
-torneo: equipos participantes, tabla de posiciones final, resultados de partidos, campeones y estadísticas individuales.
-La información histórica no podrá ser modificada una vez el torneo esté finalizado.
+**- Stategy:**
+El sistema tiene cinco tipos de actores: Jugador, Capitán, Organizador, Árbitro y Administrador. La solución más
+intuitiva sería crear una clase separada por cada rol mediante herencia, pero esto genera un problema estructural
+importante: un mismo usuario puede cambiar de rol en tiempo de ejecución. El caso más claro del sistema es el Capitán,
+que es un Jugador que creó un equipo y vuelve a ser Jugador si lo abandona. Con herencia eso es imposible porque el
+tipo de un objeto no cambia después de su creación.
 
-**- RF15 – Asignación de árbitros** El organizador puede asignar un árbitro a cada partido programado del torneo, definiendo 
-qué árbitro será responsable de dirigir el encuentro. El sistema debe evitar que un mismo árbitro sea asignado a dos 
-partidos en el mismo horario.
+Strategy resuelve esto porque el comportamiento del rol se encapsula en un objeto separado que puede intercambiarse sin
+modificar el usuario que lo contiene.
 
-**- RF16 – Gestión de roles** El administrador del sistema puede asignar, modificar o revocar roles de usuario (Capitán, 
-Organizador, Árbitro), garantizando que cada usuario tenga los permisos correspondientes a su rol dentro del sistema. 
-Un usuario podrá tener más de un rol si así lo define el administrador.
-
-**- RF17 – Consulta pública de información** El sistema permite a usuarios no autenticados consultar información general del
-torneo, incluyendo reglamento, calendario de partidos, tabla de posiciones, resultados y llaves eliminatorias, 
-garantizando transparencia en el desarrollo de la competencia.
-
-**- RF18 – Gestión de sanciones automáticas** El sistema aplica automáticamente sanciones deportivas según el reglamento 
-definido por el organizador. En caso de tarjeta roja, el jugador quedará suspendido para el siguiente partido del 
-torneo, y el sistema impedirá su inclusión en la alineación correspondiente.
-
-**- RF19 – Notificación de invitaciones** El sistema notifica a los jugadores cuando reciben una invitación para unirse a un
-equipo. La notificación debe indicar el nombre del equipo y del capitán que envía la invitación, permitiendo al jugador 
-aceptarla o rechazarla.
-
-**- RF20 – Notificación de estado de inscripción** El sistema notifica al capitán cuando el organizador cambie el estado del
-equipo (Pendiente, En revisión, Aprobado o Rechazado), indicando el resultado de la validación del comprobante de pago.
-
-**- RF21 – Notificación de asignación de partido** El sistema notifica al árbitro cuando se le asigne un partido, indicando 
-fecha, hora, cancha y equipos participantes, permitiendo su consulta dentro del módulo correspondiente.
-
-**- No funcionales:**
-
-**- RNF01 – Seguridad y autenticación** El sistema debe autenticar a los usuarios según su tipo: correo institucional para 
-estudiantes, graduados y personal de la Escuela; correo Gmail para familiares. Debe implementarse control de roles y 
-permisos por tipo de actor.
-**- RNF02 – Auditoría** El sistema debe registrar un log de las acciones relevantes realizadas por los usuarios (creación de 
-equipos, aprobación de pagos, registro de resultados, etc.) para trazabilidad.
-**- RNF03 – Arquitectura por capas** El backend debe desarrollarse en Spring Boot con separación clara en capas: 
-controladores, adaptadores, lógica de negocio y acceso a datos. La comunicación con el frontend se realizará mediante 
-una API REST.
-**- RNF05 – Seguridad de almacenamiento de contraseñas** Las contraseñas deben almacenarse utilizando un algoritmo de hashing
-seguro (por ejemplo, BCrypt), garantizando que no se almacenen en texto plano.
-**- RNF06 – Usabilidad** La plataforma debe ser lo suficientemente intuitiva para que estudiantes sin experiencia técnica 
-avanzada puedan inscribirse, unirse a equipos y consultar información del torneo sin asistencia externa.
-**- RNF07 – Disponibilidad** La plataforma debe estar disponible durante todo el período del torneo, especialmente en fechas 
-clave como cierre de inscripciones y registro de resultados.
-**- RNF08 – Escalabilidad básica** El sistema debe soportar la carga de todos los equipos participantes en un torneo semestral
-sin degradación notable del rendimiento.
-**- RNF09 – Compatibilidad** La aplicación debe ser compatible con las versiones actuales de los navegadores Google Chrome, 
-Microsoft Edge y Mozilla Firefox.
-**- RNF10 – Respaldo de información** La base de datos debe contar con respaldo automático diario para garantizar la 
-recuperación de información ante fallos del sistema.
-**- RNF11 – Escalabilidad básica** La arquitectura del sistema debe permitir aumentar la capacidad de usuarios concurrentes 
-mediante escalamiento vertical del servidor sin necesidad de rediseño estructural.
-
-## - Análisis de requerimientos
-
-[Documento Analisis de Requerimientos](docs/requirements/Analisis%20de%20Requerimientos.docx)
-
-## Mockup
-
-[Link figma](https://www.figma.com/make/iNFDp9vxvZuaEXe6Ln2Wg4/TechCup?fullscreen=1&t=fOZUprzpMq85sMYq-1)
-
-## Manual de identidad
-[Documento Manual de Identidad](/docs/identityManual/Manual%20de%20identidad.pdf)
-
-## Link de Jira
-[Link Proyecto en Jira](https://team-dosw-cristian.atlassian.net/jira/software/projects/TDJ/boards/68?atlOrigin=eyJpIjoiZDBhMWQzNzllZTExNGY2YWE5ZmI3MGI5YjEwYjdiMDUiLCJwIjoiaiJ9)
+![Strategy](docs/images/UsuarioStrategy.png)
