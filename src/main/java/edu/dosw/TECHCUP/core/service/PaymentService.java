@@ -15,6 +15,7 @@ import edu.dosw.TECHCUP.core.model.enums.PaymentStatus;
 import edu.dosw.TECHCUP.core.model.enums.RegisterTournamentStatus;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
+import edu.dosw.TECHCUP.persistence.entity.*;
 import edu.dosw.TECHCUP.persistence.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,43 +43,43 @@ public class PaymentService {
     @Transactional
     public TournamentRegistrationResponseDTO registerTeam(Long captainId,
                                                           TournamentRegistrationRequestDTO dto) {
-        User captain = userRepository.findById(captainId)
+        UserEntity captain = userRepository.findById(captainId)
                 .orElseThrow(() -> new UserNotFoundException(captainId));
         if (captain.getUserType() != Role.CAPTAIN)
             throw new UserValidationException("Solo el capitán puede inscribir el equipo.");
 
-        Team team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+        TeamEntity team = teamRepository.findById(String.valueOf(dto.getTeamId()))
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
             throw new UserValidationException("No eres el capitán de este equipo.");
 
-        Tournament tournament = tournamentRepository.findById(dto.getTournamentId())
+        TournamentEntity tournament = tournamentRepository.findById(dto.getTournamentId())
                 .orElseThrow(() -> new TournamentNotFoundException(dto.getTournamentId()));
 
         if (registrationRepository.findByTeam_IdAndTournament_Tournament_id(dto.getTeamId(), dto.getTournamentId()).isPresent())
             throw new UserValidationException("El equipo ya está inscrito en este torneo.");
 
-        TournamentRegistration registration = TournamentRegistration.builder()
+        TournamentRegistrationEntity registration = TournamentRegistrationEntity.builder()
                 .tournament(tournament)
                 .team(team)
                 .status(RegisterTournamentStatus.PENDIENTE)
                 .registeredAt(LocalDateTime.now())
                 .build();
 
-        TournamentRegistration saved = registrationRepository.save(registration);
+        TournamentRegistrationEntity saved = registrationRepository.save(registration);
         log.info("Equipo {} inscrito en torneo {}", dto.getTeamId(), dto.getTournamentId());
         return registrationMapper.toDto(saved);
     }
 
     @Transactional
     public PaymentResponseDTO submitPayment(Long captainId, PaymentRequestDTO dto) {
-        User captain = userRepository.findById(captainId)
+        UserEntity captain = userRepository.findById(captainId)
                 .orElseThrow(() -> new UserNotFoundException(captainId));
         if (captain.getUserType() != Role.CAPTAIN)
             throw new UserValidationException("Solo el capitán puede subir el comprobante.");
 
-        TournamentRegistration registration = registrationRepository.findById(dto.getRegistrationId())
+        TournamentRegistrationEntity registration = registrationRepository.findById(dto.getRegistrationId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getRegistrationId()));
 
         if (!registration.getTeam().getCaptain().getUser_id().equals(captainId))
@@ -90,7 +91,7 @@ public class PaymentService {
         registration.setStatus(RegisterTournamentStatus.EN_REVISION);
         registrationRepository.save(registration);
 
-        Payment payment = Payment.builder()
+        PaymentEntity payment = PaymentEntity.builder()
                 .registration(registration)
                 .uploadedBy(captain)
                 .fileUrl(dto.getFileUrl())
@@ -98,7 +99,7 @@ public class PaymentService {
                 .status(PaymentStatus.IN_REVIEW)
                 .build();
 
-        Payment saved = paymentRepository.save(payment);
+        PaymentEntity saved = paymentRepository.save(payment);
         log.info("Comprobante subido por capitán {} para inscripción {}", captainId, dto.getRegistrationId());
         return paymentMapper.toDto(saved);
     }
@@ -107,7 +108,7 @@ public class PaymentService {
     public PaymentResponseDTO approvePayment(Long organizerId, Long paymentId) {
         validateOrganizer(organizerId);
 
-        Payment payment = paymentRepository.findById(paymentId)
+        PaymentEntity payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new UserNotFoundException(paymentId));
 
         payment.setStatus(PaymentStatus.APPROVED);
@@ -123,7 +124,7 @@ public class PaymentService {
     public PaymentResponseDTO rejectPayment(Long organizerId, Long paymentId, String reason) {
         validateOrganizer(organizerId);
 
-        Payment payment = paymentRepository.findById(paymentId)
+        PaymentEntity payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new UserNotFoundException(paymentId));
 
         payment.setStatus(PaymentStatus.REJECTED);
@@ -148,7 +149,7 @@ public class PaymentService {
     }
 
     private void validateOrganizer(Long organizerId) {
-        User organizer = userRepository.findById(organizerId)
+        UserEntity organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new UserNotFoundException(organizerId));
         if (organizer.getUserType() != Role.ORGANIZER)
             throw new TournamentValidationException("El usuario no tiene permisos de organizador.");

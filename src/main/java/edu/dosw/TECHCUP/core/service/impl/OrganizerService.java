@@ -5,7 +5,7 @@ import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.UserMapper;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
-import edu.dosw.TECHCUP.core.model.User;
+import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;
@@ -36,7 +36,7 @@ public class OrganizerService implements UserService {
         if (userRepository.existsByEmail(dto.getEmail()))
             throw new UserValidationException("Ya existe un usuario con el email: " + dto.getEmail());
 
-        User organizer = User.builder()
+        UserEntity organizer = UserEntity.builder()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
@@ -46,7 +46,7 @@ public class OrganizerService implements UserService {
                 .active(true)
                 .build();
 
-        User saved = userRepository.save(organizer);
+        UserEntity saved = userRepository.save(organizer);
         log.info("Organizador creado con ID: {}", saved.getUser_id());
         return userMapper.toDto(saved);
     }
@@ -54,7 +54,7 @@ public class OrganizerService implements UserService {
     @Transactional
     @Override
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
-        User user = userRepository.findById(id)
+        UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());

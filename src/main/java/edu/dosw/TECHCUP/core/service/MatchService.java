@@ -14,6 +14,7 @@ import edu.dosw.TECHCUP.core.model.enums.Event;
 import edu.dosw.TECHCUP.core.model.enums.MatchPhase;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
+import edu.dosw.TECHCUP.persistence.entity.*;
 import edu.dosw.TECHCUP.persistence.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,22 +49,22 @@ public class MatchService {
 
     @Transactional
     public MatchResponseDTO scheduleMatch(MatchRequestDTO dto) {
-        Tournament tournament = tournamentRepository.findById(dto.getTournamentId())
+        TournamentEntity tournament = tournamentRepository.findById(dto.getTournamentId())
                 .orElseThrow(() -> new TournamentNotFoundException(dto.getTournamentId()));
-        Team team1 = teamRepository.findById(String.valueOf(dto.getTeam1Id()))
+        TeamEntity team1 = teamRepository.findById(String.valueOf(dto.getTeam1Id()))
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeam1Id()));
-        Team team2 = teamRepository.findById(String.valueOf(dto.getTeam2Id()))
+        TeamEntity team2 = teamRepository.findById(String.valueOf(dto.getTeam2Id()))
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeam2Id()));
-        Venue venue = venueRepository.findById(dto.getVenueId())
+        VenueEntity venue = venueRepository.findById(dto.getVenueId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getVenueId()));
 
         if (team1.getId().equals(team2.getId()))
             throw new TournamentValidationException("El equipo local y visitante no pueden ser el mismo.");
 
-        User referee = dto.getRefereeId() != null
+        UserEntity referee = dto.getRefereeId() != null
                 ? userRepository.findById(dto.getRefereeId()).orElse(null) : null;
 
-        Match match = Match.builder()
+        MatchEntity match = MatchEntity.builder()
                 .tournament(tournament)
                 .team1(team1)
                 .team2(team2)
@@ -74,22 +75,22 @@ public class MatchService {
                 .status("PROGRAMADO")
                 .build();
 
-        Match saved = matchRepository.save(match);
+        MatchEntity saved = matchRepository.save(match);
         log.info("Partido programado: {} vs {}", team1.getName(), team2.getName());
         return matchMapper.toDto(saved);
     }
 
     @Transactional
     public MatchResultResponseDTO registerResult(Long organizerId, MatchResultRequestDTO dto) {
-        User organizer = userRepository.findById(organizerId)
+        UserEntity organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new UserNotFoundException(organizerId));
         if (organizer.getUserType() != Role.ORGANIZER)
             throw new TournamentValidationException("Solo el organizador puede registrar resultados.");
 
-        Match match = matchRepository.findById(dto.getMatchId())
+        MatchEntity match = matchRepository.findById(dto.getMatchId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
 
-        MatchResult result = MatchResult.builder()
+        MatchResultEntity result = MatchResultEntity.builder()
                 .match(match)
                 .registeredBy(organizer)
                 .team1Goals(dto.getTeam1Goals())
@@ -100,7 +101,7 @@ public class MatchService {
         match.setStatus("JUGADO");
         matchRepository.save(match);
 
-        MatchResult saved = matchResultRepository.save(result);
+        MatchResultEntity saved = matchResultRepository.save(result);
 
         updateStandings(match, dto.getTeam1Goals(), dto.getTeam2Goals());
 
@@ -110,14 +111,14 @@ public class MatchService {
 
     @Transactional
     public MatchEventResponseDTO registerEvent(MatchEventRequestDTO dto) {
-        Match match = matchRepository.findById(dto.getMatchId())
+        MatchEntity match = matchRepository.findById(dto.getMatchId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
-        User user = userRepository.findById(dto.getUserId())
+        UserEntity user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
-        Team team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+        TeamEntity team = teamRepository.findById(String.valueOf(dto.getTeamId()))
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
 
-        MatchEvent event = MatchEvent.builder()
+        MatchEventEntity event = MatchEventEntity.builder()
                 .match(match)
                 .user(user)
                 .team(team)
@@ -130,19 +131,19 @@ public class MatchService {
 
     @Transactional
     public LineUpResponseDTO saveLineUp(Long captainId, LineUpRequestDTO dto) {
-        User captain = userRepository.findById(captainId)
+        UserEntity captain = userRepository.findById(captainId)
                 .orElseThrow(() -> new UserNotFoundException(captainId));
         if (captain.getUserType() != Role.CAPTAIN)
             throw new TournamentValidationException("Solo el capitán puede definir la alineación.");
 
-        Match match = matchRepository.findById(dto.getMatchId())
+        MatchEntity match = matchRepository.findById(dto.getMatchId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
-        Team team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+        TeamEntity team = teamRepository.findById(String.valueOf(dto.getTeamId()))
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
-        User player = userRepository.findById(dto.getUserId())
+        UserEntity player = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
 
-        LineUp lineUp = LineUp.builder()
+        LineUpEntity lineUp = LineUpEntity.builder()
                 .match(match)
                 .team(team)
                 .user(player)
@@ -165,10 +166,10 @@ public class MatchService {
 
     @Transactional
     public List<MatchResponseDTO> generateBracket(Long organizerId, Long tournamentId) {
-        Tournament tournament = tournamentRepository.findById(tournamentId)
+        TournamentEntity tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
 
-        List<Team> teams = new ArrayList<>(teamRepository.findAll().stream()
+        List<TeamEntity> teams = new ArrayList<>(teamRepository.findAll().stream()
                 .filter(t -> t.isActive()).collect(Collectors.toList()));
 
         if (teams.size() < 2)
@@ -176,10 +177,10 @@ public class MatchService {
 
         Collections.shuffle(teams);
         MatchPhase phase = resolvePhase(teams.size());
-        List<Match> bracket = new ArrayList<>();
+        List<MatchEntity> bracket = new ArrayList<>();
 
         for (int i = 0; i + 1 < teams.size(); i += 2) {
-            Match match = Match.builder()
+            MatchEntity match = MatchEntity.builder()
                     .tournament(tournament)
                     .team1(teams.get(i))
                     .team2(teams.get(i + 1))
@@ -215,15 +216,15 @@ public class MatchService {
                 .stream().map(matchMapper::toDto).collect(Collectors.toList());
     }
 
-    private void updateStandings(Match match, int team1Goals, int team2Goals) {
-        Standing s1 = standingRepository
+    private void updateStandings(MatchEntity match, int team1Goals, int team2Goals) {
+        StandingEntity s1 = standingRepository
                 .findByTournament_Tournament_idAndTeam_Id(match.getTournament().getTournament_id(), match.getTeam1().getId())
-                .orElse(Standing.builder().tournament(match.getTournament()).team(match.getTeam1())
+                .orElse(StandingEntity.builder().tournament(match.getTournament()).team(match.getTeam1())
                         .played(0).won(0).drawn(0).lost(0).goalsFor(0).goalsAgainst(0).points(0).build());
 
-        Standing s2 = standingRepository
+        StandingEntity s2 = standingRepository
                 .findByTournament_Tournament_idAndTeam_Id(match.getTournament().getTournament_id(), match.getTeam2().getId())
-                .orElse(Standing.builder().tournament(match.getTournament()).team(match.getTeam2())
+                .orElse(StandingEntity.builder().tournament(match.getTournament()).team(match.getTeam2())
                         .played(0).won(0).drawn(0).lost(0).goalsFor(0).goalsAgainst(0).points(0).build());
 
         s1.setPlayed(s1.getPlayed() + 1);

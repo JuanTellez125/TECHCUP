@@ -2,6 +2,7 @@ package edu.dosw.TECHCUP.controller.mapper;
 
 import edu.dosw.TECHCUP.controller.dto.response.MatchResultResponseDTO;
 import edu.dosw.TECHCUP.core.model.MatchResult;
+import edu.dosw.TECHCUP.persistence.entity.MatchResultEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,5 +11,5 @@ public interface MatchResultMapper {
 
     @Mapping(source = "matchResult_id",   target = "id")
     @Mapping(source = "match.match_id",   target = "matchId")
-    MatchResultResponseDTO toDto(MatchResult matchResult);
+    MatchResultResponseDTO toDto(MatchResultEntity matchResult);
 }

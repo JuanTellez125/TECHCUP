@@ -16,6 +16,10 @@ import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.model.Tournament;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.TournamentStatus;
+import edu.dosw.TECHCUP.persistence.entity.TournamentConfigEntity;
+import edu.dosw.TECHCUP.persistence.entity.TournamentEntity;
+import edu.dosw.TECHCUP.persistence.entity.UserEntity;
+import edu.dosw.TECHCUP.persistence.entity.VenueEntity;
 import edu.dosw.TECHCUP.persistence.repository.TournamentRepository;
 import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import edu.dosw.TECHCUP.core.validator.TournamentValidator;
@@ -49,7 +53,7 @@ public class TournamentService {
 
     @Transactional
     public TournamentResponseDTO createTournament(Long organizerId, TournamentRequestDTO dto) {
-        User organizer = userRepository.findById(organizerId)
+        UserEntity organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new UserNotFoundException(organizerId));
 
         if (organizer.getUserType() != Role.ORGANIZER)
@@ -57,7 +61,7 @@ public class TournamentService {
 
         tournamentValidator.validate(dto);
 
-        Tournament tournament = Tournament.builder()
+        TournamentEntity tournament = TournamentEntity.builder()
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
                 .totalTeams(dto.getTotalTeams())
@@ -66,14 +70,14 @@ public class TournamentService {
                 .organizer(organizer)
                 .build();
 
-        Tournament saved = tournamentRepository.save(tournament);
+        TournamentEntity saved = tournamentRepository.save(tournament);
         log.info("Torneo creado con ID: {}", saved.getTournament_id());
         return tournamentMapper.toDto(saved);
     }
 
     @Transactional
     public TournamentResponseDTO startTournament(Long organizerId, Long tournamentId) {
-        Tournament tournament = tournamentRepository.findById(tournamentId)
+        TournamentEntity tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
         tournamentValidator.validateStatusTransition(tournament.getStatus(), TournamentStatus.ACTIVE);
         tournament.setStatus(TournamentStatus.ACTIVE);
@@ -82,7 +86,7 @@ public class TournamentService {
 
     @Transactional
     public TournamentResponseDTO finishTournament(Long organizerId, Long tournamentId) {
-        Tournament tournament = tournamentRepository.findById(tournamentId)
+        TournamentEntity tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
         tournamentValidator.validateStatusTransition(tournament.getStatus(), TournamentStatus.FINALIZED);
         tournament.setStatus(TournamentStatus.FINALIZED);
@@ -92,32 +96,32 @@ public class TournamentService {
     @Transactional
     public TournamentConfigResponseDTO configTournament(Long organizerId, Long tournamentId,
                                                         TournamentConfigRequestDTO dto) {
-        Tournament tournament = tournamentRepository.findById(tournamentId)
+        TournamentEntity tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
 
-        TournamentConfig config = tournamentConfigRepository
+        TournamentConfigEntity config = tournamentConfigRepository
                 .findByTournament_Tournament_id(tournamentId)
-                .orElse(TournamentConfig.builder().tournament(tournament).build());
+                .orElse(TournamentConfigEntity.builder().tournament(tournament).build());
 
         if (dto.getRulebook() != null)           config.setRulebook(dto.getRulebook());
         if (dto.getInscriptionDeadline() != null) config.setInscriptionDeadline(dto.getInscriptionDeadline());
         if (dto.getSchedules() != null)           config.setSchedules(dto.getSchedules());
         if (dto.getSanctions() != null)           config.setSanctions(dto.getSanctions());
 
-        TournamentConfig saved = tournamentConfigRepository.save(config);
+        TournamentConfigEntity saved = tournamentConfigRepository.save(config);
         log.info("Torneo {} configurado por organizador {}", tournamentId, organizerId);
         return tournamentConfigMapper.toDto(saved);
     }
 
     @Transactional
     public VenueResponseDTO addVenue(Long organizerId, Long tournamentId, VenueRequestDTO dto) {
-        Tournament tournament = tournamentRepository.findById(tournamentId)
+        TournamentEntity tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
 
-        Venue venue = Venue.builder()
+        VenueEntity venue = VenueEntity.builder()
                 .tournament(tournament)
                 .name(dto.getName())
-                .Location(dto.getVenueLocation())
+                .location(dto.getVenueLocation())
                 .description(dto.getDescription())
                 .build();
 
@@ -125,7 +129,7 @@ public class TournamentService {
     }
 
     public TournamentResponseDTO getTournamentById(String tournamentId) {
-        Tournament tournament = tournamentRepository.findById(Long.valueOf(tournamentId))
+        TournamentEntity tournament = tournamentRepository.findById(Long.valueOf(tournamentId))
                 .orElseThrow(() -> new TournamentNotFoundException(Long.parseLong(tournamentId)));
         return tournamentMapper.toDto(tournament);
     }

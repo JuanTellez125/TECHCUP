@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface VenueRepository extends JpaRepository<VenueEntity, Long> {
 
-    List<Venue> findAllByTournament_Tournament_id(Long tournamentId);
+    List<VenueEntity> findAllByTournament_Tournament_id(Long tournamentId);
 }
