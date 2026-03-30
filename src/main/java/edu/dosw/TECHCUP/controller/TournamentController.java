@@ -2,10 +2,13 @@ package edu.dosw.TECHCUP.controller;
 
 import edu.dosw.TECHCUP.controller.dto.request.TournamentConfigRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.TournamentRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.request.VenueRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.response.TournamentConfigResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentResponseDTO;
+import edu.dosw.TECHCUP.controller.dto.response.VenueResponseDTO;
 import edu.dosw.TECHCUP.core.service.TournamentService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,68 +19,76 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tournaments")
 @RequiredArgsConstructor
+@Tag(name = "Tournament", description = "Gestión de torneos")
 public class TournamentController {
 
     private final TournamentService tournamentService;
 
-    @Operation(summary = "Create a tournament")
     @PostMapping
+    @Operation(summary = "Crear torneo (solo organizador)")
     public ResponseEntity<TournamentResponseDTO> createTournament(
-            @RequestParam String organizerId,
-            @Valid @RequestBody TournamentRequestDTO dto) {
+            @RequestParam Long organizerId,
+            @RequestBody TournamentRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(tournamentService.createTournament(organizerId, dto));
     }
 
-    @Operation(summary = "Check tournament by ID")
-    @GetMapping("/{id}")
-    public ResponseEntity<TournamentResponseDTO> getTournament(@PathVariable String id) {
-        return ResponseEntity.ok(tournamentService.getTournamentById(id));
-    }
-
-    @Operation(summary = "List all tournaments")
     @GetMapping
+    @Operation(summary = "Obtener todos los torneos")
     public ResponseEntity<List<TournamentResponseDTO>> getAllTournaments() {
         return ResponseEntity.ok(tournamentService.getAllTournaments());
     }
 
-    @Operation(summary = "History of completed tournaments")
-    @GetMapping("/history")
+    @GetMapping("/finalized")
+    @Operation(summary = "Obtener torneos finalizados")
     public ResponseEntity<List<TournamentResponseDTO>> getFinalizedTournaments() {
         return ResponseEntity.ok(tournamentService.getFinalizedTournaments());
     }
 
-    @Operation(summary = "Start tournament: SKETCH → ACTIVE")
-    @PatchMapping("/{id}/start")
+    @GetMapping("/{tournamentId}")
+    @Operation(summary = "Obtener torneo por ID")
+    public ResponseEntity<TournamentResponseDTO> getTournamentById(@PathVariable String tournamentId) {
+        return ResponseEntity.ok(tournamentService.getTournamentById(tournamentId));
+    }
+
+    @PatchMapping("/{tournamentId}/start")
+    @Operation(summary = "Iniciar torneo")
     public ResponseEntity<TournamentResponseDTO> startTournament(
-            @PathVariable String id,
-            @RequestParam String organizerId) {
-        return ResponseEntity.ok(tournamentService.startTournament(organizerId, id));
+            @RequestParam Long organizerId,
+            @PathVariable Long tournamentId) {
+        return ResponseEntity.ok(tournamentService.startTournament(organizerId, tournamentId));
     }
 
-    @Operation(summary = "Start progress: ACTIVE → INPROGRESS")
-    @PatchMapping("/{id}/progress")
-    public ResponseEntity<TournamentResponseDTO> setInProgress(
-            @PathVariable String id,
-            @RequestParam String organizerId) {
-        return ResponseEntity.ok(tournamentService.setInProgress(organizerId, id));
-    }
-
-    @Operation(summary = "Tournament ends: INPROGRESS → FINALIZED")
-    @PatchMapping("/{id}/finish")
+    @PatchMapping("/{tournamentId}/finish")
+    @Operation(summary = "Finalizar torneo")
     public ResponseEntity<TournamentResponseDTO> finishTournament(
-            @PathVariable String id,
-            @RequestParam String organizerId) {
-        return ResponseEntity.ok(tournamentService.finishTournament(organizerId, id));
+            @RequestParam Long organizerId,
+            @PathVariable Long tournamentId) {
+        return ResponseEntity.ok(tournamentService.finishTournament(organizerId, tournamentId));
     }
 
-    @Operation(summary = "Configure tournament rules and dates")
-    @PatchMapping("/{id}/config")
-    public ResponseEntity<TournamentResponseDTO> configTournament(
-            @PathVariable String id,
-            @RequestParam String organizerId,
-            @Valid @RequestBody TournamentConfigRequestDTO dto) {
-        return ResponseEntity.ok(tournamentService.configTournament(organizerId, id, dto));
+    @PostMapping("/{tournamentId}/config")
+    @Operation(summary = "Configurar torneo")
+    public ResponseEntity<TournamentConfigResponseDTO> configTournament(
+            @RequestParam Long organizerId,
+            @PathVariable Long tournamentId,
+            @RequestBody TournamentConfigRequestDTO dto) {
+        return ResponseEntity.ok(tournamentService.configTournament(organizerId, tournamentId, dto));
     }
 
+    @PostMapping("/{tournamentId}/venues")
+    @Operation(summary = "Agregar sede al torneo")
+    public ResponseEntity<VenueResponseDTO> addVenue(
+            @RequestParam Long organizerId,
+            @PathVariable Long tournamentId,
+            @RequestBody VenueRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(tournamentService.addVenue(organizerId, tournamentId, dto));
+    }
+
+    @GetMapping("/{tournamentId}/venues")
+    @Operation(summary = "Obtener sedes del torneo")
+    public ResponseEntity<List<VenueResponseDTO>> getVenuesByTournament(@PathVariable Long tournamentId) {
+        return ResponseEntity.ok(tournamentService.getVenuesByTournament(tournamentId));
+    }
 }

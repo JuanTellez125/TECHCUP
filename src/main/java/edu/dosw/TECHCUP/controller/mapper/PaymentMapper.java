@@ -9,6 +9,6 @@ import org.mapstruct.Mapping;
 public interface PaymentMapper {
 
     @Mapping(source = "payment_id",                    target = "id")
-    @Mapping(source = "registration.TournamentRegistration_id", target = "registrationId")
+    @Mapping(source = "registration.tournamentRegistration_id", target = "registrationId")
     PaymentResponseDTO toDto(Payment payment);
 }

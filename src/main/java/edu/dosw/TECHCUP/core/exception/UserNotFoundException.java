@@ -1,7 +1,7 @@
 package edu.dosw.TECHCUP.core.exception;
 
 public class UserNotFoundException extends RuntimeException {
-    public UserNotFoundException(String message) {
-        super("Usuario con id " + message + " no encontrado.");
+    public UserNotFoundException(Long id) {
+        super("Usuario con id " + id + " no encontrado.");
     }
 }

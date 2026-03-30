@@ -50,7 +50,7 @@ public class TournamentService {
     @Transactional
     public TournamentResponseDTO createTournament(Long organizerId, TournamentRequestDTO dto) {
         User organizer = userRepository.findById(organizerId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(organizerId)));
+                .orElseThrow(() -> new UserNotFoundException(organizerId));
 
         if (organizer.getUserType() != Role.ORGANIZER)
             throw new TournamentValidationException("El usuario no tiene permisos para crear un torneo.");
@@ -117,7 +117,7 @@ public class TournamentService {
         Venue venue = Venue.builder()
                 .tournament(tournament)
                 .name(dto.getName())
-                .Location(dto.Location())
+                .Location(dto.getVenueLocation())
                 .description(dto.getDescription())
                 .build();
 
@@ -125,7 +125,7 @@ public class TournamentService {
     }
 
     public TournamentResponseDTO getTournamentById(String tournamentId) {
-        Tournament tournament = tournamentRepository.findById(tournamentId)
+        Tournament tournament = tournamentRepository.findById(Long.valueOf(tournamentId))
                 .orElseThrow(() -> new TournamentNotFoundException(Long.parseLong(tournamentId)));
         return tournamentMapper.toDto(tournament);
     }

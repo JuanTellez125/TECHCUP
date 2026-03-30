@@ -7,7 +7,7 @@ import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
-import edu.dosw.TECHCUP.core.repository.UserRepository;
+import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;
 import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
@@ -56,7 +56,7 @@ public class CaptainService implements UserService {
     @Override
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id)));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
@@ -70,13 +70,13 @@ public class CaptainService implements UserService {
     @Override
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id))
-            throw new UserNotFoundException(String.valueOf(id));
+            throw new UserNotFoundException(id);
         userRepository.deleteById(id);
         log.info("Capitán eliminado: {}", id);
     }
 
     public UserResponseDTO getCaptainById(Long id) {
         return userMapper.toDto(userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id))));
+                .orElseThrow(() -> new UserNotFoundException(id)));
     }
 }

@@ -46,7 +46,7 @@ public class TeamService {
     @Transactional
     public TeamResponseDTO createTeam(Long captainId, TeamRequestDTO dto) {
         User captain = userRepository.findById(captainId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(captainId)));
+                .orElseThrow(() -> new UserNotFoundException(captainId));
 
         teamValidator.validateCaptainRole(captain);
         teamValidator.validateTeamName(dto.getName());
@@ -78,8 +78,8 @@ public class TeamService {
         return teamMapper.toDto(saved);
     }
 
-    public TeamResponseDTO getTeamById(String teamId) {
-        Team team = teamRepository.findById(teamId)
+    public TeamResponseDTO getTeamById(Long teamId) {
+        Team team = teamRepository.findById(String.valueOf(teamId))
                 .orElseThrow(() -> new UserNotFoundException(teamId));
         return teamMapper.toDto(team);
     }
@@ -87,17 +87,17 @@ public class TeamService {
     @Transactional
     public InvitationResponseDTO invitePlayer(Long captainId, Long teamId, Long playerId) {
         User captain = userRepository.findById(captainId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(captainId)));
+                .orElseThrow(() -> new UserNotFoundException(captainId));
         teamValidator.validateCaptainRole(captain);
 
-        Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(teamId)));
+        Team team = teamRepository.findById(String.valueOf(teamId))
+                .orElseThrow(() -> new UserNotFoundException(teamId));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
             throw new UserValidationException("No eres el capitán de este equipo.");
 
         User player = userRepository.findById(playerId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(playerId)));
+                .orElseThrow(() -> new UserNotFoundException(playerId));
 
         if (teamMemberRepository.existsByTeam_IdAndUser_User_id(teamId, playerId))
             throw new UserValidationException("El jugador ya pertenece a este equipo.");
@@ -121,7 +121,7 @@ public class TeamService {
     @Transactional
     public InvitationResponseDTO respondInvitation(Long playerId, Long invitationId, boolean accept) {
         Invitation invitation = invitationRepository.findById(invitationId)
-                .orElseThrow(() -> new UserNotFoundException("Invitación no encontrada: " + invitationId));
+                .orElseThrow(() -> new UserNotFoundException(invitationId));
 
         if (!invitation.getInvitedUser().getUser_id().equals(playerId))
             throw new UserValidationException("Esta invitación no es para ti.");

@@ -1,11 +1,12 @@
 package edu.dosw.TECHCUP.controller;
 
+import edu.dosw.TECHCUP.controller.dto.request.SportProfileRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.response.SportProfileResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
-import edu.dosw.TECHCUP.core.model.enums.PlayerAvailable;
 import edu.dosw.TECHCUP.core.service.impl.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,49 +15,65 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/players")
 @RequiredArgsConstructor
+@Tag(name = "Player", description = "Gestión de jugadores")
 public class PlayerController {
 
     private final PlayerService playerService;
 
-    @Operation(summary = "Register new player")
-    @PostMapping("/players")
-    public ResponseEntity<UserResponseDTO> createPlayer(@Valid @RequestBody UserRequestDTO dto) {
+    @PostMapping
+    @Operation(summary = "Crear jugador")
+    public ResponseEntity<UserResponseDTO> createPlayer(@RequestBody UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(playerService.createUser(dto));
     }
 
-    @Operation(summary = "Get player by ID")
-    @GetMapping("/players/{id}")
-    public ResponseEntity<UserResponseDTO> getPlayer(@PathVariable String id) {
-        return ResponseEntity.ok(playerService.getPlayerById(id));
-    }
-
-    @Operation(summary = "List all players")
-    @GetMapping("/players")
+    @GetMapping
+    @Operation(summary = "Obtener todos los jugadores")
     public ResponseEntity<List<UserResponseDTO>> getAllPlayers() {
         return ResponseEntity.ok(playerService.getAllPlayers());
     }
 
-    @Operation(summary = "Update player")
-    @PutMapping("/players/{id}")
-    public ResponseEntity<UserResponseDTO> updatePlayer(@PathVariable String id,
-                                                        @Valid @RequestBody UserRequestDTO dto) {
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtener jugador por ID")
+    public ResponseEntity<UserResponseDTO> getPlayerById(@PathVariable Long id) {
+        return ResponseEntity.ok(playerService.getPlayerById(id));
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar jugador")
+    public ResponseEntity<UserResponseDTO> updatePlayer(
+            @PathVariable Long id,
+            @RequestBody UserRequestDTO dto) {
         return ResponseEntity.ok(playerService.updateUser(id, dto));
     }
 
-    @Operation(summary = "Delete player")
-    @DeleteMapping("/players/{id}")
-    public ResponseEntity<Void> deletePlayer(@PathVariable String id) {
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar jugador")
+    public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {
         playerService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Update player availability")
-    @PatchMapping("/players/{id}/availability")
-    public ResponseEntity<UserResponseDTO> setAvailability(@PathVariable String id,
-                                                           @RequestParam PlayerAvailable availability) {
-        return ResponseEntity.ok(playerService.setAvailability(id, availability));
+    @PostMapping("/{userId}/sport-profile")
+    @Operation(summary = "Crear o actualizar perfil deportivo")
+    public ResponseEntity<SportProfileResponseDTO> saveSportProfile(
+            @PathVariable Long userId,
+            @RequestBody SportProfileRequestDTO dto) {
+        return ResponseEntity.ok(playerService.saveSportProfile(userId, dto));
     }
 
+    @GetMapping("/{userId}/sport-profile")
+    @Operation(summary = "Obtener perfil deportivo")
+    public ResponseEntity<SportProfileResponseDTO> getSportProfile(@PathVariable Long userId) {
+        return ResponseEntity.ok(playerService.getSportProfile(userId));
+    }
+
+    @PatchMapping("/{userId}/availability")
+    @Operation(summary = "Actualizar disponibilidad del jugador")
+    public ResponseEntity<SportProfileResponseDTO> setAvailability(
+            @PathVariable Long userId,
+            @RequestParam boolean available) {
+        return ResponseEntity.ok(playerService.setAvailability(userId, available));
+    }
 }

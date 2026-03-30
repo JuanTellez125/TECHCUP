@@ -14,6 +14,6 @@ public interface LineUpMapper {
     @Mapping(source = "team.name",       target = "teamName")
     @Mapping(source = "user.user_id",    target = "userId")
     @Mapping(source = "user.firstName",  target = "userName")
-    @Mapping(source = "role.name",       target = "role")
+    //@Mapping(source = "role.name",       target = "role")
     LineUpResponseDTO toDto(LineUp lineUp);
 }

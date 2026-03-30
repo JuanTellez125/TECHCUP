@@ -50,12 +50,12 @@ public class MatchService {
     public MatchResponseDTO scheduleMatch(MatchRequestDTO dto) {
         Tournament tournament = tournamentRepository.findById(dto.getTournamentId())
                 .orElseThrow(() -> new TournamentNotFoundException(dto.getTournamentId()));
-        Team team1 = teamRepository.findById(dto.getTeam1Id())
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(dto.getTeam1Id())));
-        Team team2 = teamRepository.findById(dto.getTeam2Id())
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(dto.getTeam2Id())));
+        Team team1 = teamRepository.findById(String.valueOf(dto.getTeam1Id()))
+                .orElseThrow(() -> new UserNotFoundException(dto.getTeam1Id()));
+        Team team2 = teamRepository.findById(String.valueOf(dto.getTeam2Id()))
+                .orElseThrow(() -> new UserNotFoundException(dto.getTeam2Id()));
         Venue venue = venueRepository.findById(dto.getVenueId())
-                .orElseThrow(() -> new UserNotFoundException("Cancha no encontrada: " + dto.getVenueId()));
+                .orElseThrow(() -> new UserNotFoundException(dto.getVenueId()));
 
         if (team1.getId().equals(team2.getId()))
             throw new TournamentValidationException("El equipo local y visitante no pueden ser el mismo.");
@@ -82,12 +82,12 @@ public class MatchService {
     @Transactional
     public MatchResultResponseDTO registerResult(Long organizerId, MatchResultRequestDTO dto) {
         User organizer = userRepository.findById(organizerId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(organizerId)));
+                .orElseThrow(() -> new UserNotFoundException(organizerId));
         if (organizer.getUserType() != Role.ORGANIZER)
             throw new TournamentValidationException("Solo el organizador puede registrar resultados.");
 
         Match match = matchRepository.findById(dto.getMatchId())
-                .orElseThrow(() -> new UserNotFoundException("Partido no encontrado: " + dto.getMatchId()));
+                .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
 
         MatchResult result = MatchResult.builder()
                 .match(match)
@@ -111,11 +111,11 @@ public class MatchService {
     @Transactional
     public MatchEventResponseDTO registerEvent(MatchEventRequestDTO dto) {
         Match match = matchRepository.findById(dto.getMatchId())
-                .orElseThrow(() -> new UserNotFoundException("Partido no encontrado: " + dto.getMatchId()));
+                .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(dto.getUserId())));
-        Team team = teamRepository.findById(dto.getTeamId())
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(dto.getTeamId())));
+                .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
+        Team team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+                .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
 
         MatchEvent event = MatchEvent.builder()
                 .match(match)
@@ -131,16 +131,16 @@ public class MatchService {
     @Transactional
     public LineUpResponseDTO saveLineUp(Long captainId, LineUpRequestDTO dto) {
         User captain = userRepository.findById(captainId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(captainId)));
+                .orElseThrow(() -> new UserNotFoundException(captainId));
         if (captain.getUserType() != Role.CAPTAIN)
             throw new TournamentValidationException("Solo el capitán puede definir la alineación.");
 
         Match match = matchRepository.findById(dto.getMatchId())
-                .orElseThrow(() -> new UserNotFoundException("Partido no encontrado: " + dto.getMatchId()));
-        Team team = teamRepository.findById(dto.getTeamId())
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(dto.getTeamId())));
+                .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
+        Team team = teamRepository.findById(String.valueOf(dto.getTeamId()))
+                .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
         User player = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(dto.getUserId())));
+                .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
 
         LineUp lineUp = LineUp.builder()
                 .match(match)

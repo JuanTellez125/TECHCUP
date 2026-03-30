@@ -6,13 +6,13 @@ import edu.dosw.TECHCUP.controller.dto.response.SportProfileResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.SportProfileMapper;
 import edu.dosw.TECHCUP.controller.mapper.UserMapper;
+import edu.dosw.TECHCUP.core.exception.SportProfileException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.SportProfile;
-import edu.dosw.TECHCUP.core.model.enums.PlayerAvailable;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.model.User;
-import edu.dosw.TECHCUP.core.repository.UserRepository;
+import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
 import edu.dosw.TECHCUP.persistence.repository.SportProfileRepository;
@@ -64,7 +64,7 @@ public class PlayerService implements UserService {
     @Override
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id)));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
@@ -78,7 +78,7 @@ public class PlayerService implements UserService {
     @Override
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id))
-            throw new UserNotFoundException(String.valueOf(id));
+            throw new UserNotFoundException(id);
         userRepository.deleteById(id);
         log.info("Jugador eliminado: {}", id);
     }
@@ -86,7 +86,7 @@ public class PlayerService implements UserService {
     @Transactional
     public SportProfileResponseDTO saveSportProfile(Long userId, SportProfileRequestDTO dto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(userId)));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         SportProfile profile = sportProfileRepository.findByUser_User_id(userId)
                 .orElse(SportProfile.builder().user(user).build());
@@ -106,7 +106,7 @@ public class PlayerService implements UserService {
     @Transactional
     public SportProfileResponseDTO setAvailability(Long userId, boolean available) {
         SportProfile profile = sportProfileRepository.findByUser_User_id(userId)
-                .orElseThrow(() -> new UserNotFoundException("Perfil deportivo no encontrado para usuario: " + userId));
+                .orElseThrow(() -> new SportProfileException( userId));
 
         profile.setAvailable(available);
         return sportProfileMapper.toDto(sportProfileRepository.save(profile));
@@ -114,11 +114,11 @@ public class PlayerService implements UserService {
 
     public SportProfileResponseDTO getSportProfile(Long userId) {
         SportProfile profile = sportProfileRepository.findByUser_User_id(userId)
-                .orElseThrow(() -> new UserNotFoundException("Perfil deportivo no encontrado para usuario: " + userId));
+                .orElseThrow(() -> new SportProfileException( userId));
         return sportProfileMapper.toDto(profile);
     }
 
-    public UserResponseDTO getPlayerById(String id) {
+    public UserResponseDTO getPlayerById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         return userMapper.toDto(user);
