@@ -16,39 +16,15 @@ import edu.dosw.TECHCUP.core.model.enums.Position;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table (name = "users")
-@Entity
 public class User {
-
-    @Id
-    private String id;
-
-    private String name;
-
+    private Long user_id;
     private String email;
-
+    private String documentId;
     private String password;
-
-    private Byte[] userPhoto;
-
-    private Role role;
-
-    private int dorsal;
-
-    private Position mainPosition;
-
-    private Position secundaryPosition;
-
-    private PlayerAvailable playerAvailable;
-
-    private Team team;
-
-    private String gender;
-
-    private String identification;
-
-    private int semester;
-
+    private String firstName;
+    private String lastName;
+    private Role userType;
+    private boolean active;
 
 
 }
