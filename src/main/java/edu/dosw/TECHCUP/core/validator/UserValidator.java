@@ -7,10 +7,9 @@ import edu.dosw.TECHCUP.core.exception.UserValidationException;
 public class UserValidator {
 
     public void validate(UserRequestDTO request) {
-        validateName(request.getName());
+        validateName(request.getFirstName());
         validateEmail(request.getEmail());
         validatePassword(request.getPassword());
-        validateDorsal(request.getDorsal());
     }
 
     private void validateName(String name) {

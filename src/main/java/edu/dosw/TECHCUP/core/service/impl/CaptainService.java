@@ -4,6 +4,7 @@ import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.UserMapper;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
+import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.repository.UserRepository;
@@ -31,61 +32,51 @@ public class CaptainService implements UserService {
     public UserResponseDTO createUser(UserRequestDTO dto) {
         userValidator.validate(dto);
 
-        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new edu.dosw.TECHCUP.core.exception.UserValidationException(
-                    "Ya existe un usuario con el email: " + dto.getEmail());
-        }
+        if (userRepository.existsByEmail(dto.getEmail()))
+            throw new UserValidationException("Ya existe un usuario con el email: " + dto.getEmail());
+        if (userRepository.existsByDocumentId(dto.getDocumentId()))
+            throw new UserValidationException("Ya existe un usuario con el documento: " + dto.getDocumentId());
 
         User captain = User.builder()
-                .id(IdGeneratorUtil.generateId())
-                .name(dto.getName())
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
-                .userPhoto(dto.getUserPhoto())
-                .role(Role.CAPTAIN)
-                .dorsal(dto.getDorsal())
-                .mainPosition(dto.getMainPosition())
-                .secondaryPosition(dto.getSecondaryPosition())
-                .playerAvailable(dto.getPlayerAvailable())
+                .documentId(dto.getDocumentId())
+                .userType(Role.CAPTAIN)
+                .active(true)
                 .build();
 
         User saved = userRepository.save(captain);
-        log.info("Capitán creado con ID: {}", saved.getId());
+        log.info("Capitán creado con ID: {}", saved.getUser_id());
         return userMapper.toDto(saved);
     }
 
     @Transactional
     @Override
-    public UserResponseDTO updateUser(String id, UserRequestDTO dto) {
+    public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id)));
 
-        user.setName(dto.getName());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
-        user.setDorsal(dto.getDorsal());
-        user.setMainPosition(dto.getMainPosition());
-        user.setSecondaryPosition(dto.getSecondaryPosition());
-        user.setPlayerAvailable(dto.getPlayerAvailable());
 
-        User updated = userRepository.save(user);
-        log.info("Capitán actualizado: {}", id);
-        return userMapper.toDto(updated);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Transactional
     @Override
-    public void deleteUser(String id) {
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException(id);
-        }
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id))
+            throw new UserNotFoundException(String.valueOf(id));
         userRepository.deleteById(id);
         log.info("Capitán eliminado: {}", id);
     }
 
-    public UserResponseDTO getCaptainById(String id) {
-        User captain = userRepository.findByRoleAndId(Role.CAPTAIN, id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-        return userMapper.toDto(captain);
+    public UserResponseDTO getCaptainById(Long id) {
+        return userMapper.toDto(userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id))));
     }
 }

@@ -9,15 +9,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User,Long> {
+
+    Optional<User> findById(Long id);
+
+    User findByRole(Role role);
+
+    Optional<User> findByRoleAndId(Role role, Long id);
 
     Optional<User> findByEmail(String email);
 
-    Optional<User> findByDocumentId(String documentId);
+    List<User> findAll();
 
-    Optional<User> findByUserTypeAndUser_id(Role role, Long id);
+    List<User> findAllByRole(Role role);
 
-    List<User> findAllByUserType(Role role);
+    Optional<User> findAllByUserType(Role role);
 
     boolean existsByEmail(String email);
 

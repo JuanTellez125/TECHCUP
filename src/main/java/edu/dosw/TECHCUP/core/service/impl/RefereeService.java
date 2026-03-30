@@ -29,60 +29,55 @@ public class RefereeService implements UserService {
     private final UserValidator userValidator;
 
     @Transactional
+    @Override
     public UserResponseDTO createUser(UserRequestDTO dto) {
         userValidator.validate(dto);
 
-        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new UserValidationException(
-                    "Ya existe un usuario con el email: " + dto.getEmail());
-        }
+        if (userRepository.existsByEmail(dto.getEmail()))
+            throw new UserValidationException("Ya existe un usuario con el email: " + dto.getEmail());
 
         User referee = User.builder()
-                .id(IdGeneratorUtil.generateId())
-                .name(dto.getName())
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
-                .role(Role.REFEREE)
+                .documentId(dto.getDocumentId())
+                .userType(Role.REFEREE)
+                .active(true)
                 .build();
 
         User saved = userRepository.save(referee);
-        log.info("Árbitro creado con ID: {}", saved.getId());
+        log.info("Árbitro creado con ID: {}", saved.getUser_id());
         return userMapper.toDto(saved);
     }
 
     @Transactional
-    public UserResponseDTO updateUser(String id, UserRequestDTO dto) {
+    @Override
+    public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-
-        user.setName(dto.getName());
+                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id)));
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
-
-        User updated = userRepository.save(user);
-        log.info("Árbitro actualizado: {}", id);
-        return userMapper.toDto(updated);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Transactional
-    public void deleteUser(String id) {
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException(id);
-        }
+    @Override
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id))
+            throw new UserNotFoundException(String.valueOf(id));
         userRepository.deleteById(id);
-        log.info("Árbitro eliminado: {}", id);
     }
 
-    public UserResponseDTO getRefereeById(String id) {
-        User referee = userRepository.findByRoleAndId(Role.REFEREE, id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-        return userMapper.toDto(referee);
+    public UserResponseDTO getRefereeById(Long id) {
+        return userMapper.toDto(userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id))));
     }
 
     public List<UserResponseDTO> getAllReferees() {
-        return userRepository.findAllByRole(Role.REFEREE)
-                .stream()
-                .map(userMapper::toDto)
-                .collect(Collectors.toList());
+        return userRepository.findAllByUserType(Role.REFEREE)
+                .stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 }

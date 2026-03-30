@@ -14,7 +14,7 @@ public class VenueResponseDTO {
 
     private String name;
 
-    private String location;
+    private String Location;
 
     private String description;
 }
