@@ -23,7 +23,7 @@ public class TournamentConfigEntity {
 
     @OneToOne
     @JoinColumn(name = "tournament_id")
-    private Tournament tournament;
+    private TournamentEntity tournament;
 
     private String rulebook;
     private LocalDate inscriptionDeadline;

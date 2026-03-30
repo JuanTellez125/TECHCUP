@@ -24,11 +24,11 @@ public class MatchResultEntity {
 
     @OneToOne
     @JoinColumn(name = "match_id")
-    private Match match;
+    private MatchEntity match;
 
     @ManyToOne
     @JoinColumn(name = "registered_by")
-    private User registeredBy;
+    private UserEntity registeredBy;
 
     private int team1Goals;
     private int team2Goals;

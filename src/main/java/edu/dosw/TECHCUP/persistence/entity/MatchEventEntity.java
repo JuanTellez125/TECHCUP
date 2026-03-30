@@ -24,15 +24,15 @@ public class MatchEventEntity {
 
     @ManyToOne
     @JoinColumn(name = "match_id")
-    private Match match;
+    private MatchEntity match;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    private Team team;
+    private TeamEntity team;
 
     @Enumerated(EnumType.STRING)
     private Event eventType;

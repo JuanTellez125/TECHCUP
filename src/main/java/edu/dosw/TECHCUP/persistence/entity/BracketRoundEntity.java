@@ -21,7 +21,7 @@ public class BracketRoundEntity {
 
     @ManyToOne
     @JoinColumn(name = "tournament_id")
-    private Tournament tournament;
+    private TournamentEntity tournament;
 
     private String roundName;
 }

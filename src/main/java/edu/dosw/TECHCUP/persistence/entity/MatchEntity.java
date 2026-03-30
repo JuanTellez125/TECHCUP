@@ -24,23 +24,23 @@ public class MatchEntity {
 
     @ManyToOne
     @JoinColumn(name = "tournament_id")
-    private Tournament tournament;
+    private TournamentEntity tournament;
 
     @ManyToOne
     @JoinColumn(name = "team1_id")
-    private Team team1;
+    private TeamEntity team1;
 
     @ManyToOne
     @JoinColumn(name = "team2_id")
-    private Team team2;
+    private TeamEntity team2;
 
     @ManyToOne
     @JoinColumn(name = "venue_id")
-    private Venue vanue;
+    private VenueEntity vanue;
 
     @ManyToOne
     @JoinColumn(name = "referee_id")
-    private User referee;
+    private UserEntity referee;
 
     @Enumerated(EnumType.STRING)
     private MatchPhase phase;
@@ -49,11 +49,11 @@ public class MatchEntity {
     private String status;
 
     @OneToOne(mappedBy = "match", cascade = CascadeType.ALL)
-    private MatchResult result;
+    private MatchResultEntity result;
 
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
-    private List<MatchEvent> events;
+    private List<MatchEventEntity> events;
 
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
-    private List<LineUp> lineups;
+    private List<LineUpEntity> lineups;
 }

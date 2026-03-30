@@ -22,11 +22,11 @@ public class StandingEntity {
 
     @ManyToOne
     @JoinColumn(name = "tournament_id")
-    private Tournament tournament;
+    private TournamentEntity tournament;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    private Team team;
+    private TeamEntity team;
 
     private int played;
     private int won;
