@@ -2,6 +2,8 @@ package edu.dosw.TECHCUP.security.service;
 
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.service.UserService;
+import edu.dosw.TECHCUP.persistence.entity.UserEntity;
+import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,21 +20,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Qualifier("playerService")
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         log.debug("Cargando usuario por email: {}", email);
 
-        User user = userService.findByEmail(email)
+        UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.warn("Usuario no encontrado para autenticacion: {}", email);
                     return new UsernameNotFoundException(
                             "Usuario no encontrado con email: " + email);
                 });
 
-        // Carga el rol del usuario: PLAYER, CAPTAIN, REFEREE, ADMINISTRATOR, ORGANIZER
         String roleAuthority = "ROLE_" + user.getUserType().name();
         log.debug("Usuario {} autenticado con rol: {}", email, roleAuthority);
 

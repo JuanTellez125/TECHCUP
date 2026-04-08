@@ -4,6 +4,8 @@ import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.core.service.UserService;
+import edu.dosw.TECHCUP.persistence.entity.UserEntity;
+import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.security.controller.dto.LoginRequestDTO;
 import edu.dosw.TECHCUP.security.controller.dto.LoginResponseDTO;
 import edu.dosw.TECHCUP.security.controller.dto.RegisterRequestDTO;
@@ -16,13 +18,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-// Maneja el login y el registro y genera el JWT
 @Slf4j
 @RestController
 @RequestMapping("/auth")
@@ -31,28 +33,26 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    @Qualifier("playerService")
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public ResponseEntity<LoginResponseDTO> register(@RequestBody RegisterRequestDTO request) {
         log.info("POST /auth/register - Registro de nuevo usuario: {}", request.getEmail());
 
-        //Construlle el DTO
-        UserRequestDTO userRequest = UserRequestDTO.builder()
+        UserEntity newUser = UserEntity.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .documentId(request.getDocumentId())
-                // Deja PLAYER por defecto
                 .userType(request.getUserType() != null ? request.getUserType() : Role.PLAYER)
+                .active(true)
                 .build();
 
-        UserResponseDTO createdUser = userService.createUser(userRequest);
-        log.info("Usuario registrado con id: {}", createdUser.getId());
+        userRepository.save(newUser);
+        log.info("Usuario registrado con email: {}", newUser.getEmail());
 
-        // Genera el token JWT
         LoginResponseDTO response = authenticateAndGenerateToken(
                 request.getEmail(), request.getPassword());
 
@@ -71,11 +71,9 @@ public class AuthController {
     }
 
     private LoginResponseDTO authenticateAndGenerateToken(String email, String password) {
-        // autentica al usuario con las credenciales
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password));
 
-        //ya se tiene el usuario autenticado
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String token = jwtService.generateToken(userDetails);
 
