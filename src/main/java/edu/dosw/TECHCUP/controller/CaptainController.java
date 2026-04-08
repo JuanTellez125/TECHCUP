@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,18 +20,21 @@ public class CaptainController {
     private final CaptainService captainService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Crear capitán")
     public ResponseEntity<UserResponseDTO> createCaptain(@RequestBody UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(captainService.createUser(dto));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'CAPTAIN')")
     @Operation(summary = "Obtener capitán por ID")
     public ResponseEntity<UserResponseDTO> getCaptainById(@PathVariable Long id) {
         return ResponseEntity.ok(captainService.getCaptainById(id));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Actualizar capitán")
     public ResponseEntity<UserResponseDTO> updateCaptain(
             @PathVariable Long id,
@@ -39,6 +43,7 @@ public class CaptainController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Eliminar capitán")
     public ResponseEntity<Void> deleteCaptain(@PathVariable Long id) {
         captainService.deleteUser(id);

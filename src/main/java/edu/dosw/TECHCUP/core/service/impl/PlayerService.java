@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import edu.dosw.TECHCUP.core.model.User;  // Asegúrate de tener este import
+import java.util.Optional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -127,5 +129,21 @@ public class PlayerService implements UserService {
         profile.setAvailable(dto.isAvailable());
 
         return sportProfileMapper.toDto(sportProfileRepository.save(profile));
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        log.debug("Buscando jugador por email: {}", email);
+        return userRepository.findByEmail(email)
+                .map(entity -> User.builder()
+                        .user_id(entity.getUser_id())
+                        .email(entity.getEmail())
+                        .password(entity.getPassword())
+                        .firstName(entity.getFirstName())
+                        .lastName(entity.getLastName())
+                        .documentId(entity.getDocumentId())
+                        .userType(entity.getUserType())
+                        .active(entity.isActive())
+                        .build());
     }
 }
