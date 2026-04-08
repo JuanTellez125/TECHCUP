@@ -16,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.dosw.TECHCUP.core.model.User;
+import java.util.Optional;
+
 import java.util.Base64;
 
 @Service
@@ -79,4 +82,21 @@ public class CaptainService implements UserService {
         return userMapper.toDto(userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id)));
     }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        log.debug("Buscando capitán por email: {}", email);
+        return userRepository.findByEmail(email)
+                .map(entity -> User.builder()
+                        .user_id(entity.getUser_id())
+                        .email(entity.getEmail())
+                        .password(entity.getPassword())
+                        .firstName(entity.getFirstName())
+                        .lastName(entity.getLastName())
+                        .documentId(entity.getDocumentId())
+                        .userType(entity.getUserType())
+                        .active(entity.isActive())
+                        .build());
+    }
+
 }
