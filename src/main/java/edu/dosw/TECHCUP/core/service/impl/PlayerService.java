@@ -21,8 +21,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import edu.dosw.TECHCUP.core.model.User;  // Asegúrate de tener este import
+import edu.dosw.TECHCUP.core.model.User;
 import java.util.Optional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +38,7 @@ public class PlayerService implements UserService {
     private final SportProfileRepository sportProfileRepository;
     private final SportProfileMapper sportProfileMapper;
     private final UserValidator userValidator;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -52,7 +54,7 @@ public class PlayerService implements UserService {
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))//SE cambio
                 .documentId(dto.getDocumentId())
                 .userType(Role.PLAYER)
                 .active(true)
@@ -72,7 +74,10 @@ public class PlayerService implements UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        //Se cambio
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
 
         return userMapper.toDto(userRepository.save(user));
     }

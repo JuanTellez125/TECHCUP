@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import edu.dosw.TECHCUP.core.model.User;
 import java.util.Optional;
@@ -29,6 +30,7 @@ public class CaptainService implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserValidator userValidator;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -44,7 +46,7 @@ public class CaptainService implements UserService {
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))//cambio
                 .documentId(dto.getDocumentId())
                 .userType(Role.CAPTAIN)
                 .active(true)
@@ -64,7 +66,10 @@ public class CaptainService implements UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        //cambio
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
 
         return userMapper.toDto(userRepository.save(user));
     }

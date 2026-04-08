@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -21,24 +22,28 @@ public class OrganizerController {
     private final OrganizerService organizerService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Crear organizador")
     public ResponseEntity<UserResponseDTO> createOrganizer(@RequestBody UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(organizerService.createUser(dto));
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Obtener todos los organizadores")
     public ResponseEntity<List<UserResponseDTO>> getAllOrganizers() {
         return ResponseEntity.ok(organizerService.getAllOrganizers());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER')")
     @Operation(summary = "Obtener organizador por ID")
     public ResponseEntity<UserResponseDTO> getOrganizerById(@PathVariable Long id) {
         return ResponseEntity.ok(organizerService.getOrganizerById(id));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Actualizar organizador")
     public ResponseEntity<UserResponseDTO> updateOrganizer(
             @PathVariable Long id,
@@ -47,6 +52,7 @@ public class OrganizerController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Eliminar organizador")
     public ResponseEntity<Void> deleteOrganizer(@PathVariable Long id) {
         organizerService.deleteUser(id);

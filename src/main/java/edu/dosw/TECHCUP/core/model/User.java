@@ -19,5 +19,4 @@ public class User {
     private String lastName;
     private Role userType;
     private boolean active;
-    private Role role;
 }

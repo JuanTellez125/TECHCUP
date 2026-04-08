@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import edu.dosw.TECHCUP.core.model.User;
 import java.util.Optional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class OrganizerService implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserValidator userValidator;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -37,12 +39,14 @@ public class OrganizerService implements UserService {
 
         if (userRepository.existsByEmail(dto.getEmail()))
             throw new UserValidationException("Ya existe un usuario con el email: " + dto.getEmail());
+        if (userRepository.existsByDocumentId(dto.getDocumentId()))
+            throw new UserValidationException("Ya existe un usuario con el documento: " + dto.getDocumentId());
 
         UserEntity organizer = UserEntity.builder()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .documentId(dto.getDocumentId())
                 .userType(Role.ORGANIZER)
                 .active(true)
@@ -61,7 +65,9 @@ public class OrganizerService implements UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
         return userMapper.toDto(userRepository.save(user));
     }
 
@@ -71,6 +77,7 @@ public class OrganizerService implements UserService {
         if (!userRepository.existsById(id))
             throw new UserNotFoundException(id);
         userRepository.deleteById(id);
+        log.info("Organizador eliminado: {}", id);
     }
 
     public UserResponseDTO getOrganizerById(Long id) {

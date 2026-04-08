@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -22,24 +23,28 @@ public class AdministratorController {
     private final AdministratorService administratorService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Crear administrador")
     public ResponseEntity<UserResponseDTO> createAdministrator(@RequestBody UserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(administratorService.createUser(dto));
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Obtener todos los usuarios")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(administratorService.getAllUsers());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Obtener administrador por ID")
     public ResponseEntity<UserResponseDTO> getAdminById(@PathVariable Long id) {
         return ResponseEntity.ok(administratorService.getAdminById(id));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Actualizar administrador")
     public ResponseEntity<UserResponseDTO> updateAdministrator(
             @PathVariable Long id,
@@ -48,6 +53,7 @@ public class AdministratorController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Eliminar administrador")
     public ResponseEntity<Void> deleteAdministrator(@PathVariable Long id) {
         administratorService.deleteUser(id);
@@ -55,6 +61,7 @@ public class AdministratorController {
     }
 
     @PatchMapping("/{adminId}/assign-role")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Asignar rol a un usuario")
     public ResponseEntity<UserResponseDTO> assignRole(
             @PathVariable Long adminId,
