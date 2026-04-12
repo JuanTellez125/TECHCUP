@@ -15,6 +15,21 @@ jobs:
     permissions:
       contents: read #This is required for actions/checkout
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: techcup
+          POSTGRES_USER: techcupadmin
+          POSTGRES_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -25,6 +40,12 @@ jobs:
           distribution: 'microsoft'
 
       - name: Build with Maven
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/techcup
+          SPRING_DATASOURCE_USERNAME: techcupadmin
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION: 3600000
         run: mvn clean install
 
       - name: Upload artifact for deployment job
