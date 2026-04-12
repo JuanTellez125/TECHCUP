@@ -41,8 +41,8 @@ jobs:
 
       - name: Build with Maven
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/techcup
-          SPRING_DATASOURCE_USERNAME: techcupadmin
+          SPRING_DATASOURCE_URL: postgresql://postgres:RwwtYZauPffZDChxCIeaBhMWFGoQZdhX@metro.proxy.rlwy.net:36178/railway
+          SPRING_DATASOURCE_USERNAME: postgres
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_EXPIRATION: 3600000
