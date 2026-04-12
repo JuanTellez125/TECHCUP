@@ -17,7 +17,8 @@ public class VenueEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long vanue_id;
+    @Column(name = "vanue_id")
+    private Long venueId;
 
     @ManyToOne
     @JoinColumn(name = "tournament_id")

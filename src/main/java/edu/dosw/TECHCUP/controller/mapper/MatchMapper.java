@@ -16,11 +16,10 @@ public interface MatchMapper {
     @Mapping(source = "team1.name",             target = "team1Name")
     @Mapping(source = "team2.id",               target = "team2Id")
     @Mapping(source = "team2.name",             target = "team2Name")
-    @Mapping(source = "vanue.vanue_id",         target = "venueId")
-    @Mapping(source = "vanue.name",             target = "venueName")
+    @Mapping(source = "venue.venueId",           target = "venueId")
+    @Mapping(source = "venue.name",             target = "venueName")
     @Mapping(source = "referee.user_id",        target = "refereeId")
     @Mapping(source = "referee.firstName",      target = "refereeName")
-    @Mapping(target = "status",                 ignore = true)
     MatchResponseDTO toDto(Match match);
 
     Match toModel(MatchRequestDTO dto);

@@ -35,5 +35,5 @@ public class MatchResponseDTO {
 
     private LocalDateTime scheduledAt;
 
-    private MatchPhase status;
+    private String status;
 }

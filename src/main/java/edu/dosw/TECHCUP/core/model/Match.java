@@ -18,11 +18,11 @@ public class Match {
     private Tournament tournament;
     private Team team1;
     private Team team2;
-    private Venue vanue;
+    private Venue venue;
     private User referee;
     private MatchPhase phase;
     private LocalDateTime scheduledAt;
-    private String status;
+    private MatchPhase status;
     private MatchResult result;
     private List<MatchEvent> events;
     private List<LineUp> lineUps;

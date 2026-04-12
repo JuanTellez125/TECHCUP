@@ -10,9 +10,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface VenueMapper {
 
-    @Mapping(source = "vanue_id",               target = "id")
+    @Mapping(source = "venueId",                 target = "id")
     @Mapping(source = "tournament.tournament_id", target = "tournamentId")
-    //@Mapping(source = "location",               target = "location")
+    @Mapping(source = "location",                target = "venueLocation")
     VenueResponseDTO toDto(Venue venue);
 
     Venue toModel(VenueRequestDTO dto);

@@ -36,7 +36,7 @@ public class MatchEntity {
 
     @ManyToOne
     @JoinColumn(name = "venue_id")
-    private VenueEntity vanue;
+    private VenueEntity venue;
 
     @ManyToOne
     @JoinColumn(name = "referee_id")
