@@ -20,6 +20,9 @@ import edu.dosw.TECHCUP.persistence.entity.TournamentConfigEntity;
 import edu.dosw.TECHCUP.persistence.entity.TournamentEntity;
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.persistence.entity.VenueEntity;
+import edu.dosw.TECHCUP.persistence.mapper.TournamentConfigPersistenceMapper;
+import edu.dosw.TECHCUP.persistence.mapper.TournamentPersistenceMapper;
+import edu.dosw.TECHCUP.persistence.mapper.VenuePersistenceMapper;
 import edu.dosw.TECHCUP.persistence.repository.TournamentRepository;
 import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import edu.dosw.TECHCUP.core.validator.TournamentValidator;
@@ -50,6 +53,9 @@ public class TournamentService {
     private final TournamentConfigMapper tournamentConfigMapper;
     private final VenueMapper venueMapper;
     private final TournamentValidator tournamentValidator;
+    private final TournamentPersistenceMapper tournamentPersistenceMapper;
+    private final TournamentConfigPersistenceMapper tournamentConfigPersistenceMapper;
+    private final VenuePersistenceMapper venuePersistenceMapper;
 
     @Transactional
     public TournamentResponseDTO createTournament(Long organizerId, TournamentRequestDTO dto) {
@@ -72,7 +78,7 @@ public class TournamentService {
 
         TournamentEntity saved = tournamentRepository.save(tournament);
         log.info("Tournament created with ID: {}", saved.getTournament_id());
-        return tournamentMapper.toDto(saved);
+        return tournamentMapper.toDto(tournamentPersistenceMapper.toModel(saved));
     }
 
     @Transactional
@@ -81,7 +87,7 @@ public class TournamentService {
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
         tournamentValidator.validateStatusTransition(tournament.getStatus(), TournamentStatus.ACTIVE);
         tournament.setStatus(TournamentStatus.ACTIVE);
-        return tournamentMapper.toDto(tournamentRepository.save(tournament));
+        return tournamentMapper.toDto(tournamentPersistenceMapper.toModel(tournamentRepository.save(tournament)));
     }
 
     @Transactional
@@ -90,7 +96,7 @@ public class TournamentService {
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
         tournamentValidator.validateStatusTransition(tournament.getStatus(), TournamentStatus.FINALIZED);
         tournament.setStatus(TournamentStatus.FINALIZED);
-        return tournamentMapper.toDto(tournamentRepository.save(tournament));
+        return tournamentMapper.toDto(tournamentPersistenceMapper.toModel(tournamentRepository.save(tournament)));
     }
 
     @Transactional
@@ -110,7 +116,7 @@ public class TournamentService {
 
         TournamentConfigEntity saved = tournamentConfigRepository.save(config);
         log.info("Tournament {} set up by organizer {}", tournamentId, organizerId);
-        return tournamentConfigMapper.toDto(saved);
+        return tournamentConfigMapper.toDto(tournamentConfigPersistenceMapper.toModel(saved));
     }
 
     @Transactional
@@ -125,32 +131,34 @@ public class TournamentService {
                 .description(dto.getDescription())
                 .build();
 
-        return venueMapper.toDto(venueRepository.save(venue));
+        return venueMapper.toDto(venuePersistenceMapper.toModel(venueRepository.save(venue)));
     }
 
     public TournamentResponseDTO getTournamentById(String tournamentId) {
         TournamentEntity tournament = tournamentRepository.findById(Long.valueOf(tournamentId))
                 .orElseThrow(() -> new TournamentNotFoundException(Long.parseLong(tournamentId)));
-        return tournamentMapper.toDto(tournament);
+        return tournamentMapper.toDto(tournamentPersistenceMapper.toModel(tournament));
     }
 
     public List<TournamentResponseDTO> getAllTournaments() {
         return tournamentRepository.findAll()
                 .stream()
-                .map(tournamentMapper::toDto)
+                .map(e -> tournamentMapper.toDto(tournamentPersistenceMapper.toModel(e)))
                 .collect(Collectors.toList());
     }
 
     public List<TournamentResponseDTO> getFinalizedTournaments() {
         return tournamentRepository.findAllByStatus(TournamentStatus.FINALIZED)
                 .stream()
-                .map(tournamentMapper::toDto)
+                .map(e -> tournamentMapper.toDto(tournamentPersistenceMapper.toModel(e)))
                 .collect(Collectors.toList());
     }
 
     public List<VenueResponseDTO> getVenuesByTournament(Long tournamentId) {
         return venueRepository.findAllByTournament_Tournament_id(tournamentId)
-                .stream().map(venueMapper::toDto).collect(Collectors.toList());
+                .stream()
+                .map(e -> venueMapper.toDto(venuePersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
 }

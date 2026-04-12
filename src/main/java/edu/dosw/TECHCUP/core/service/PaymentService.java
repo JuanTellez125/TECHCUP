@@ -16,6 +16,8 @@ import edu.dosw.TECHCUP.core.model.enums.RegisterTournamentStatus;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import edu.dosw.TECHCUP.persistence.entity.*;
+import edu.dosw.TECHCUP.persistence.mapper.PaymentPersistenceMapper;
+import edu.dosw.TECHCUP.persistence.mapper.TournamentRegistrationPersistenceMapper;
 import edu.dosw.TECHCUP.persistence.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,8 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final PaymentMapper paymentMapper;
     private final TournamentRegistrationMapper registrationMapper;
+    private final PaymentPersistenceMapper paymentPersistenceMapper;
+    private final TournamentRegistrationPersistenceMapper registrationPersistenceMapper;
 
     @Transactional
     public TournamentRegistrationResponseDTO registerTeam(Long captainId,
@@ -69,7 +73,7 @@ public class PaymentService {
 
         TournamentRegistrationEntity saved = registrationRepository.save(registration);
         log.info("Team {} registered in tournament {}", dto.getTeamId(), dto.getTournamentId());
-        return registrationMapper.toDto(saved);
+        return registrationMapper.toDto(registrationPersistenceMapper.toModel(saved));
     }
 
     @Transactional
@@ -101,7 +105,7 @@ public class PaymentService {
 
         PaymentEntity saved = paymentRepository.save(payment);
         log.info("Proof uploaded by captain {} for registration {}", captainId, dto.getRegistrationId());
-        return paymentMapper.toDto(saved);
+        return paymentMapper.toDto(paymentPersistenceMapper.toModel(saved));
     }
 
     @Transactional
@@ -117,7 +121,7 @@ public class PaymentService {
         registrationRepository.save(payment.getRegistration());
 
         log.info("Payment {} approved by organizer {}", paymentId, organizerId);
-        return paymentMapper.toDto(paymentRepository.save(payment));
+        return paymentMapper.toDto(paymentPersistenceMapper.toModel(paymentRepository.save(payment)));
     }
 
     @Transactional
@@ -134,18 +138,22 @@ public class PaymentService {
         registrationRepository.save(payment.getRegistration());
 
         log.info("Payment {} rejected by organizer {}", paymentId, organizerId);
-        return paymentMapper.toDto(paymentRepository.save(payment));
+        return paymentMapper.toDto(paymentPersistenceMapper.toModel(paymentRepository.save(payment)));
     }
 
     public List<PaymentResponseDTO> getPaymentsByTournament(Long organizerId, Long tournamentId) {
         validateOrganizer(organizerId);
         return paymentRepository.findAllByRegistration_Tournament_Tournament_id(tournamentId)
-                .stream().map(paymentMapper::toDto).collect(Collectors.toList());
+                .stream()
+                .map(e -> paymentMapper.toDto(paymentPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
     public List<TournamentRegistrationResponseDTO> getRegistrationsByTournament(Long tournamentId) {
         return registrationRepository.findAllByTournament_Tournament_id(tournamentId)
-                .stream().map(registrationMapper::toDto).collect(Collectors.toList());
+                .stream()
+                .map(e -> registrationMapper.toDto(registrationPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
     private void validateOrganizer(Long organizerId) {

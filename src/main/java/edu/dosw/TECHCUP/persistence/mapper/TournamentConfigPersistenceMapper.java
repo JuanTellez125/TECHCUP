@@ -5,7 +5,7 @@ import edu.dosw.TECHCUP.persistence.entity.TournamentConfigEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {TournamentPersistenceMapper.class})
 public interface TournamentConfigPersistenceMapper {
 
     @Mapping(source = "tournamentConfig_id", target = "tournamentConfigId")

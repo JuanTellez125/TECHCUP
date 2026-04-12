@@ -5,7 +5,7 @@ import edu.dosw.TECHCUP.persistence.entity.PaymentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {TournamentRegistrationPersistenceMapper.class, UserPersistenceMapper.class})
 public interface PaymentPersistenceMapper {
 
     @Mapping(source = "payment_id", target = "paymentId")

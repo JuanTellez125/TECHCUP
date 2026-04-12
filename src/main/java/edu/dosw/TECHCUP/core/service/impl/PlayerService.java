@@ -12,6 +12,7 @@ import edu.dosw.TECHCUP.core.service.UserService;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
 import edu.dosw.TECHCUP.persistence.entity.SportProfileEntity;
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
+import edu.dosw.TECHCUP.persistence.mapper.SportProfilePersistenceMapper;
 import edu.dosw.TECHCUP.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.TECHCUP.persistence.repository.SportProfileRepository;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
@@ -34,6 +35,7 @@ public class PlayerService implements UserService {
     private final UserPersistenceMapper userPersistenceMapper;
     private final SportProfileRepository sportProfileRepository;
     private final SportProfileMapper sportProfileMapper;
+    private final SportProfilePersistenceMapper sportProfilePersistenceMapper;
     private final UserValidator userValidator;
     private final PasswordEncoder passwordEncoder;
 
@@ -90,14 +92,14 @@ public class PlayerService implements UserService {
         SportProfileEntity profile = sportProfileRepository.findByUser_User_id(userId)
                 .orElseThrow(() -> new SportProfileException(userId));
         profile.setAvailable(available);
-        return sportProfileMapper.toDto(sportProfileRepository.save(profile));
+        return sportProfileMapper.toDto(sportProfilePersistenceMapper.toModel(sportProfileRepository.save(profile)));
     }
 
     @Transactional
     public SportProfileResponseDTO getSportProfile(Long userId) {
         SportProfileEntity profile = sportProfileRepository.findByUser_User_id(userId)
                 .orElseThrow(() -> new SportProfileException(userId));
-        return sportProfileMapper.toDto(profile);
+        return sportProfileMapper.toDto(sportProfilePersistenceMapper.toModel(profile));
     }
 
     public User getPlayerById(Long id) {
@@ -122,7 +124,7 @@ public class PlayerService implements UserService {
         profile.setPrimaryPosition(dto.getPrimaryPosition());
         profile.setAvailable(dto.isAvailable());
 
-        return sportProfileMapper.toDto(sportProfileRepository.save(profile));
+        return sportProfileMapper.toDto(sportProfilePersistenceMapper.toModel(sportProfileRepository.save(profile)));
     }
 
     @Override

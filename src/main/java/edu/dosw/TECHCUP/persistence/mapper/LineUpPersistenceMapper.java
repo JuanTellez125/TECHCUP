@@ -5,7 +5,7 @@ import edu.dosw.TECHCUP.persistence.entity.LineUpEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {MatchPersistenceMapper.class, TeamPersistenceMapper.class, UserPersistenceMapper.class})
 public interface LineUpPersistenceMapper {
 
     @Mapping(source = "lineUp_id", target = "lineUpId")

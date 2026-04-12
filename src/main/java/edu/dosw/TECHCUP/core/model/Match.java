@@ -22,7 +22,7 @@ public class Match {
     private User referee;
     private MatchPhase phase;
     private LocalDateTime scheduledAt;
-    private MatchPhase status;
+    private String status;
     private MatchResult result;
     private List<MatchEvent> events;
     private List<LineUp> lineUps;
