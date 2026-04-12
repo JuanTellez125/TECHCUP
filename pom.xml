@@ -198,7 +198,7 @@
                                 <exclude>**/mapper/*</exclude>
                                 <exclude>**/exception/*</exclude>
                                 <exclude>**/*Application*</exclude>
-                                <exclude>edu/eci/dosw/DOSW_Library/*</exclude>
+                                <exclude>**/persistence/entity/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -228,7 +228,7 @@
                                 <exclude>**/mapper/*</exclude>
                                 <exclude>**/exception/*</exclude>
                                 <exclude>**/*Application*</exclude>
-                                <exclude>edu/eci/dosw/DOSW_Library/*</exclude>
+                                <exclude>**/persistence/entity/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
