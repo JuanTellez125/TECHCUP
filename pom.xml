@@ -199,6 +199,7 @@
                                 <exclude>**/exception/*</exclude>
                                 <exclude>**/*Application*</exclude>
                                 <exclude>**/persistence/entity/**</exclude>
+                                <exclude>**/util/*</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -229,6 +230,7 @@
                                 <exclude>**/exception/*</exclude>
                                 <exclude>**/*Application*</exclude>
                                 <exclude>**/persistence/entity/**</exclude>
+                                <exclude>**/util/*</exclude>
                             </excludes>
                         </configuration>
                     </execution>
