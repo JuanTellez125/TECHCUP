@@ -12,22 +12,22 @@ import lombok.*;
 @NoArgsConstructor
 public class UserRequestDTO {
 
-    @NotBlank(message = "El nombre no puede estar vacío")
+    @NotBlank(message = "The name cannot be empty.")
     private String firstName;
 
-    @NotBlank(message = "El apellido no puede estar vacío")
+    @NotBlank(message = "The surname cannot be empty.")
     private String lastName;
 
-    @NotBlank(message = "El correo no puede estar vacío")
-    @Email(message = "El correo no tiene un formato válido")
+    @NotBlank(message = "The email cannot be empty.")
+    @Email(message = "The email is not in a valid format.")
     private String email;
 
-    @NotBlank(message = "La contraseña no puede estar vacía")
+    @NotBlank(message = "The password cannot be empty.")
     private String password;
 
-    @NotBlank(message = "El documento no puede estar vacío")
+    @NotBlank(message = "The document cannot be empty.")
     private String documentId;
 
-    @NotNull(message = "El tipo de usuario no puede estar vacío")
+    @NotNull(message = "The user type cannot be empty")
     private Role userType;
 }

@@ -20,14 +20,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tournaments")
 @RequiredArgsConstructor
-@Tag(name = "Tournament", description = "Gestión de torneos")
+@Tag(name = "Tournament", description = "Tournament management")
 public class TournamentController {
 
     private final TournamentService tournamentService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
-    @Operation(summary = "Crear torneo (solo organizador)")
+    @Operation(summary = "Create tournament (organizer only)")
     public ResponseEntity<TournamentResponseDTO> createTournament(
             @RequestParam Long organizerId,
             @RequestBody TournamentRequestDTO dto) {
@@ -37,28 +37,28 @@ public class TournamentController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
-    @Operation(summary = "Obtener todos los torneos")
+    @Operation(summary = "Get all tournaments")
     public ResponseEntity<List<TournamentResponseDTO>> getAllTournaments() {
         return ResponseEntity.ok(tournamentService.getAllTournaments());
     }
 
     @GetMapping("/finalized")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
-    @Operation(summary = "Obtener torneos finalizados")
+    @Operation(summary = "Obtain completed tournaments")
     public ResponseEntity<List<TournamentResponseDTO>> getFinalizedTournaments() {
         return ResponseEntity.ok(tournamentService.getFinalizedTournaments());
     }
 
     @GetMapping("/{tournamentId}")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
-    @Operation(summary = "Obtener torneo por ID")
+    @Operation(summary = "Get tournament by ID")
     public ResponseEntity<TournamentResponseDTO> getTournamentById(@PathVariable String tournamentId) {
         return ResponseEntity.ok(tournamentService.getTournamentById(tournamentId));
     }
 
     @PatchMapping("/{tournamentId}/start")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
-    @Operation(summary = "Iniciar torneo")
+    @Operation(summary = "Start tournament")
     public ResponseEntity<TournamentResponseDTO> startTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId) {
@@ -67,7 +67,7 @@ public class TournamentController {
 
     @PatchMapping("/{tournamentId}/finish")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
-    @Operation(summary = "Finalizar torneo")
+    @Operation(summary = "Finish tournament")
     public ResponseEntity<TournamentResponseDTO> finishTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId) {
@@ -76,7 +76,7 @@ public class TournamentController {
 
     @PostMapping("/{tournamentId}/config")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
-    @Operation(summary = "Configurar torneo")
+    @Operation(summary = "Set up tournament")
     public ResponseEntity<TournamentConfigResponseDTO> configTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId,
@@ -86,7 +86,7 @@ public class TournamentController {
 
     @PostMapping("/{tournamentId}/venues")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
-    @Operation(summary = "Agregar sede al torneo")
+    @Operation(summary = "Add venue to tournament")
     public ResponseEntity<VenueResponseDTO> addVenue(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId,
@@ -97,7 +97,7 @@ public class TournamentController {
 
     @GetMapping("/{tournamentId}/venues")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
-    @Operation(summary = "Obtener sedes del torneo")
+    @Operation(summary = "Secure tournament venues")
     public ResponseEntity<List<VenueResponseDTO>> getVenuesByTournament(@PathVariable Long tournamentId) {
         return ResponseEntity.ok(tournamentService.getVenuesByTournament(tournamentId));
     }

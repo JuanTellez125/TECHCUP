@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/lineups")
 @RequiredArgsConstructor
-@Tag(name = "LineUp", description = "Gestión de alineaciones")
+@Tag(name = "LineUp", description = "Lineup management")
 public class LineUpController {
 
     private final LineUpService lineUpService;
 
     @PostMapping
-    @Operation(summary = "Guardar alineación (solo capitán del equipo)")
+    @Operation(summary = "Save lineup (team captain only)")
     public ResponseEntity<LineUpResponseDTO> saveLineUp(
             @RequestParam Long captainId,
             @RequestBody LineUpRequestDTO dto) {
@@ -26,7 +26,7 @@ public class LineUpController {
     }
 
     @GetMapping
-    @Operation(summary = "Obtener alineación por equipo y partido")
+    @Operation(summary = "Get team line-up by team and match")
     public ResponseEntity<LineUpResponseDTO> getLineUp(
             @RequestParam Long teamId,
             @RequestParam Long matchId) {

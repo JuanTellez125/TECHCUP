@@ -46,19 +46,19 @@ public class PaymentService {
         UserEntity captain = userRepository.findById(captainId)
                 .orElseThrow(() -> new UserNotFoundException(captainId));
         if (captain.getUserType() != Role.CAPTAIN)
-            throw new UserValidationException("Solo el capitán puede inscribir el equipo.");
+            throw new UserValidationException("Only the captain can register the team");
 
         TeamEntity team = teamRepository.findById(dto.getTeamId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
-            throw new UserValidationException("No eres el capitán de este equipo.");
+            throw new UserValidationException("You are not the captain of this team.");
 
         TournamentEntity tournament = tournamentRepository.findById(dto.getTournamentId())
                 .orElseThrow(() -> new TournamentNotFoundException(dto.getTournamentId()));
 
         if (registrationRepository.findByTeam_IdAndTournament_Tournament_id(dto.getTeamId(), dto.getTournamentId()).isPresent())
-            throw new UserValidationException("El equipo ya está inscrito en este torneo.");
+            throw new UserValidationException("The team is already registered for this tournament.");
 
         TournamentRegistrationEntity registration = TournamentRegistrationEntity.builder()
                 .tournament(tournament)
@@ -68,7 +68,7 @@ public class PaymentService {
                 .build();
 
         TournamentRegistrationEntity saved = registrationRepository.save(registration);
-        log.info("Equipo {} inscrito en torneo {}", dto.getTeamId(), dto.getTournamentId());
+        log.info("Team {} registered in tournament {}", dto.getTeamId(), dto.getTournamentId());
         return registrationMapper.toDto(saved);
     }
 
@@ -77,16 +77,16 @@ public class PaymentService {
         UserEntity captain = userRepository.findById(captainId)
                 .orElseThrow(() -> new UserNotFoundException(captainId));
         if (captain.getUserType() != Role.CAPTAIN)
-            throw new UserValidationException("Solo el capitán puede subir el comprobante.");
+            throw new UserValidationException("Only the captain can upload the receipt.");
 
         TournamentRegistrationEntity registration = registrationRepository.findById(dto.getRegistrationId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getRegistrationId()));
 
         if (!registration.getTeam().getCaptain().getUser_id().equals(captainId))
-            throw new UserValidationException("No eres el capitán de este equipo.");
+            throw new UserValidationException("You are not the captain of this team..");
 
         if (paymentRepository.findByRegistration_TournamentRegistration_id(dto.getRegistrationId()).isPresent())
-            throw new UserValidationException("Ya existe un comprobante para esta inscripción.");
+            throw new UserValidationException("There is already proof of this registration.");
 
         registration.setStatus(RegisterTournamentStatus.EN_REVISION);
         registrationRepository.save(registration);
@@ -100,7 +100,7 @@ public class PaymentService {
                 .build();
 
         PaymentEntity saved = paymentRepository.save(payment);
-        log.info("Comprobante subido por capitán {} para inscripción {}", captainId, dto.getRegistrationId());
+        log.info("Proof uploaded by captain {} for registration {}", captainId, dto.getRegistrationId());
         return paymentMapper.toDto(saved);
     }
 
@@ -116,7 +116,7 @@ public class PaymentService {
         payment.getRegistration().setStatus(RegisterTournamentStatus.APROBADO);
         registrationRepository.save(payment.getRegistration());
 
-        log.info("Pago {} aprobado por organizador {}", paymentId, organizerId);
+        log.info("Payment {} approved by organizer {}", paymentId, organizerId);
         return paymentMapper.toDto(paymentRepository.save(payment));
     }
 
@@ -133,7 +133,7 @@ public class PaymentService {
         payment.getRegistration().setStatus(RegisterTournamentStatus.RECHAZADO);
         registrationRepository.save(payment.getRegistration());
 
-        log.info("Pago {} rechazado por organizador {}", paymentId, organizerId);
+        log.info("Payment {} rejected by organizer {}", paymentId, organizerId);
         return paymentMapper.toDto(paymentRepository.save(payment));
     }
 
@@ -152,6 +152,6 @@ public class PaymentService {
         UserEntity organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new UserNotFoundException(organizerId));
         if (organizer.getUserType() != Role.ORGANIZER)
-            throw new TournamentValidationException("El usuario no tiene permisos de organizador.");
+            throw new TournamentValidationException("The user does not have organizer permissions.");
     }
 }

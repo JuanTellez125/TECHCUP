@@ -1,17 +1,16 @@
 package edu.dosw.TECHCUP.core.validator;
 
-
-import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
+import edu.dosw.TECHCUP.core.model.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserValidator {
 
-    public void validate(UserRequestDTO request) {
-        validateName(request.getFirstName());
-        validateEmail(request.getEmail());
-        validatePassword(request.getPassword());
+    public void validate(User user) {
+        validateName(user.getFirstName());
+        validateEmail(user.getEmail());
+        validatePassword(user.getPassword());
     }
 
     private void validateName(String name) {

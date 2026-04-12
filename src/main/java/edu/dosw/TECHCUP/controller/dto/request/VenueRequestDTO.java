@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class VenueRequestDTO {
 
-    @NotBlank(message = "El nombre de la cancha no puede estar vacío")
+    @NotBlank(message = "The name of the court cannot be empty.")
     private String name;
 
     private String venueLocation;

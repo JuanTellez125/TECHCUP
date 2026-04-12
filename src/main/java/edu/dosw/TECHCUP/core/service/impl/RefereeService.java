@@ -1,25 +1,22 @@
 package edu.dosw.TECHCUP.core.service.impl;
 
-import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
-import edu.dosw.TECHCUP.controller.mapper.UserMapper;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
+import edu.dosw.TECHCUP.core.service.UserService;
+import edu.dosw.TECHCUP.core.validator.UserValidator;
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
-import edu.dosw.TECHCUP.core.service.UserService;
-import edu.dosw.TECHCUP.core.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Optional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,50 +25,47 @@ import java.util.stream.Collectors;
 public class RefereeService implements UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
     private final UserPersistenceMapper userPersistenceMapper;
     private final UserValidator userValidator;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
-    public UserResponseDTO createUser(UserRequestDTO dto) {
-        userValidator.validate(dto);
+    public User createUser(User user) {
+        userValidator.validate(user);
 
-        //cambio
-        if (userRepository.existsByEmail(dto.getEmail()))
-            throw new UserValidationException("Ya existe un usuario con el email: " + dto.getEmail());
-        if (userRepository.existsByDocumentId(dto.getDocumentId()))
-            throw new UserValidationException("Ya existe un usuario con el documento: " + dto.getDocumentId());
+        if (userRepository.existsByEmail(user.getEmail()))
+            throw new UserValidationException("A user with the following email address already exists: " + user.getEmail());
+        if (userRepository.existsByDocumentId(user.getDocumentId()))
+            throw new UserValidationException("A user already exists with the document: " + user.getDocumentId());
 
         UserEntity referee = UserEntity.builder()
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .email(dto.getEmail())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .documentId(dto.getDocumentId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .documentId(user.getDocumentId())
                 .userType(Role.REFEREE)
                 .active(true)
                 .build();
 
         UserEntity saved = userRepository.save(referee);
-        log.info("Árbitro creado con ID: {}", saved.getUser_id());
-        return userMapper.toDto(saved);
+        log.info("Referee created with ID: {}", saved.getUser_id());
+        return userPersistenceMapper.toModel(saved);
     }
 
     @Transactional
     @Override
-    public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
-        UserEntity user = userRepository.findById(id)
+    public User updateUser(Long id, User user) {
+        UserEntity entity = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
-        //cambio
-        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        entity.setFirstName(user.getFirstName());
+        entity.setLastName(user.getLastName());
+        entity.setEmail(user.getEmail());
+        if (user.getPassword() != null && !user.getPassword().isBlank()) {
+            entity.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        return userMapper.toDto(userRepository.save(user));
+        return userPersistenceMapper.toModel(userRepository.save(entity));
     }
 
     @Transactional
@@ -80,22 +74,23 @@ public class RefereeService implements UserService {
         if (!userRepository.existsById(id))
             throw new UserNotFoundException(id);
         userRepository.deleteById(id);
-        log.info("Árbitro eliminado: {}", id);
+        log.info("Referee eliminated: {}", id);
     }
 
-    public UserResponseDTO getRefereeById(Long id) {
-        return userMapper.toDto(userRepository.findById(id)
+    public User getRefereeById(Long id) {
+        return userPersistenceMapper.toModel(userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id)));
     }
 
-    public List<UserResponseDTO> getAllReferees() {
-        return userRepository.findAllByUserType(Role.REFEREE)
-                .stream().map(userMapper::toDto).collect(Collectors.toList());
+    public List<User> getAllReferees() {
+        return userRepository.findAllByUserType(Role.REFEREE).stream()
+                .map(userPersistenceMapper::toModel)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        log.debug("Buscando árbitro por email: {}", email);
+        log.debug("Looking for a referee by email: {}", email);
         return userRepository.findByEmail(email)
                 .map(userPersistenceMapper::toModel);
     }

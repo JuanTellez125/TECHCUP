@@ -12,23 +12,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class MatchRequestDTO {
 
-    @NotNull(message = "El ID del torneo no puede estar vacío")
+    @NotNull(message = "The tournament ID cannot be empty.")
     private Long tournamentId;
 
-    @NotNull(message = "El equipo 1 no puede estar vacío")
+    @NotNull(message = "Team 1 cannot be empty")
     private Long team1Id;
 
-    @NotNull(message = "El equipo 2 no puede estar vacío")
+    @NotNull(message = "Team 2 cannot be empty")
     private Long team2Id;
 
-    @NotNull(message = "La cancha no puede estar vacía")
+    @NotNull(message = "The court cannot be empty.")
     private Long venueId;
 
     private Long refereeId;
 
-    @NotNull(message = "La fase del partido no puede estar vacía")
+    @NotNull(message = "The match phase cannot be empty")
     private MatchPhase phase;
 
-    @NotNull(message = "La fecha del partido no puede estar vacía")
+    @NotNull(message = "The match date cannot be blank.")
     private LocalDateTime scheduledAt;
 }

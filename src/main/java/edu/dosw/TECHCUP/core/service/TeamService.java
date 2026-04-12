@@ -55,10 +55,10 @@ public class TeamService {
         teamValidator.validateTeamName(dto.getName());
 
         if (teamRepository.existsByName(dto.getName()))
-            throw new UserValidationException("Ya existe un equipo con el nombre: " + dto.getName());
+            throw new UserValidationException("There is already a team with the name: " + dto.getName());
 
         if (teamMemberRepository.existsByTeam_IdAndUser_User_id(null, captainId))
-            throw new UserValidationException("El capitán ya pertenece a otro equipo.");
+            throw new UserValidationException("The captain already belongs to another team.");
 
         TeamEntity team = TeamEntity.builder()
                 .captain(captain)
@@ -77,7 +77,7 @@ public class TeamService {
                 .build();
         teamMemberRepository.save(captainMember);
 
-        log.info("Equipo {} creado por capitán {}", saved.getName(), captainId);
+        log.info("Team {} created by captain {}", saved.getName(), captainId);
         return teamMapper.toDto(saved);
     }
 
@@ -97,17 +97,17 @@ public class TeamService {
                 .orElseThrow(() -> new UserNotFoundException(teamId));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
-            throw new UserValidationException("No eres el capitán de este equipo.");
+            throw new UserValidationException("You are not the captain of this team.");
 
         UserEntity player = userRepository.findById(playerId)
                 .orElseThrow(() -> new UserNotFoundException(playerId));
 
         if (teamMemberRepository.existsByTeam_IdAndUser_User_id(teamId, playerId))
-            throw new UserValidationException("El jugador ya pertenece a este equipo.");
+            throw new UserValidationException("The player already belongs to this team.");
 
         long currentMembers = teamMemberRepository.findAllByTeam_Id(teamId).size();
         if (currentMembers >= 12)
-            throw new UserValidationException("El equipo ya tiene el máximo de 12 jugadores.");
+            throw new UserValidationException("The team already has the maximum of 12 players.");
 
         InvitationEntity invitation = InvitationEntity.builder()
                 .team(team)
@@ -117,7 +117,7 @@ public class TeamService {
                 .build();
 
         InvitationEntity saved = invitationRepository.save(invitation);
-        log.info("Invitación enviada al jugador {} para el equipo {}", playerId, teamId);
+        log.info("Invitation sent to player {} for the team {}", playerId, teamId);
         return invitationMapper.toDto(saved);
     }
 
@@ -127,10 +127,10 @@ public class TeamService {
                 .orElseThrow(() -> new UserNotFoundException(invitationId));
 
         if (!invitation.getInvitedUser().getUser_id().equals(playerId))
-            throw new UserValidationException("Esta invitación no es para ti.");
+            throw new UserValidationException("This invitation is not for you.");
 
         if (invitation.getStatus() != InvitationStatus.PENDIENTE)
-            throw new UserValidationException("Esta invitación ya fue respondida.");
+            throw new UserValidationException("This invitation has already been answered.");
 
         if (accept) {
             invitation.setStatus(InvitationStatus.ACEPTADA);
@@ -141,7 +141,7 @@ public class TeamService {
                     .available(true)
                     .build();
             teamMemberRepository.save(member);
-            log.info("Jugador {} aceptó unirse al equipo {}", playerId, invitation.getTeam().getId());
+            log.info("Player {} agreed to join the team {}", playerId, invitation.getTeam().getId());
         } else {
             invitation.setStatus(InvitationStatus.RECHAZADA);
         }

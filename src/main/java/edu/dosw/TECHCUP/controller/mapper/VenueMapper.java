@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 public interface VenueMapper {
 
     @Mapping(source = "venueId",                 target = "id")
-    @Mapping(source = "tournament.tournament_id", target = "tournamentId")
+    @Mapping(source = "tournament.tournamentId",  target = "tournamentId")
     @Mapping(source = "location",                target = "venueLocation")
     VenueResponseDTO toDto(Venue venue);
 

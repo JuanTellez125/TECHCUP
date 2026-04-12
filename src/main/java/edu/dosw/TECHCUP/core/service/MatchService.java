@@ -60,7 +60,7 @@ public class MatchService {
                 .orElseThrow(() -> new UserNotFoundException(dto.getVenueId()));
 
         if (team1.getId().equals(team2.getId()))
-            throw new TournamentValidationException("El equipo local y visitante no pueden ser el mismo.");
+            throw new TournamentValidationException("The home and visiting teams cannot be the same.");
 
         UserEntity referee = dto.getRefereeId() != null
                 ? userRepository.findById(dto.getRefereeId()).orElse(null) : null;
@@ -77,7 +77,7 @@ public class MatchService {
                 .build();
 
         MatchEntity saved = matchRepository.save(match);
-        log.info("Partido programado: {} vs {}", team1.getName(), team2.getName());
+        log.info("Scheduled match: {} vs {}", team1.getName(), team2.getName());
         return matchMapper.toDto(saved);
     }
 
@@ -86,7 +86,7 @@ public class MatchService {
         UserEntity organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new UserNotFoundException(organizerId));
         if (organizer.getUserType() != Role.ORGANIZER)
-            throw new TournamentValidationException("Solo el organizador puede registrar resultados.");
+            throw new TournamentValidationException("Only the organizer can record results.");
 
         MatchEntity match = matchRepository.findById(dto.getMatchId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
@@ -106,7 +106,7 @@ public class MatchService {
 
         updateStandings(match, dto.getTeam1Goals(), dto.getTeam2Goals());
 
-        log.info("Resultado registrado partido {}: {} - {}", dto.getMatchId(), dto.getTeam1Goals(), dto.getTeam2Goals());
+        log.info("Registered match result {}: {} - {}", dto.getMatchId(), dto.getTeam1Goals(), dto.getTeam2Goals());
         return matchResultMapper.toDto(saved);
     }
 
@@ -153,7 +153,7 @@ public class MatchService {
                 .filter(t -> t.isActive()).collect(Collectors.toList()));
 
         if (teams.size() < 2)
-            throw new TournamentValidationException("Se necesitan al menos 2 equipos para generar las llaves.");
+            throw new TournamentValidationException("At least 2 teams are needed to generate the keys.");
 
         Collections.shuffle(teams);
         MatchPhase phase = resolvePhase(teams.size());

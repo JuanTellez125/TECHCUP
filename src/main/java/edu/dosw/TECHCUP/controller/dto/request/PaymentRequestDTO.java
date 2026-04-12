@@ -10,12 +10,12 @@ import lombok.*;
 @NoArgsConstructor
 public class PaymentRequestDTO {
 
-    @NotNull(message = "El ID de la inscripción no puede estar vacío")
+    @NotNull(message = "The registration ID cannot be empty.")
     private Long registrationId;
 
-    @NotBlank(message = "La URL del comprobante no puede estar vacía")
+    @NotBlank(message = "The receipt URL cannot be empty.")
     private String fileUrl;
 
-    @NotBlank(message = "El método de pago no puede estar vacío")
+    @NotBlank(message = "The payment method cannot be empty.")
     private String paymentMethod;
 }

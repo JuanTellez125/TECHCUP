@@ -4,6 +4,8 @@ import edu.dosw.TECHCUP.controller.dto.request.SportProfileRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.SportProfileResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
+import edu.dosw.TECHCUP.controller.mapper.UserMapper;
+import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.service.impl.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,48 +16,57 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/players")
 @RequiredArgsConstructor
-@Tag(name = "Player", description = "Gestión de jugadores")
+@Tag(name = "Player", description = "Player management")
 public class PlayerController {
 
     private final PlayerService playerService;
+    private final UserMapper userMapper;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    @Operation(summary = "Crear jugador")
+    @Operation(summary = "Create player")
     public ResponseEntity<UserResponseDTO> createPlayer(@RequestBody UserRequestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(playerService.createUser(dto));
+        User user = userMapper.toModel(dto);
+        User created = playerService.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toDto(created));
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'CAPTAIN', 'REFEREE')")
-    @Operation(summary = "Obtener todos los jugadores")
+    @Operation(summary = "Get all players")
     public ResponseEntity<List<UserResponseDTO>> getAllPlayers() {
-        return ResponseEntity.ok(playerService.getAllPlayers());
+        List<UserResponseDTO> players = playerService.getAllPlayers().stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(players);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'CAPTAIN', 'REFEREE', 'PLAYER')")
-    @Operation(summary = "Obtener jugador por ID")
+    @Operation(summary = "Get player by ID")
     public ResponseEntity<UserResponseDTO> getPlayerById(@PathVariable Long id) {
-        return ResponseEntity.ok(playerService.getPlayerById(id));
+        return ResponseEntity.ok(userMapper.toDto(playerService.getPlayerById(id)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    @Operation(summary = "Actualizar jugador")
+    @Operation(summary = "Update player")
     public ResponseEntity<UserResponseDTO> updatePlayer(
             @PathVariable Long id,
             @RequestBody UserRequestDTO dto) {
-        return ResponseEntity.ok(playerService.updateUser(id, dto));
+        User user = userMapper.toModel(dto);
+        User updated = playerService.updateUser(id, user);
+        return ResponseEntity.ok(userMapper.toDto(updated));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    @Operation(summary = "Eliminar jugador")
+    @Operation(summary = "Delete player")
     public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {
         playerService.deleteUser(id);
         return ResponseEntity.noContent().build();
@@ -63,7 +74,7 @@ public class PlayerController {
 
     @PostMapping("/{userId}/sport-profile")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'CAPTAIN', 'PLAYER')")
-    @Operation(summary = "Crear o actualizar perfil deportivo")
+    @Operation(summary = "Create or update sports profile")
     public ResponseEntity<SportProfileResponseDTO> saveSportProfile(
             @PathVariable Long userId,
             @RequestBody SportProfileRequestDTO dto) {
@@ -72,14 +83,14 @@ public class PlayerController {
 
     @GetMapping("/{userId}/sport-profile")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'CAPTAIN', 'REFEREE', 'PLAYER')")
-    @Operation(summary = "Obtener perfil deportivo")
+    @Operation(summary = "Get sports profile")
     public ResponseEntity<SportProfileResponseDTO> getSportProfile(@PathVariable Long userId) {
         return ResponseEntity.ok(playerService.getSportProfile(userId));
     }
 
     @PatchMapping("/{userId}/availability")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'PLAYER')")
-    @Operation(summary = "Actualizar disponibilidad del jugador")
+    @Operation(summary = "Update player availability")
     public ResponseEntity<SportProfileResponseDTO> setAvailability(
             @PathVariable Long userId,
             @RequestParam boolean available) {

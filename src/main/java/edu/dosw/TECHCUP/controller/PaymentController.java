@@ -17,13 +17,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/payments")
 @RequiredArgsConstructor
-@Tag(name = "Payment", description = "Gestión de pagos e inscripciones a torneos")
+@Tag(name = "Payment", description = "Payment management and tournament registration")
 public class PaymentController {
 
     private final PaymentService paymentService;
 
     @PostMapping("/register")
-    @Operation(summary = "Inscribir equipo en torneo (solo capitán)")
+    @Operation(summary = "Register team for tournament (captain only)")
     public ResponseEntity<TournamentRegistrationResponseDTO> registerTeam(
             @RequestParam Long captainId,
             @RequestBody TournamentRegistrationRequestDTO dto) {
@@ -32,7 +32,7 @@ public class PaymentController {
     }
 
     @PostMapping("/submit")
-    @Operation(summary = "Subir comprobante de pago (solo capitán)")
+    @Operation(summary = "Upload proof of payment (captain only)")
     public ResponseEntity<PaymentResponseDTO> submitPayment(
             @RequestParam Long captainId,
             @RequestBody PaymentRequestDTO dto) {
@@ -41,7 +41,7 @@ public class PaymentController {
     }
 
     @PatchMapping("/{paymentId}/approve")
-    @Operation(summary = "Aprobar pago (solo organizador)")
+    @Operation(summary = "Approve payment (organizer only)")
     public ResponseEntity<PaymentResponseDTO> approvePayment(
             @RequestParam Long organizerId,
             @PathVariable Long paymentId) {
@@ -49,7 +49,7 @@ public class PaymentController {
     }
 
     @PatchMapping("/{paymentId}/reject")
-    @Operation(summary = "Rechazar pago (solo organizador)")
+    @Operation(summary = "Decline payment (organizer only)")
     public ResponseEntity<PaymentResponseDTO> rejectPayment(
             @RequestParam Long organizerId,
             @PathVariable Long paymentId,
@@ -58,7 +58,7 @@ public class PaymentController {
     }
 
     @GetMapping("/tournament/{tournamentId}")
-    @Operation(summary = "Obtener pagos de un torneo (solo organizador)")
+    @Operation(summary = "Receiving payments from a tournament (organizer only)")
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId) {
@@ -66,7 +66,7 @@ public class PaymentController {
     }
 
     @GetMapping("/registrations/tournament/{tournamentId}")
-    @Operation(summary = "Obtener inscripciones de un torneo")
+    @Operation(summary = "Obtain tournament registrations")
     public ResponseEntity<List<TournamentRegistrationResponseDTO>> getRegistrationsByTournament(
             @PathVariable Long tournamentId) {
         return ResponseEntity.ok(paymentService.getRegistrationsByTournament(tournamentId));

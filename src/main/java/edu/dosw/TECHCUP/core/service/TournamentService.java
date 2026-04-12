@@ -57,7 +57,7 @@ public class TournamentService {
                 .orElseThrow(() -> new UserNotFoundException(organizerId));
 
         if (organizer.getUserType() != Role.ORGANIZER)
-            throw new TournamentValidationException("El usuario no tiene permisos para crear un torneo.");
+            throw new TournamentValidationException("The user does not have permission to create a tournament.");
 
         tournamentValidator.validate(dto);
 
@@ -71,7 +71,7 @@ public class TournamentService {
                 .build();
 
         TournamentEntity saved = tournamentRepository.save(tournament);
-        log.info("Torneo creado con ID: {}", saved.getTournament_id());
+        log.info("Tournament created with ID: {}", saved.getTournament_id());
         return tournamentMapper.toDto(saved);
     }
 
@@ -109,7 +109,7 @@ public class TournamentService {
         if (dto.getSanctions() != null)           config.setSanctions(dto.getSanctions());
 
         TournamentConfigEntity saved = tournamentConfigRepository.save(config);
-        log.info("Torneo {} configurado por organizador {}", tournamentId, organizerId);
+        log.info("Tournament {} set up by organizer {}", tournamentId, organizerId);
         return tournamentConfigMapper.toDto(saved);
     }
 

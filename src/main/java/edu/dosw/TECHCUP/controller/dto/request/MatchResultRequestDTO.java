@@ -10,12 +10,12 @@ import lombok.*;
 @NoArgsConstructor
 public class MatchResultRequestDTO {
 
-    @NotNull(message = "El ID del partido no puede estar vacío")
+    @NotNull(message = "The match ID cannot be empty")
     private Long matchId;
 
-    @PositiveOrZero(message = "Los goles no pueden ser negativos")
+    @PositiveOrZero(message = "Goals cannot be negative")
     private int team1Goals;
 
-    @PositiveOrZero(message = "Los goles no pueden ser negativos")
+    @PositiveOrZero(message = "Goals cannot be negative")
     private int team2Goals;
 }

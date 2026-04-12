@@ -40,7 +40,7 @@ public class LineUpService {
                 .orElseThrow(() -> new UserNotFoundException(captainId));
 
         if (captain.getUserType() != Role.CAPTAIN)
-            throw new UserValidationException("Solo el capitán puede definir la alineación.");
+            throw new UserValidationException("Only the captain can define the lineup.");
 
         MatchEntity match = matchRepository.findById(dto.getMatchId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
@@ -49,14 +49,14 @@ public class LineUpService {
                 .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
-            throw new UserValidationException("Solo el capitán de este equipo puede definir su alineación.");
+            throw new UserValidationException("Only the captain of this team can define its lineup.");
 
 
         UserEntity player = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
 
         if (!teamMemberRepository.existsByTeam_IdAndUser_User_id(team.getId(), player.getUser_id()))
-            throw new UserValidationException("El jugador no pertenece a este equipo.");
+            throw new UserValidationException("The player does not belong to this team.");
 
         boolean alreadyRegistered = lineUpRepository
                 .findAllByMatch_Match_idAndTeam_Id(dto.getMatchId(), dto.getTeamId())
@@ -64,7 +64,7 @@ public class LineUpService {
                 .anyMatch(l -> l.getUser().getUser_id().equals(player.getUser_id()));
 
         if (alreadyRegistered)
-            throw new UserValidationException("El jugador ya está registrado en la alineación de este partido.");
+            throw new UserValidationException("The player is already registered in the lineup for this match.");
 
         LineUpEntity lineUp = LineUpEntity.builder()
                 .match(match)
@@ -76,7 +76,7 @@ public class LineUpService {
                 .build();
 
         LineUpEntity saved = lineUpRepository.save(lineUp);
-        log.info("Jugador {} agregado a alineación del equipo {} en partido {} como {}",
+        log.info("Player {} added to team lineup {} in match {} as {}",
                 player.getUser_id(), team.getId(), match.getMatch_id(), dto.getRole());
         return lineUpMapper.toDto(saved);
     }

@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.persistence.mapper;
 
-import edu.dosw.TECHCUP.controller.dto.response.LineUpResponseDTO;
 import edu.dosw.TECHCUP.core.model.LineUp;
 import edu.dosw.TECHCUP.persistence.entity.LineUpEntity;
 import org.mapstruct.Mapper;

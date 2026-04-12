@@ -19,14 +19,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/teams")
 @RequiredArgsConstructor
-@Tag(name = "Team", description = "Gestión de equipos")
+@Tag(name = "Team", description = "Team management")
 public class TeamController {
 
     private final TeamService teamService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
-    @Operation(summary = "Crear equipo (solo capitán)")
+    @Operation(summary = "Create team (captain only)")
     public ResponseEntity<TeamResponseDTO> createTeam(
             @RequestParam Long captainId,
             @RequestBody TeamRequestDTO dto) {
@@ -35,21 +35,21 @@ public class TeamController {
 
     @GetMapping("/{teamId}")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
-    @Operation(summary = "Obtener equipo por ID")
+    @Operation(summary = "Get team by ID")
     public ResponseEntity<TeamResponseDTO> getTeamById(@PathVariable Long teamId) {
         return ResponseEntity.ok(teamService.getTeamById(teamId));
     }
 
     @GetMapping("/tournament/{tournamentId}")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
-    @Operation(summary = "Obtener equipos por torneo")
+    @Operation(summary = "Get teams by tournament")
     public ResponseEntity<List<TeamResponseDTO>> getTeamsByTournament(@PathVariable Long tournamentId) {
         return ResponseEntity.ok(teamService.getTeamsByTournament(tournamentId));
     }
 
     @PostMapping("/{teamId}/invite")
     @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
-    @Operation(summary = "Invitar jugador al equipo")
+    @Operation(summary = "Invite player to team")
     public ResponseEntity<InvitationResponseDTO> invitePlayer(
             @RequestParam Long captainId,
             @PathVariable Long teamId,
@@ -60,7 +60,7 @@ public class TeamController {
 
     @PatchMapping("/invitations/{invitationId}/respond")
     @PreAuthorize("hasAnyRole('PLAYER', 'ADMINISTRATOR')")
-    @Operation(summary = "Responder invitación (aceptar/rechazar)")
+    @Operation(summary = "Respond to invitation (accept/reject)")
     public ResponseEntity<InvitationResponseDTO> respondInvitation(
             @RequestParam Long playerId,
             @PathVariable Long invitationId,
@@ -70,7 +70,7 @@ public class TeamController {
 
     @GetMapping("/invitations/player/{playerId}")
     @PreAuthorize("hasAnyRole('PLAYER', 'CAPTAIN', 'ADMINISTRATOR')")
-    @Operation(summary = "Obtener invitaciones de un jugador")
+    @Operation(summary = "Get invitations from a player")
     public ResponseEntity<List<InvitationResponseDTO>> getInvitationsByPlayer(@PathVariable Long playerId) {
         return ResponseEntity.ok(teamService.getInvitationsByPlayer(playerId));
     }
@@ -89,7 +89,7 @@ public class TeamController {
 
     @PostMapping("/{teamId}/validate")
     @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
-    @Operation(summary = "Validar tamaño del equipo")
+    @Operation(summary = "Validate team size")
     public ResponseEntity<Void> validateTeam(@PathVariable Long teamId) {
         teamService.validateTeam(teamId);
         return ResponseEntity.ok().build();

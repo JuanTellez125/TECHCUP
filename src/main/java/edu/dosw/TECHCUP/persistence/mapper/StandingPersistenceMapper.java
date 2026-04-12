@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.persistence.mapper;
 
-import edu.dosw.TECHCUP.controller.dto.response.StandingResponseDTO;
 import edu.dosw.TECHCUP.core.model.Standing;
 import edu.dosw.TECHCUP.persistence.entity.StandingEntity;
 import org.mapstruct.Mapper;

@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.persistence.mapper;
 
-import edu.dosw.TECHCUP.controller.dto.response.TournamentConfigResponseDTO;
 import edu.dosw.TECHCUP.core.model.TournamentConfig;
 import edu.dosw.TECHCUP.persistence.entity.TournamentConfigEntity;
 import org.mapstruct.Mapper;
