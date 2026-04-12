@@ -1,5 +1,6 @@
 package edu.dosw.TECHCUP.controller.mapper;
 
+import edu.dosw.TECHCUP.controller.dto.request.InvitationRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.InvitationResponseDTO;
 import edu.dosw.TECHCUP.core.model.Invitation;
 import edu.dosw.TECHCUP.persistence.entity.InvitationEntity;
@@ -16,5 +17,7 @@ public interface InvitationMapper {
     @Mapping(source = "invitedUser.firstName",  target = "invitedUserName")
     @Mapping(source = "invitedBy.user_id",      target = "invitedById")
     @Mapping(source = "invitedBy.firstName",    target = "invitedByName")
-    InvitationResponseDTO toDto(InvitationEntity invitation);
+    InvitationResponseDTO toDto(Invitation invitation);
+
+    Invitation toModel(InvitationRequestDTO dto);
 }

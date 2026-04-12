@@ -1,5 +1,6 @@
 package edu.dosw.TECHCUP.controller.mapper;
 
+import edu.dosw.TECHCUP.controller.dto.request.TournamentConfigRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentConfigResponseDTO;
 import edu.dosw.TECHCUP.core.model.TournamentConfig;
 import edu.dosw.TECHCUP.persistence.entity.TournamentConfigEntity;
@@ -11,5 +12,7 @@ public interface TournamentConfigMapper {
 
     @Mapping(source = "tournamentConfig_id",    target = "id")
     @Mapping(source = "tournament.tournament_id", target = "tournamentId")
-    TournamentConfigResponseDTO toDto(TournamentConfigEntity config);
+    TournamentConfigResponseDTO toDto(TournamentConfig config);
+
+    TournamentConfig toModel(TournamentConfigRequestDTO dto);
 }

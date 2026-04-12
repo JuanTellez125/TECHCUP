@@ -11,5 +11,7 @@ public interface MatchResultMapper {
 
     @Mapping(source = "matchResult_id",   target = "id")
     @Mapping(source = "match.match_id",   target = "matchId")
-    MatchResultResponseDTO toDto(MatchResultEntity matchResult);
+    MatchResultResponseDTO toDto(MatchResult matchResult);
+
+    MatchResult toModel(MatchResultResponseDTO dto);
 }

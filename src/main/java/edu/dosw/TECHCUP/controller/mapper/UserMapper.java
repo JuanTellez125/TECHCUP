@@ -1,8 +1,8 @@
 package edu.dosw.TECHCUP.controller.mapper;
 
+import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.core.model.User;
-import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,5 +10,9 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
 
     @Mapping(source = "user_id", target = "id")
-    UserResponseDTO toDto(UserEntity user);
+    UserResponseDTO toDto(User user);
+
+    User toModel(UserRequestDTO dto);
+
+
 }

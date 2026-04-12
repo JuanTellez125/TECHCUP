@@ -1,5 +1,6 @@
 package edu.dosw.TECHCUP.controller.mapper;
 
+import edu.dosw.TECHCUP.controller.dto.request.MatchRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.MatchResponseDTO;
 import edu.dosw.TECHCUP.core.model.Match;
 import edu.dosw.TECHCUP.persistence.entity.MatchEntity;
@@ -20,5 +21,7 @@ public interface MatchMapper {
     @Mapping(source = "referee.user_id",        target = "refereeId")
     @Mapping(source = "referee.firstName",      target = "refereeName")
     @Mapping(target = "status",                 ignore = true)
-    MatchResponseDTO toDto(MatchEntity match);
+    MatchResponseDTO toDto(Match match);
+
+    Match toModel(MatchRequestDTO dto);
 }
