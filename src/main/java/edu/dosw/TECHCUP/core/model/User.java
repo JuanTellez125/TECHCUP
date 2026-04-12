@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private Long user_id;
+    private Long userId;
     private String email;
     private String documentId;
     private String password;
@@ -19,5 +19,4 @@ public class User {
     private String lastName;
     private Role userType;
     private boolean active;
-    private Role role;
 }

@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.core.service;
 
-//import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchEventRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchRequestDTO;
@@ -16,6 +15,7 @@ import edu.dosw.TECHCUP.core.model.enums.MatchPhase;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import edu.dosw.TECHCUP.persistence.entity.*;
+import edu.dosw.TECHCUP.persistence.mapper.*;
 import edu.dosw.TECHCUP.persistence.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,11 +42,17 @@ public class MatchService {
     private final VenueRepository venueRepository;
     private final UserRepository userRepository;
     private final StandingRepository standingRepository;
+    private final LineUpService lineUpService;
     private final MatchMapper matchMapper;
     private final MatchResultMapper matchResultMapper;
     private final MatchEventMapper matchEventMapper;
     private final LineUpMapper lineUpMapper;
     private final StandingMapper standingMapper;
+    private final MatchPersistenceMapper matchPersistenceMapper;
+    private final MatchResultPersistenceMapper matchResultPersistenceMapper;
+    private final MatchEventPersistenceMapper matchEventPersistenceMapper;
+    private final LineUpPersistenceMapper lineUpPersistenceMapper;
+    private final StandingPersistenceMapper standingPersistenceMapper;
 
     @Transactional
     public MatchResponseDTO scheduleMatch(MatchRequestDTO dto) {
@@ -60,7 +66,7 @@ public class MatchService {
                 .orElseThrow(() -> new UserNotFoundException(dto.getVenueId()));
 
         if (team1.getId().equals(team2.getId()))
-            throw new TournamentValidationException("El equipo local y visitante no pueden ser el mismo.");
+            throw new TournamentValidationException("The home and visiting teams cannot be the same.");
 
         UserEntity referee = dto.getRefereeId() != null
                 ? userRepository.findById(dto.getRefereeId()).orElse(null) : null;
@@ -69,7 +75,7 @@ public class MatchService {
                 .tournament(tournament)
                 .team1(team1)
                 .team2(team2)
-                .vanue(venue)
+                .venue(venue)
                 .referee(referee)
                 .phase(dto.getPhase())
                 .scheduledAt(dto.getScheduledAt())
@@ -77,8 +83,8 @@ public class MatchService {
                 .build();
 
         MatchEntity saved = matchRepository.save(match);
-        log.info("Partido programado: {} vs {}", team1.getName(), team2.getName());
-        return matchMapper.toDto(saved);
+        log.info("Scheduled match: {} vs {}", team1.getName(), team2.getName());
+        return matchMapper.toDto(matchPersistenceMapper.toModel(saved));
     }
 
     @Transactional
@@ -86,7 +92,7 @@ public class MatchService {
         UserEntity organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new UserNotFoundException(organizerId));
         if (organizer.getUserType() != Role.ORGANIZER)
-            throw new TournamentValidationException("Solo el organizador puede registrar resultados.");
+            throw new TournamentValidationException("Only the organizer can record results.");
 
         MatchEntity match = matchRepository.findById(dto.getMatchId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
@@ -106,8 +112,8 @@ public class MatchService {
 
         updateStandings(match, dto.getTeam1Goals(), dto.getTeam2Goals());
 
-        log.info("Resultado registrado partido {}: {} - {}", dto.getMatchId(), dto.getTeam1Goals(), dto.getTeam2Goals());
-        return matchResultMapper.toDto(saved);
+        log.info("Registered match result {}: {} - {}", dto.getMatchId(), dto.getTeam1Goals(), dto.getTeam2Goals());
+        return matchResultMapper.toDto(matchResultPersistenceMapper.toModel(saved));
     }
 
     @Transactional
@@ -127,42 +133,25 @@ public class MatchService {
                 .minute(dto.getMinute())
                 .build();
 
-        return matchEventMapper.toDto(matchEventRepository.save(event));
+        return matchEventMapper.toDto(matchEventPersistenceMapper.toModel(matchEventRepository.save(event)));
     }
 
     @Transactional
     public LineUpResponseDTO saveLineUp(Long captainId, LineUpRequestDTO dto) {
-        UserEntity captain = userRepository.findById(captainId)
-                .orElseThrow(() -> new UserNotFoundException(captainId));
-        if (captain.getUserType() != Role.CAPTAIN)
-            throw new TournamentValidationException("Solo el capitán puede definir la alineación.");
-
-        MatchEntity match = matchRepository.findById(dto.getMatchId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
-        TeamEntity team = teamRepository.findById(dto.getTeamId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
-        UserEntity player = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
-
-        LineUpEntity lineUp = LineUpEntity.builder()
-                .match(match)
-                .team(team)
-                .user(player)
-                .role(dto.getRole())
-                .position(dto.getPosition())
-                .jerseyNumber(dto.getJerseyNumber())
-                .build();
-
-        return lineUpMapper.toDto(lineUpRepository.save(lineUp));
+        return lineUpService.saveLineUp(captainId, dto);
     }
     public List<LineUpResponseDTO> getLineUpByMatchAndTeam(Long matchId, Long teamId) {
         return lineUpRepository.findAllByMatch_Match_idAndTeam_Id(matchId, teamId)
-                .stream().map(lineUpMapper::toDto).collect(Collectors.toList());
+                .stream()
+                .map(e -> lineUpMapper.toDto(lineUpPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
     public List<MatchResponseDTO> getMatchesByReferee(Long refereeId) {
         return matchRepository.findAllByReferee_User_id(refereeId)
-                .stream().map(matchMapper::toDto).collect(Collectors.toList());
+                .stream()
+                .map(e -> matchMapper.toDto(matchPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -174,7 +163,7 @@ public class MatchService {
                 .filter(t -> t.isActive()).collect(Collectors.toList()));
 
         if (teams.size() < 2)
-            throw new TournamentValidationException("Se necesitan al menos 2 equipos para generar las llaves.");
+            throw new TournamentValidationException("At least 2 teams are needed to generate the keys.");
 
         Collections.shuffle(teams);
         MatchPhase phase = resolvePhase(teams.size());
@@ -192,29 +181,38 @@ public class MatchService {
         }
 
         return matchRepository.saveAll(bracket)
-                .stream().map(matchMapper::toDto).collect(Collectors.toList());
+                .stream()
+                .map(e -> matchMapper.toDto(matchPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
     public List<StandingResponseDTO> getStandings(Long tournamentId) {
         return standingRepository.findAllByTournament_Tournament_idOrderByPointsDesc(tournamentId)
-                .stream().map(standingMapper::toDto).collect(Collectors.toList());
+                .stream()
+                .map(e -> standingMapper.toDto(standingPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
     public List<MatchEventResponseDTO> getTopScorers(Long tournamentId) {
         return matchEventRepository
                 .findAllByEventTypeAndMatch_Tournament_Tournament_id(Event.GOL, tournamentId)
-                .stream().map(matchEventMapper::toDto).collect(Collectors.toList());
+                .stream()
+                .map(e -> matchEventMapper.toDto(matchEventPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
     public List<MatchResponseDTO> getMatchHistory(Long tournamentId) {
         return matchRepository.findAllByTournament_Tournament_id(tournamentId).stream()
                 .filter(m -> "JUGADO".equals(m.getStatus()))
-                .map(matchMapper::toDto).collect(Collectors.toList());
+                .map(e -> matchMapper.toDto(matchPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
     public List<MatchResponseDTO> getMatchesByTournament(Long tournamentId) {
         return matchRepository.findAllByTournament_Tournament_id(tournamentId)
-                .stream().map(matchMapper::toDto).collect(Collectors.toList());
+                .stream()
+                .map(e -> matchMapper.toDto(matchPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
     private void updateStandings(MatchEntity match, int team1Goals, int team2Goals) {

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Payment {
-    private Long payment_id;
+    private Long paymentId;
     private TournamentRegistration registration;
     private User uploadedBy;
     private User reviewedBy;

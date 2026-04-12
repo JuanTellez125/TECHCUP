@@ -12,15 +12,15 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class TournamentRequestDTO {
 
-    @NotNull(message = "La fecha de inicio no puede estar vacía")
+    @NotNull(message = "The start date cannot be empty.")
     private LocalDate startDate;
 
-    @NotNull(message = "La fecha de fin no puede estar vacía")
+    @NotNull(message = "The end date cannot be empty.")
     private LocalDate endDate;
 
-    @Positive(message = "El número de equipos debe ser mayor a 0")
+    @Positive(message = "The number of teams must be greater than 0")
     private int totalTeams;
 
-    @Positive(message = "El costo de inscripción debe ser mayor a 0")
+    @Positive(message = "The registration fee must be greater than 0")
     private double registrationCost;
 }

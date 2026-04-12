@@ -9,9 +9,10 @@ import lombok.*;
 @NoArgsConstructor
 public class TeamRequestDTO {
 
-    @NotBlank(message = "El nombre del equipo no puede estar vacío")
+    @NotBlank(message = "The team's name cannot be empty")
     private String name;
 
+    @NotBlank(message = "The team's shield cannot be empty")
     private String shieldUrl;
 
     private String mainColor;

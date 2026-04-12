@@ -2,16 +2,16 @@ package edu.dosw.TECHCUP.controller.mapper;
 
 import edu.dosw.TECHCUP.controller.dto.response.StandingResponseDTO;
 import edu.dosw.TECHCUP.core.model.Standing;
-import edu.dosw.TECHCUP.persistence.entity.StandingEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface StandingMapper {
 
-    @Mapping(source = "standing_id",                  target = "id")
-    @Mapping(source = "tournament.tournament_id",     target = "tournamentId")
+    @Mapping(source = "standingId",                    target = "id")
+    @Mapping(source = "tournament.tournamentId",       target = "tournamentId")
     @Mapping(source = "team.id",                      target = "teamId")
     @Mapping(source = "team.name",                    target = "teamName")
-    StandingResponseDTO toDto(StandingEntity standing);
+    StandingResponseDTO toDto(Standing standing);
+
 }

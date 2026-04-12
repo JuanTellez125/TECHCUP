@@ -1,30 +1,29 @@
 package edu.dosw.TECHCUP.core.service.impl;
 
 import edu.dosw.TECHCUP.controller.dto.request.SportProfileRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.SportProfileResponseDTO;
-import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.SportProfileMapper;
-import edu.dosw.TECHCUP.controller.mapper.UserMapper;
 import edu.dosw.TECHCUP.core.exception.SportProfileException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
-import edu.dosw.TECHCUP.core.model.SportProfile;
+import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
-import edu.dosw.TECHCUP.persistence.entity.SportProfileEntity;
-import edu.dosw.TECHCUP.persistence.entity.UserEntity;
-import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
+import edu.dosw.TECHCUP.persistence.entity.SportProfileEntity;
+import edu.dosw.TECHCUP.persistence.entity.UserEntity;
+import edu.dosw.TECHCUP.persistence.mapper.SportProfilePersistenceMapper;
+import edu.dosw.TECHCUP.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.TECHCUP.persistence.repository.SportProfileRepository;
+import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import edu.dosw.TECHCUP.core.model.User;  // Asegúrate de tener este import
-import java.util.Optional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,48 +32,50 @@ import java.util.stream.Collectors;
 public class PlayerService implements UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserPersistenceMapper userPersistenceMapper;
     private final SportProfileRepository sportProfileRepository;
     private final SportProfileMapper sportProfileMapper;
+    private final SportProfilePersistenceMapper sportProfilePersistenceMapper;
     private final UserValidator userValidator;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
-    public UserResponseDTO createUser(UserRequestDTO dto) {
-        userValidator.validate(dto);
+    public User createUser(User user) {
+        userValidator.validate(user);
 
-        if (userRepository.existsByEmail(dto.getEmail()))
-            throw new UserValidationException("Ya existe un usuario con el email: " + dto.getEmail());
-        if (userRepository.existsByDocumentId(dto.getDocumentId()))
-            throw new UserValidationException("Ya existe un usuario con el documento: " + dto.getDocumentId());
+        if (userRepository.existsByEmail(user.getEmail()))
+            throw new UserValidationException("A user with the following email address already exists: " + user.getEmail());
+        if (userRepository.existsByDocumentId(user.getDocumentId()))
+            throw new UserValidationException("A user already exists with the document: " + user.getDocumentId());
 
         UserEntity player = UserEntity.builder()
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .email(dto.getEmail())
-                .password(dto.getPassword())
-                .documentId(dto.getDocumentId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .documentId(user.getDocumentId())
                 .userType(Role.PLAYER)
                 .active(true)
                 .build();
 
         UserEntity saved = userRepository.save(player);
-        log.info("Jugador creado con ID: {}", saved.getUser_id());
-        return userMapper.toDto(saved);
+        log.info("Player created with ID: {}", saved.getUser_id());
+        return userPersistenceMapper.toModel(saved);
     }
 
     @Transactional
     @Override
-    public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
-        UserEntity user = userRepository.findById(id)
+    public User updateUser(Long id, User user) {
+        UserEntity entity = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
-
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
-
-        return userMapper.toDto(userRepository.save(user));
+        entity.setFirstName(user.getFirstName());
+        entity.setLastName(user.getLastName());
+        entity.setEmail(user.getEmail());
+        if (user.getPassword() != null && !user.getPassword().isBlank()) {
+            entity.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        return userPersistenceMapper.toModel(userRepository.save(entity));
     }
 
     @Transactional
@@ -83,37 +84,32 @@ public class PlayerService implements UserService {
         if (!userRepository.existsById(id))
             throw new UserNotFoundException(id);
         userRepository.deleteById(id);
-        log.info("Jugador eliminado: {}", id);
+        log.info("Eliminated player: {}", id);
     }
 
     @Transactional
     public SportProfileResponseDTO setAvailability(Long userId, boolean available) {
         SportProfileEntity profile = sportProfileRepository.findByUser_User_id(userId)
-                .orElseThrow(() -> new SportProfileException( userId));
-
+                .orElseThrow(() -> new SportProfileException(userId));
         profile.setAvailable(available);
-        return sportProfileMapper.toDto(sportProfileRepository.save(profile));
+        return sportProfileMapper.toDto(sportProfilePersistenceMapper.toModel(sportProfileRepository.save(profile)));
     }
 
     @Transactional
     public SportProfileResponseDTO getSportProfile(Long userId) {
         SportProfileEntity profile = sportProfileRepository.findByUser_User_id(userId)
-                .orElseThrow(() -> new SportProfileException( userId));
-        return sportProfileMapper.toDto(profile);
+                .orElseThrow(() -> new SportProfileException(userId));
+        return sportProfileMapper.toDto(sportProfilePersistenceMapper.toModel(profile));
     }
 
-    @Transactional
-    public UserResponseDTO getPlayerById(Long id) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-        return userMapper.toDto(user);
+    public User getPlayerById(Long id) {
+        return userPersistenceMapper.toModel(userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id)));
     }
 
-    @Transactional
-    public List<UserResponseDTO> getAllPlayers() {
-        return userRepository.findAllByUserType(Role.PLAYER)
-                .stream()
-                .map(userMapper::toDto)
+    public List<User> getAllPlayers() {
+        return userRepository.findAllByUserType(Role.PLAYER).stream()
+                .map(userPersistenceMapper::toModel)
                 .collect(Collectors.toList());
     }
 
@@ -128,22 +124,13 @@ public class PlayerService implements UserService {
         profile.setPrimaryPosition(dto.getPrimaryPosition());
         profile.setAvailable(dto.isAvailable());
 
-        return sportProfileMapper.toDto(sportProfileRepository.save(profile));
+        return sportProfileMapper.toDto(sportProfilePersistenceMapper.toModel(sportProfileRepository.save(profile)));
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        log.debug("Buscando jugador por email: {}", email);
+        log.debug("Looking for a player by email: {}", email);
         return userRepository.findByEmail(email)
-                .map(entity -> User.builder()
-                        .user_id(entity.getUser_id())
-                        .email(entity.getEmail())
-                        .password(entity.getPassword())
-                        .firstName(entity.getFirstName())
-                        .lastName(entity.getLastName())
-                        .documentId(entity.getDocumentId())
-                        .userType(entity.getUserType())
-                        .active(entity.isActive())
-                        .build());
+                .map(userPersistenceMapper::toModel);
     }
 }

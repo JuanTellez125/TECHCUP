@@ -12,18 +12,18 @@ import lombok.*;
 @NoArgsConstructor
 public class MatchEventRequestDTO {
 
-    @NotNull(message = "El ID del partido no puede estar vacío")
+    @NotNull(message = "The match ID cannot be empty")
     private Long matchId;
 
-    @NotNull(message = "El ID del jugador no puede estar vacío")
+    @NotNull(message = "The player ID cannot be empty")
     private Long userId;
 
-    @NotNull(message = "El ID del equipo no puede estar vacío")
+    @NotNull(message = "The team ID cannot be empty.")
     private Long teamId;
 
-    @NotBlank(message = "El tipo de evento no puede estar vacío")
+    @NotBlank(message = "The event type cannot be empty")
     private Event eventType;
 
-    @Positive(message = "El minuto debe ser mayor a 0")
+    @Positive(message = "The minute must be greater than 0")
     private int minute;
 }

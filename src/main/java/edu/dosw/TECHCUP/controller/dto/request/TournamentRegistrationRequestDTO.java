@@ -9,9 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 public class TournamentRegistrationRequestDTO {
 
-    @NotNull(message = "El ID del torneo no puede estar vacío")
+    @NotNull(message = "The tournament ID cannot be empty.")
     private Long tournamentId;
 
-    @NotNull(message = "El ID del equipo no puede estar vacío")
+    @NotNull(message = "The team ID cannot be empty.")
     private Long teamId;
 }

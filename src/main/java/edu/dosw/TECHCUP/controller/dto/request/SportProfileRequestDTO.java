@@ -12,16 +12,19 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class SportProfileRequestDTO {
 
-    @NotNull(message = "La posición principal no puede estar vacía")
+    @NotNull(message = "The primary position cannot be empty.")
     private Position primaryPosition;
 
     private Position secondaryPosition;
 
     private int jerseyNumber;
 
+    @NotNull(message = "The photo cannot be empty.")
     private String photoUrl;
 
+    @NotNull(message = "The birthdate cannot be empty.")
     private LocalDate birthDate;
 
+    @NotNull(message = "Available cannot be empty.")
     private boolean available;
 }

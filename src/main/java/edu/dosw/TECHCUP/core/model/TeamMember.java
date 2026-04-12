@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeamMember {
-    private Long teamMember_id;
+    private Long teamMemberId;
     private Team team;
     private User user;
     private TeamMemberStatus status;

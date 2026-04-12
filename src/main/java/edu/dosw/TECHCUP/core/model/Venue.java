@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Venue {
-    private long vanue_id;
+    private long venueId;
     private Tournament tournament;
     private String name;
-    private String Location;
+    private String location;
     private String description;
 }

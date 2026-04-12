@@ -14,11 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Match {
-    private Long match_id;
+    private Long matchId;
     private Tournament tournament;
     private Team team1;
     private Team team2;
-    private Venue vanue;
+    private Venue venue;
     private User referee;
     private MatchPhase phase;
     private LocalDateTime scheduledAt;

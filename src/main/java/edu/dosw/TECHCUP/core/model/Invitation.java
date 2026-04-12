@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Invitation {
-    private long invitation_id;
+    private Long invitationId;
     private Team team;
     private User invitedUser;
     private User invitedBy;

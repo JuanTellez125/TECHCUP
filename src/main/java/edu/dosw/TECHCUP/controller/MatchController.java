@@ -13,25 +13,28 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/matches")
 @RequiredArgsConstructor
-@Tag(name = "Match", description = "Gestión de partidos")
+@Tag(name = "Match", description = "Get team line-up by team and match")
 public class MatchController {
 
     private final MatchService matchService;
 
     @PostMapping
-    @Operation(summary = "Programar partido")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Schedule match")
     public ResponseEntity<MatchResponseDTO> scheduleMatch(@RequestBody MatchRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(matchService.scheduleMatch(dto));
     }
 
     @PostMapping("/result")
-    @Operation(summary = "Registrar resultado de partido (solo organizador)")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Record match result (organizer only)")
     public ResponseEntity<MatchResultResponseDTO> registerResult(
             @RequestParam Long organizerId,
             @RequestBody MatchResultRequestDTO dto) {
@@ -39,13 +42,15 @@ public class MatchController {
     }
 
     @PostMapping("/event")
-    @Operation(summary = "Registrar evento de partido (gol, tarjeta, etc.)")
+    @PreAuthorize("hasAnyRole('REFEREE', 'ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Record match event (goal, card, etc.)")
     public ResponseEntity<MatchEventResponseDTO> registerEvent(@RequestBody MatchEventRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(matchService.registerEvent(dto));
     }
 
     @PostMapping("/lineup")
-    @Operation(summary = "Guardar alineación (solo capitán)")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
+    @Operation(summary = "Save lineup (captain only)")
     public ResponseEntity<LineUpResponseDTO> saveLineUp(
             @RequestParam Long captainId,
             @RequestBody LineUpRequestDTO dto) {
@@ -53,7 +58,8 @@ public class MatchController {
     }
 
     @GetMapping("/lineup")
-    @Operation(summary = "Obtener alineación por partido y equipo")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get lineup by match and team")
     public ResponseEntity<List<LineUpResponseDTO>> getLineUpByMatchAndTeam(
             @RequestParam Long matchId,
             @RequestParam Long teamId) {
@@ -61,13 +67,15 @@ public class MatchController {
     }
 
     @GetMapping("/referee/{refereeId}")
-    @Operation(summary = "Obtener partidos por árbitro")
+    @PreAuthorize("hasAnyRole('REFEREE', 'ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Get matches by referee")
     public ResponseEntity<List<MatchResponseDTO>> getMatchesByReferee(@PathVariable Long refereeId) {
         return ResponseEntity.ok(matchService.getMatchesByReferee(refereeId));
     }
 
     @PostMapping("/bracket/{tournamentId}")
-    @Operation(summary = "Generar llaves del torneo")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Generate tournament brackets")
     public ResponseEntity<List<MatchResponseDTO>> generateBracket(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId) {
@@ -76,25 +84,29 @@ public class MatchController {
     }
 
     @GetMapping("/tournament/{tournamentId}")
-    @Operation(summary = "Obtener todos los partidos del torneo")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get all the matches of the tournament")
     public ResponseEntity<List<MatchResponseDTO>> getMatchesByTournament(@PathVariable Long tournamentId) {
         return ResponseEntity.ok(matchService.getMatchesByTournament(tournamentId));
     }
 
     @GetMapping("/tournament/{tournamentId}/history")
-    @Operation(summary = "Obtener historial de partidos jugados")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get history of matches played")
     public ResponseEntity<List<MatchResponseDTO>> getMatchHistory(@PathVariable Long tournamentId) {
         return ResponseEntity.ok(matchService.getMatchHistory(tournamentId));
     }
 
     @GetMapping("/tournament/{tournamentId}/standings")
-    @Operation(summary = "Obtener tabla de posiciones")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get leaderboard")
     public ResponseEntity<List<StandingResponseDTO>> getStandings(@PathVariable Long tournamentId) {
         return ResponseEntity.ok(matchService.getStandings(tournamentId));
     }
 
     @GetMapping("/tournament/{tournamentId}/top-scorers")
-    @Operation(summary = "Obtener goleadores del torneo")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Obtain top scorers of the tournament")
     public ResponseEntity<List<MatchEventResponseDTO>> getTopScorers(@PathVariable Long tournamentId) {
         return ResponseEntity.ok(matchService.getTopScorers(tournamentId));
     }

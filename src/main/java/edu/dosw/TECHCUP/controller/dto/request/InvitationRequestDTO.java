@@ -9,9 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 public class InvitationRequestDTO {
 
-    @NotNull(message = "El ID del equipo no puede estar vacío")
+    @NotNull(message = "The team ID cannot be empty")
     private Long teamId;
 
-    @NotNull(message = "El ID del jugador invitado no puede estar vacío")
+    @NotNull(message = "The Guest Player ID cannot be empty")
     private Long invitedUserId;
 }

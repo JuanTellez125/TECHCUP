@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tournament {
-    private Long tournament_id;
+    private Long tournamentId;
     private LocalDate startDate;
     private LocalDate endDate;
     private int totalTeams;

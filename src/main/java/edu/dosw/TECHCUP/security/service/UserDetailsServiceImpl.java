@@ -1,7 +1,5 @@
 package edu.dosw.TECHCUP.security.service;
 
-import edu.dosw.TECHCUP.core.model.User;
-import edu.dosw.TECHCUP.core.service.UserService;
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

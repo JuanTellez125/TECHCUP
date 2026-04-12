@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MatchResult {
-    private long MatchResult_id;
+    private Long matchResultId;
     private Match match;
     private User registeredBy;
     private int team1Goals;

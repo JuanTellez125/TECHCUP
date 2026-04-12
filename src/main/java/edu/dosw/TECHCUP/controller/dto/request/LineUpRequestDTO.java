@@ -10,16 +10,16 @@ import lombok.*;
 @NoArgsConstructor
 public class LineUpRequestDTO {
 
-    @NotNull(message = "El ID del partido no puede estar vacío")
+    @NotNull(message = "The match ID cannot be empty")
     private Long matchId;
 
-    @NotNull(message = "El ID del equipo no puede estar vacío")
+    @NotNull(message = "The team ID cannot be empty.")
     private Long teamId;
 
-    @NotNull(message = "El ID del jugador no puede estar vacío")
+    @NotNull(message = "The player ID cannot be empty")
     private Long userId;
 
-    @NotNull(message = "El rol no puede estar vacío")
+    @NotNull(message = "The role cannot be empty.")
     private LineUpRole role;
 
     private String position;

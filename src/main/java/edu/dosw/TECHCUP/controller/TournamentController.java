@@ -13,19 +13,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tournaments")
 @RequiredArgsConstructor
-@Tag(name = "Tournament", description = "Gestión de torneos")
+@Tag(name = "Tournament", description = "Tournament management")
 public class TournamentController {
 
     private final TournamentService tournamentService;
 
     @PostMapping
-    @Operation(summary = "Crear torneo (solo organizador)")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Create tournament (organizer only)")
     public ResponseEntity<TournamentResponseDTO> createTournament(
             @RequestParam Long organizerId,
             @RequestBody TournamentRequestDTO dto) {
@@ -34,25 +36,29 @@ public class TournamentController {
     }
 
     @GetMapping
-    @Operation(summary = "Obtener todos los torneos")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get all tournaments")
     public ResponseEntity<List<TournamentResponseDTO>> getAllTournaments() {
         return ResponseEntity.ok(tournamentService.getAllTournaments());
     }
 
     @GetMapping("/finalized")
-    @Operation(summary = "Obtener torneos finalizados")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Obtain completed tournaments")
     public ResponseEntity<List<TournamentResponseDTO>> getFinalizedTournaments() {
         return ResponseEntity.ok(tournamentService.getFinalizedTournaments());
     }
 
     @GetMapping("/{tournamentId}")
-    @Operation(summary = "Obtener torneo por ID")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get tournament by ID")
     public ResponseEntity<TournamentResponseDTO> getTournamentById(@PathVariable String tournamentId) {
         return ResponseEntity.ok(tournamentService.getTournamentById(tournamentId));
     }
 
     @PatchMapping("/{tournamentId}/start")
-    @Operation(summary = "Iniciar torneo")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Start tournament")
     public ResponseEntity<TournamentResponseDTO> startTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId) {
@@ -60,7 +66,8 @@ public class TournamentController {
     }
 
     @PatchMapping("/{tournamentId}/finish")
-    @Operation(summary = "Finalizar torneo")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Finish tournament")
     public ResponseEntity<TournamentResponseDTO> finishTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId) {
@@ -68,7 +75,8 @@ public class TournamentController {
     }
 
     @PostMapping("/{tournamentId}/config")
-    @Operation(summary = "Configurar torneo")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Set up tournament")
     public ResponseEntity<TournamentConfigResponseDTO> configTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId,
@@ -77,7 +85,8 @@ public class TournamentController {
     }
 
     @PostMapping("/{tournamentId}/venues")
-    @Operation(summary = "Agregar sede al torneo")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Add venue to tournament")
     public ResponseEntity<VenueResponseDTO> addVenue(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId,
@@ -87,7 +96,8 @@ public class TournamentController {
     }
 
     @GetMapping("/{tournamentId}/venues")
-    @Operation(summary = "Obtener sedes del torneo")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Secure tournament venues")
     public ResponseEntity<List<VenueResponseDTO>> getVenuesByTournament(@PathVariable Long tournamentId) {
         return ResponseEntity.ok(tournamentService.getVenuesByTournament(tournamentId));
     }

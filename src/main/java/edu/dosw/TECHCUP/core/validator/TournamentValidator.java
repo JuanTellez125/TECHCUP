@@ -17,13 +17,13 @@ public class TournamentValidator {
 
     private void validateDates(LocalDate startDate, LocalDate endDate) {
         if (startDate == null) {
-            throw new TournamentValidationException("La fecha de inicio no puede ser nula.");
+            throw new TournamentValidationException("The start date cannot be blank.");
         }
         if (endDate == null) {
-            throw new TournamentValidationException("La fecha final no puede ser nula.");
+            throw new TournamentValidationException("The final date cannot be blank");
         }
         if (startDate.isBefore(LocalDate.now())) {
-            throw new TournamentValidationException("La fecha de inicio no puede ser en el pasado.");
+            throw new TournamentValidationException("The start date cannot be in the past.");
         }
         if (endDate.isBefore(startDate)) {
             throw new TournamentValidationException("La fecha final no puede ser anterior a la fecha de inicio.");
@@ -32,13 +32,13 @@ public class TournamentValidator {
 
     private void validateTotalTeams(int totalTeams) {
         if (totalTeams <= 0) {
-            throw new TournamentValidationException("La cantidad de equipos debe ser mayor a 0.");
+            throw new TournamentValidationException("The number of teams must be greater than 0.");
         }
     }
 
     private void validateRegistrationCost(double cost) {
         if (cost < 0) {
-            throw new TournamentValidationException("El costo de inscripción no puede ser negativo.");
+            throw new TournamentValidationException("The cost of registration cannot be negative.");
         }
     }
 
@@ -52,8 +52,8 @@ public class TournamentValidator {
 
         if (!validTransition) {
             throw new TournamentValidationException(
-                    "No se puede cambiar de " + currentStatus + " a " + newStatus +
-                            ". El flujo correcto es: SKETCH → ACTIVE → INPROGRESS → FINALIZED"
+                    "You can't change " + currentStatus + " to " + newStatus +
+                            ". The correct flow is: SKETCH → ACTIVE → INPROGRESS → FINALIZED"
             );
         }
     }

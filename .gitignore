@@ -1,5 +1,10 @@
 HELP.md
 target/
+
+# Variables de entorno (nunca subir al repo)
+.env
+.env.local
+application-local.properties
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
