@@ -10,8 +10,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TournamentMapper {
 
-    @Mapping(source = "tournament_id",       target = "id")
-    @Mapping(source = "organizer.user_id",   target = "organizerId")
+    @Mapping(source = "tournamentId",        target = "id")
+    @Mapping(source = "organizer.userId",    target = "organizerId")
     @Mapping(source = "organizer.firstName", target = "organizerName")
     TournamentResponseDTO toDto(Tournament tournament);
 

@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface MatchPersistenceMapper {
 
+    @Mapping(source = "match_id", target = "matchId")
     Match toModel(MatchEntity matchEntity);
 
+    @Mapping(source = "matchId", target = "match_id")
     MatchEntity toEntity(Match match);
 }

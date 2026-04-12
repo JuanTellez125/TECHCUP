@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TeamMapper {
 
-    @Mapping(source = "captain.user_id",   target = "captainId")
+    @Mapping(source = "captain.userId",    target = "captainId")
     @Mapping(source = "captain.firstName", target = "captainName")
     TeamResponseDTO toDto(Team team);
 

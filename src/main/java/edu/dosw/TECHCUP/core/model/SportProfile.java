@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SportProfile {
-    private Long sportProfile_id;
+    private Long sportProfileId;
     private User user;
     private Position primaryPosition;
     private Position secondaryPosition;

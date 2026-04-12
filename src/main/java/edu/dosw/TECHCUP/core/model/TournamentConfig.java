@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TournamentConfig {
-    private Long tournamentConfig_id;
+    private Long tournamentConfigId;
     private Tournament tournament;
     private String rulebook;
     private LocalDate inscriptionDeadline;

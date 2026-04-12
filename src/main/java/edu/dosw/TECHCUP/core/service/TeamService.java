@@ -21,6 +21,7 @@ import edu.dosw.TECHCUP.core.validator.TeamValidator;
 import edu.dosw.TECHCUP.persistence.repository.InvitationRepository;
 import edu.dosw.TECHCUP.persistence.repository.SportProfileRepository;
 import edu.dosw.TECHCUP.persistence.repository.TeamMemberRepository;
+import edu.dosw.TECHCUP.persistence.repository.TournamentRegistrationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,7 @@ public class TeamService {
     private final InvitationRepository invitationRepository;
     private final TeamMemberRepository teamMemberRepository;
     private final SportProfileRepository sportProfileRepository;
+    private final TournamentRegistrationRepository tournamentRegistrationRepository;
     private final TeamMapper teamMapper;
     private final InvitationMapper invitationMapper;
     private final SportProfileMapper sportProfileMapper;
@@ -177,9 +179,9 @@ public class TeamService {
     }
 
     public List<TeamResponseDTO> getTeamsByTournament(Long tournamentId) {
-        return teamRepository.findById(tournamentId)
+        return tournamentRegistrationRepository.findAllByTournament_Tournament_id(tournamentId)
                 .stream()
-                .map(teamMapper::toDto)
+                .map(registration -> teamMapper.toDto(registration.getTeam()))
                 .collect(Collectors.toList());
     }
 }

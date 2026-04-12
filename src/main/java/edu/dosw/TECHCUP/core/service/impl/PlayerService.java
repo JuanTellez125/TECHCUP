@@ -13,6 +13,7 @@ import edu.dosw.TECHCUP.core.model.SportProfile;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.persistence.entity.SportProfileEntity;
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
+import edu.dosw.TECHCUP.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
@@ -35,6 +36,7 @@ public class PlayerService implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserPersistenceMapper userPersistenceMapper;
     private final SportProfileRepository sportProfileRepository;
     private final SportProfileMapper sportProfileMapper;
     private final UserValidator userValidator;
@@ -140,15 +142,6 @@ public class PlayerService implements UserService {
     public Optional<User> findByEmail(String email) {
         log.debug("Buscando jugador por email: {}", email);
         return userRepository.findByEmail(email)
-                .map(entity -> User.builder()
-                        .user_id(entity.getUser_id())
-                        .email(entity.getEmail())
-                        .password(entity.getPassword())
-                        .firstName(entity.getFirstName())
-                        .lastName(entity.getLastName())
-                        .documentId(entity.getDocumentId())
-                        .userType(entity.getUserType())
-                        .active(entity.isActive())
-                        .build());
+                .map(userPersistenceMapper::toModel);
     }
 }

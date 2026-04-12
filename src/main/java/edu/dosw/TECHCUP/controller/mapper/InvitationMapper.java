@@ -10,12 +10,12 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface InvitationMapper {
 
-    @Mapping(source = "invitation_id",          target = "id")
+    @Mapping(source = "invitationId",           target = "id")
     @Mapping(source = "team.id",                target = "teamId")
     @Mapping(source = "team.name",              target = "teamName")
-    @Mapping(source = "invitedUser.user_id",    target = "invitedUserId")
+    @Mapping(source = "invitedUser.userId",     target = "invitedUserId")
     @Mapping(source = "invitedUser.firstName",  target = "invitedUserName")
-    @Mapping(source = "invitedBy.user_id",      target = "invitedById")
+    @Mapping(source = "invitedBy.userId",       target = "invitedById")
     @Mapping(source = "invitedBy.firstName",    target = "invitedByName")
     InvitationResponseDTO toDto(Invitation invitation);
 

@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface LineUpPersistenceMapper {
 
+    @Mapping(source = "lineUp_id", target = "lineUpId")
     LineUp toModel(LineUpEntity lineUpEntity);
 
+    @Mapping(source = "lineUpId", target = "lineUp_id")
     LineUpEntity toEntity(LineUp lineUp);
 }

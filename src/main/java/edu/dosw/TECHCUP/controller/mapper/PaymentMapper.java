@@ -10,8 +10,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PaymentMapper {
 
-    @Mapping(source = "payment_id",                    target = "id")
-    @Mapping(source = "registration.tournamentRegistration_id", target = "registrationId")
+    @Mapping(source = "paymentId",                               target = "id")
+    @Mapping(source = "registration.tournamentRegistrationId",   target = "registrationId")
     PaymentResponseDTO toDto(Payment payment);
 
     Payment toModel(PaymentRequestDTO dto);

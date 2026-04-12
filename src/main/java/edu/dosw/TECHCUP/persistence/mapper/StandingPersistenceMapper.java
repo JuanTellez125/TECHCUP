@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface StandingPersistenceMapper {
 
-    Standing  toModel(StandingEntity standingEntity);
+    @Mapping(source = "standing_id", target = "standingId")
+    Standing toModel(StandingEntity standingEntity);
 
+    @Mapping(source = "standingId", target = "standing_id")
     StandingEntity toEntity(Standing standing);
 }

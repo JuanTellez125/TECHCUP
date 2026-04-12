@@ -10,15 +10,15 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface MatchMapper {
 
-    @Mapping(source = "match_id",               target = "id")
-    @Mapping(source = "tournament.tournament_id", target = "tournamentId")
+    @Mapping(source = "matchId",                 target = "id")
+    @Mapping(source = "tournament.tournamentId", target = "tournamentId")
     @Mapping(source = "team1.id",               target = "team1Id")
     @Mapping(source = "team1.name",             target = "team1Name")
     @Mapping(source = "team2.id",               target = "team2Id")
     @Mapping(source = "team2.name",             target = "team2Name")
     @Mapping(source = "venue.venueId",           target = "venueId")
     @Mapping(source = "venue.name",             target = "venueName")
-    @Mapping(source = "referee.user_id",        target = "refereeId")
+    @Mapping(source = "referee.userId",          target = "refereeId")
     @Mapping(source = "referee.firstName",      target = "refereeName")
     MatchResponseDTO toDto(Match match);
 

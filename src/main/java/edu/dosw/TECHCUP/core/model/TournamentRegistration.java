@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TournamentRegistration {
-    private Long TournamentRegistration_id;
+    private Long tournamentRegistrationId;
     private Tournament tournament;
     private Team team;
     private RegisterTournamentStatus status;

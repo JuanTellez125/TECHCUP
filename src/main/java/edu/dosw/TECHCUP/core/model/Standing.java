@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Standing {
-    private Long Standing_id;
+    private Long standingId;
     private Tournament tournament;
     private Team team;
     private int played;

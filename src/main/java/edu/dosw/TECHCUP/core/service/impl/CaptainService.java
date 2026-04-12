@@ -7,9 +7,9 @@ import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.core.model.enums.Role;
+import edu.dosw.TECHCUP.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import edu.dosw.TECHCUP.core.service.UserService;
-import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import edu.dosw.TECHCUP.core.model.User;
 import java.util.Optional;
 
-import java.util.Base64;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +27,7 @@ public class CaptainService implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserPersistenceMapper userPersistenceMapper;
     private final UserValidator userValidator;
     private final PasswordEncoder passwordEncoder;
 
@@ -92,16 +91,7 @@ public class CaptainService implements UserService {
     public Optional<User> findByEmail(String email) {
         log.debug("Buscando capitán por email: {}", email);
         return userRepository.findByEmail(email)
-                .map(entity -> User.builder()
-                        .user_id(entity.getUser_id())
-                        .email(entity.getEmail())
-                        .password(entity.getPassword())
-                        .firstName(entity.getFirstName())
-                        .lastName(entity.getLastName())
-                        .documentId(entity.getDocumentId())
-                        .userType(entity.getUserType())
-                        .active(entity.isActive())
-                        .build());
+                .map(userPersistenceMapper::toModel);
     }
 
 }

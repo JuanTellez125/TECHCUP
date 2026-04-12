@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PaymentPersistenceMapper {
 
+    @Mapping(source = "payment_id", target = "paymentId")
     Payment toModel(PaymentEntity payment);
 
+    @Mapping(source = "paymentId", target = "payment_id")
     PaymentEntity toEntity(Payment payment);
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LineUp {
-    private Long lineUp_id;
+    private Long lineUpId;
     private Match match;
     private Team team;
     private User user;

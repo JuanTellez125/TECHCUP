@@ -9,12 +9,12 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface MatchResultMapper {
 
-    @Mapping(source = "matchResult_id",  target = "id")
-    @Mapping(source = "match.match_id",  target = "matchId")
+    @Mapping(source = "matchResultId",   target = "id")
+    @Mapping(source = "match.matchId",   target = "matchId")
     MatchResultResponseDTO toDto(MatchResult matchResult);
 
     // match, registeredBy y registeredAt los completa el servicio tras buscarlos en BD
-    @Mapping(target = "matchResult_id",  ignore = true)
+    @Mapping(target = "matchResultId",   ignore = true)
     @Mapping(target = "match",           ignore = true)
     @Mapping(target = "registeredBy",    ignore = true)
     @Mapping(target = "registeredAt",    ignore = true)

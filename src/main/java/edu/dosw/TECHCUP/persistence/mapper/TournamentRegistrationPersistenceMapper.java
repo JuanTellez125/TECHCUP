@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TournamentRegistrationPersistenceMapper {
 
+    @Mapping(source = "tournamentRegistration_id", target = "tournamentRegistrationId")
     TournamentRegistration toModel(TournamentRegistrationEntity tournamentRegistrationEntity);
 
+    @Mapping(source = "tournamentRegistrationId", target = "tournamentRegistration_id")
     TournamentRegistrationEntity toEntity(TournamentRegistration tournamentRegistration);
 }

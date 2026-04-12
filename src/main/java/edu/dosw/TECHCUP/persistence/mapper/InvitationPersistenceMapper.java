@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface InvitationPersistenceMapper {
 
+    @Mapping(source = "invitation_id", target = "invitationId")
     Invitation toModel(InvitationEntity invitationEntity);
 
+    @Mapping(source = "invitationId", target = "invitation_id")
     InvitationEntity toEntity(Invitation invitation);
 }
