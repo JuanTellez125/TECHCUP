@@ -15,32 +15,32 @@ public class UserValidator {
 
     private void validateName(String name) {
         if (name == null || name.isBlank()) {
-            throw new UserValidationException("El nombre del usuario es obligatorio.");
+            throw new UserValidationException("The username is required.");
         }
     }
 
     private void validateEmail(String email) {
         if (email == null || email.isBlank()) {
-            throw new UserValidationException("El email del usuario es obligatorio.");
+            throw new UserValidationException("The user's email address is required.");
         }
         if (!email.matches("^[\\w.-]+@(escuelaing\\.edu\\.co|gmail\\.com)$")) {
             throw new UserValidationException(
-                    "El email debe ser institucional (@escuelaing.edu.co) o Gmail (@gmail.com).");
+                    "The email must be institutional (@escuelaing.edu.co) or Gmail (@gmail.com).");
         }
     }
 
     private void validatePassword(String password) {
         if (password == null || password.isBlank()) {
-            throw new UserValidationException("La contraseña es obligatoria.");
+            throw new UserValidationException("A password is required.");
         }
         if (password.length() < 6) {
-            throw new UserValidationException("La contraseña debe tener al menos 6 caracteres.");
+            throw new UserValidationException("The password must be at least 6 characters long.");
         }
     }
 
     private void validateDorsal(int dorsal) {
         if (dorsal < 1 || dorsal > 99) {
-            throw new UserValidationException("El dorsal debe estar entre 1 y 99.");
+            throw new UserValidationException("The number must be between 1 and 99.");
         }
     }
 }
