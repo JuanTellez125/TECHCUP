@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +23,8 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
     @PostMapping("/register")
-    @Operation(summary = "Register team for tournament (captain only)")
     public ResponseEntity<TournamentRegistrationResponseDTO> registerTeam(
             @RequestParam Long captainId,
             @RequestBody TournamentRegistrationRequestDTO dto) {
@@ -31,8 +32,8 @@ public class PaymentController {
                 .body(paymentService.registerTeam(captainId, dto));
     }
 
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
     @PostMapping("/submit")
-    @Operation(summary = "Upload proof of payment (captain only)")
     public ResponseEntity<PaymentResponseDTO> submitPayment(
             @RequestParam Long captainId,
             @RequestBody PaymentRequestDTO dto) {
@@ -40,16 +41,16 @@ public class PaymentController {
                 .body(paymentService.submitPayment(captainId, dto));
     }
 
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
     @PatchMapping("/{paymentId}/approve")
-    @Operation(summary = "Approve payment (organizer only)")
     public ResponseEntity<PaymentResponseDTO> approvePayment(
             @RequestParam Long organizerId,
             @PathVariable Long paymentId) {
         return ResponseEntity.ok(paymentService.approvePayment(organizerId, paymentId));
     }
 
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
     @PatchMapping("/{paymentId}/reject")
-    @Operation(summary = "Decline payment (organizer only)")
     public ResponseEntity<PaymentResponseDTO> rejectPayment(
             @RequestParam Long organizerId,
             @PathVariable Long paymentId,
@@ -57,16 +58,16 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.rejectPayment(organizerId, paymentId, reason));
     }
 
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
     @GetMapping("/tournament/{tournamentId}")
-    @Operation(summary = "Receiving payments from a tournament (organizer only)")
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId) {
         return ResponseEntity.ok(paymentService.getPaymentsByTournament(organizerId, tournamentId));
     }
 
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @GetMapping("/registrations/tournament/{tournamentId}")
-    @Operation(summary = "Obtain tournament registrations")
     public ResponseEntity<List<TournamentRegistrationResponseDTO>> getRegistrationsByTournament(
             @PathVariable Long tournamentId) {
         return ResponseEntity.ok(paymentService.getRegistrationsByTournament(tournamentId));
