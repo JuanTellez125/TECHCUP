@@ -139,13 +139,13 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Run JaCoCo coverage report
-      - env:
-      - SPRING_DATASOURCE_URL: jdbc:postgresql://metro.proxy.rlwy.net:36178/railway
-      - SPRING_DATASOURCE_USERNAME: postgres
-      - SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-      - JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      - JWT_EXPIRATION: 3600000
-      - run: mvn test jacoco:report
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://metro.proxy.rlwy.net:36178/railway
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          WT_EXPIRATION: 3600000
+          run: mvn test jacoco:report
 
       # Publica el resumen de cobertura directo en el workflow summary de GitHub
       - name: Publish JaCoCo coverage summary
