@@ -1,11 +1,11 @@
 package edu.dosw.TECHCUP.controller;
 
-//import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchEventRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchResultRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.*;
+import edu.dosw.TECHCUP.core.service.LineUpService;
 import edu.dosw.TECHCUP.core.service.MatchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +24,7 @@ import java.util.List;
 public class MatchController {
 
     private final MatchService matchService;
+    private final LineUpService lineUpService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
@@ -48,23 +49,25 @@ public class MatchController {
         return ResponseEntity.status(HttpStatus.CREATED).body(matchService.registerEvent(dto));
     }
 
-    @PostMapping("/lineup")
+    @PostMapping("/{matchId}/lineup")
     @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
-    @Operation(summary = "Save lineup (captain only)")
-    public ResponseEntity<LineUpResponseDTO> saveLineUp(
+    @Operation(summary = "Save full team lineup (captain only)")
+    public ResponseEntity<List<LineUpResponseDTO>> saveLineUp(
             @RequestParam Long captainId,
+            @PathVariable Long matchId,
             @RequestBody LineUpRequestDTO dto) {
-        return ResponseEntity.ok(matchService.saveLineUp(captainId, dto));
+        return ResponseEntity.ok(lineUpService.saveLineUp(captainId, matchId, dto));
     }
 
-    @GetMapping("/lineup")
+    @GetMapping("/{matchId}/lineup")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @Operation(summary = "Get lineup by match and team")
-    public ResponseEntity<List<LineUpResponseDTO>> getLineUpByMatchAndTeam(
-            @RequestParam Long matchId,
+    public ResponseEntity<List<LineUpResponseDTO>> getLineUp(
+            @PathVariable Long matchId,
             @RequestParam Long teamId) {
-        return ResponseEntity.ok(matchService.getLineUpByMatchAndTeam(matchId, teamId));
+        return ResponseEntity.ok(lineUpService.getLineUp(matchId, teamId));
     }
+
 
     @GetMapping("/referee/{refereeId}")
     @PreAuthorize("hasAnyRole('REFEREE', 'ORGANIZER', 'ADMINISTRATOR')")

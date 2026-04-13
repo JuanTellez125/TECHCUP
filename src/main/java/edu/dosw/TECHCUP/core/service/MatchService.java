@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.core.service;
 
-import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchEventRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchResultRequestDTO;
@@ -42,16 +41,13 @@ public class MatchService {
     private final VenueRepository venueRepository;
     private final UserRepository userRepository;
     private final StandingRepository standingRepository;
-    private final LineUpService lineUpService;
     private final MatchMapper matchMapper;
     private final MatchResultMapper matchResultMapper;
     private final MatchEventMapper matchEventMapper;
-    private final LineUpMapper lineUpMapper;
     private final StandingMapper standingMapper;
     private final MatchPersistenceMapper matchPersistenceMapper;
     private final MatchResultPersistenceMapper matchResultPersistenceMapper;
     private final MatchEventPersistenceMapper matchEventPersistenceMapper;
-    private final LineUpPersistenceMapper lineUpPersistenceMapper;
     private final StandingPersistenceMapper standingPersistenceMapper;
 
     @Transactional
@@ -136,16 +132,6 @@ public class MatchService {
         return matchEventMapper.toDto(matchEventPersistenceMapper.toModel(matchEventRepository.save(event)));
     }
 
-    @Transactional
-    public LineUpResponseDTO saveLineUp(Long captainId, LineUpRequestDTO dto) {
-        return lineUpService.saveLineUp(captainId, dto);
-    }
-    public List<LineUpResponseDTO> getLineUpByMatchAndTeam(Long matchId, Long teamId) {
-        return lineUpRepository.findAllByMatch_Match_idAndTeam_Id(matchId, teamId)
-                .stream()
-                .map(e -> lineUpMapper.toDto(lineUpPersistenceMapper.toModel(e)))
-                .collect(Collectors.toList());
-    }
 
     public List<MatchResponseDTO> getMatchesByReferee(Long refereeId) {
         return matchRepository.findAllByReferee_User_id(refereeId)
