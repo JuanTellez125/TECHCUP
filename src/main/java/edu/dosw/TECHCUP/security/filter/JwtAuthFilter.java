@@ -1,6 +1,6 @@
 package edu.dosw.TECHCUP.security.filter;
 
-import edu.dosw.TECHCUP.security.service.JwtService;
+import edu.dosw.TECHCUP.security.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

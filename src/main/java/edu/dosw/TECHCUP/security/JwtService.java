@@ -1,4 +1,4 @@
-package edu.dosw.TECHCUP.security.service;
+package edu.dosw.TECHCUP.security;
 
 
 import io.jsonwebtoken.Claims;

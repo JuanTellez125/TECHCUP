@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import edu.dosw.TECHCUP.core.exception.MatchResultAlreadyExistsException;
 
-
 import java.util.stream.Collectors;
+
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

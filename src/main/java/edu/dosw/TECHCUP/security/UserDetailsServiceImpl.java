@@ -1,4 +1,4 @@
-package edu.dosw.TECHCUP.security.service;
+package edu.dosw.TECHCUP.security;
 
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
