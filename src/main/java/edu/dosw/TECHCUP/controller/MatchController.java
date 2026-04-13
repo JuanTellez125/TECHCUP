@@ -7,6 +7,7 @@ import edu.dosw.TECHCUP.controller.dto.request.MatchResultRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.*;
 import edu.dosw.TECHCUP.core.service.LineUpService;
 import edu.dosw.TECHCUP.core.service.MatchService;
+import edu.dosw.TECHCUP.core.service.StatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class MatchController {
 
     private final MatchService matchService;
     private final LineUpService lineUpService;
+    private final StatisticsService statisticsService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
@@ -117,7 +119,7 @@ public class MatchController {
     @GetMapping("/tournament/{tournamentId}/top-scorers")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @Operation(summary = "Obtain top scorers of the tournament")
-    public ResponseEntity<List<MatchEventResponseDTO>> getTopScorers(@PathVariable Long tournamentId) {
-        return ResponseEntity.ok(matchService.getTopScorers(tournamentId));
+    public ResponseEntity<List<TopScorerResponseDTO>> getTopScorers(@PathVariable Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getTopScorers(tournamentId));
     }
 }
