@@ -145,7 +145,7 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           WT_EXPIRATION: 3600000
-          run: mvn test jacoco:report
+        run: mvn test jacoco:report
 
       # Publica el resumen de cobertura directo en el workflow summary de GitHub
       - name: Publish JaCoCo coverage summary
