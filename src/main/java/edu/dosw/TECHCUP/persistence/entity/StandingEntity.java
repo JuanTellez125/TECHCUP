@@ -34,5 +34,9 @@ public class StandingEntity {
     private int lost;
     private int goalsFor;
     private int goalsAgainst;
+
+    @Column(name = "goal_difference")
+    private int goalDifference;
+
     private int points;
 }

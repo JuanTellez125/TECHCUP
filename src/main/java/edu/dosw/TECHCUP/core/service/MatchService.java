@@ -238,12 +238,12 @@ public class MatchService {
         StandingEntity s1 = standingRepository
                 .findByTournament_Tournament_idAndTeam_Id(match.getTournament().getTournament_id(), match.getTeam1().getId())
                 .orElse(StandingEntity.builder().tournament(match.getTournament()).team(match.getTeam1())
-                        .played(0).won(0).drawn(0).lost(0).goalsFor(0).goalsAgainst(0).points(0).build());
+                        .played(0).won(0).drawn(0).lost(0).goalsFor(0).goalsAgainst(0).goalDifference(0).points(0).build());
 
         StandingEntity s2 = standingRepository
                 .findByTournament_Tournament_idAndTeam_Id(match.getTournament().getTournament_id(), match.getTeam2().getId())
                 .orElse(StandingEntity.builder().tournament(match.getTournament()).team(match.getTeam2())
-                        .played(0).won(0).drawn(0).lost(0).goalsFor(0).goalsAgainst(0).points(0).build());
+                        .played(0).won(0).drawn(0).lost(0).goalsFor(0).goalsAgainst(0).goalDifference(0).points(0).build());
 
         s1.setPlayed(s1.getPlayed() + 1);
         s2.setPlayed(s2.getPlayed() + 1);
@@ -251,6 +251,9 @@ public class MatchService {
         s1.setGoalsAgainst(s1.getGoalsAgainst() + team2Goals);
         s2.setGoalsFor(s2.getGoalsFor() + team2Goals);
         s2.setGoalsAgainst(s2.getGoalsAgainst() + team1Goals);
+
+        s1.setGoalDifference(s1.getGoalsFor() - s1.getGoalsAgainst());
+        s2.setGoalDifference(s2.getGoalsFor() - s2.getGoalsAgainst());
 
         if (team1Goals > team2Goals) {
             s1.setWon(s1.getWon() + 1);       s1.setPoints(s1.getPoints() + 3);
