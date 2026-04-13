@@ -54,7 +54,7 @@ public class SecurityConfig {
 
                 // Reglas de acceso globales
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoints publicos: registro y login no requieren token
+/*                        // Endpoints publicos: registro y login no requieren token
                         .requestMatchers("/auth/**").permitAll()
 
                         // Swagger / OpenAPI (documentacion)
@@ -66,7 +66,8 @@ public class SecurityConfig {
 
                         // Todo lo demas requiere autenticacion;
                         // la autorizacion fina se delega a @PreAuthorize
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()*/
+                                .anyRequest().permitAll()
                 )
 
                 // Proveedor de autenticacion DAO (usuario + BCrypt)
