@@ -21,4 +21,5 @@ public class SportProfile {
     private String photoUrl;
     private LocalDate birthDate;
     private boolean available;
+    private Integer semester;
 }

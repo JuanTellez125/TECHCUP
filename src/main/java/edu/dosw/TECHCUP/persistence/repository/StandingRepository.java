@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface StandingRepository extends JpaRepository<StandingEntity, Long> {
 
-    @Query("SELECT s FROM StandingEntity s WHERE s.tournament.tournament_id = :tournamentId ORDER BY s.points DESC")
+    @Query("SELECT s FROM StandingEntity s WHERE s.tournament.tournament_id = :tournamentId ORDER BY s.points DESC, s.goalDifference DESC, s.goalsFor DESC")
     List<StandingEntity> findAllByTournament_Tournament_idOrderByPointsDesc(@Param("tournamentId") Long tournamentId);
 
     @Query("SELECT s FROM StandingEntity s WHERE s.tournament.tournament_id = :tournamentId AND s.team.id = :teamId")

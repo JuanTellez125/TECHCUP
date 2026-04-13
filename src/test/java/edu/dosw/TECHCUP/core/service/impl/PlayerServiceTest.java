@@ -53,7 +53,7 @@ class PlayerServiceTest {
 
         when(userRepository.existsByEmail(model.getEmail())).thenReturn(false);
         when(userRepository.existsByDocumentId(model.getDocumentId())).thenReturn(false);
-        when(passwordEncoder.encode(any())).thenReturn("encoded");
+        when(passwordEncoder.encode(any())).thenReturn("cGFzc3dvcmQ=");
         when(userRepository.save(any())).thenReturn(saved);
         when(userPersistenceMapper.toModel(saved)).thenReturn(model);
 
@@ -110,13 +110,13 @@ class PlayerServiceTest {
     }
 
     @Test
-    void updateUser_withNewPassword_encodesIt() {
+    void updateUser_withNewPassword_encodesWithBase64() {
         User model = buildUserModel();
         model.setPassword("newPass");
         UserEntity entity = buildUserEntity(1L);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(entity));
-        when(passwordEncoder.encode("newPass")).thenReturn("encodedNew");
+        when(passwordEncoder.encode("newPass")).thenReturn("bmV3UGFzcw==");
         when(userRepository.save(entity)).thenReturn(entity);
         when(userPersistenceMapper.toModel(entity)).thenReturn(model);
 

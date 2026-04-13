@@ -36,4 +36,7 @@ public class SportProfileEntity {
     private String photoUrl;
     private LocalDate birthDate;
     private boolean available;
+
+    @Column(name = "semester")
+    private Integer semester;
 }

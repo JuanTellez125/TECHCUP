@@ -28,5 +28,7 @@ public class StandingResponseDTO {
 
     private int goalsAgainst;
 
+    private int goalDifference;
+
     private int points;
 }

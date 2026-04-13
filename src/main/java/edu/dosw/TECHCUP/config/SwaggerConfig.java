@@ -13,6 +13,6 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("TechCup Testigos de Jehova API")
                         .version("1.0")
-                        .description("Documentación de la API para el proyecto TechCup Testigos de Jehova"));
+                        .description("API documentation for the TechCup Jehovah's Witnesses project"));
     }
 }

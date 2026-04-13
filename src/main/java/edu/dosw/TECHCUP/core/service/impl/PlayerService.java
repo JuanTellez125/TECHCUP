@@ -123,6 +123,7 @@ public class PlayerService implements UserService {
 
         profile.setPrimaryPosition(dto.getPrimaryPosition());
         profile.setAvailable(dto.isAvailable());
+        profile.setSemester(dto.getSemester());
 
         return sportProfileMapper.toDto(sportProfilePersistenceMapper.toModel(sportProfileRepository.save(profile)));
     }

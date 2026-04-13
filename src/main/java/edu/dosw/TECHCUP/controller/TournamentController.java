@@ -5,7 +5,9 @@ import edu.dosw.TECHCUP.controller.dto.request.TournamentRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.VenueRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentConfigResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentResponseDTO;
+import edu.dosw.TECHCUP.controller.dto.response.TournamentStatisticsResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.VenueResponseDTO;
+import edu.dosw.TECHCUP.core.service.StatisticsService;
 import edu.dosw.TECHCUP.core.service.TournamentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +26,8 @@ import java.util.List;
 public class TournamentController {
 
     private final TournamentService tournamentService;
+    private final StatisticsService statisticsService;
+
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
@@ -84,6 +88,13 @@ public class TournamentController {
         return ResponseEntity.ok(tournamentService.configTournament(organizerId, tournamentId, dto));
     }
 
+    @GetMapping("/{tournamentId}/config")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get tournament configuration")
+    public ResponseEntity<TournamentConfigResponseDTO> getConfig(@PathVariable Long tournamentId) {
+        return ResponseEntity.ok(tournamentService.getConfig(tournamentId));
+    }
+
     @PostMapping("/{tournamentId}/venues")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
     @Operation(summary = "Add venue to tournament")
@@ -100,5 +111,13 @@ public class TournamentController {
     @Operation(summary = "Secure tournament venues")
     public ResponseEntity<List<VenueResponseDTO>> getVenuesByTournament(@PathVariable Long tournamentId) {
         return ResponseEntity.ok(tournamentService.getVenuesByTournament(tournamentId));
+    }
+
+    @GetMapping("/{tournamentId}/statistics")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get consolidated tournament statistics")
+    public ResponseEntity<TournamentStatisticsResponseDTO> getTournamentStatistics(
+            @PathVariable Long tournamentId) {
+        return ResponseEntity.ok(statisticsService.getTournamentStatistics(tournamentId));
     }
 }

@@ -19,4 +19,7 @@ public interface SportProfileRepository extends JpaRepository<SportProfileEntity
     List<SportProfileEntity> findAllByAvailableTrue();
 
     List<SportProfileEntity> findAllByPrimaryPositionAndAvailableTrue(Position position);
+
+    @Query("SELECT s FROM SportProfileEntity s WHERE s.available = true AND (:semester IS NULL OR s.semester = :semester)")
+    List<SportProfileEntity> findAllByAvailableTrueAndSemester(@Param("semester") Integer semester);
 }

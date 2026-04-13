@@ -21,4 +21,7 @@ public interface TournamentRegistrationRepository extends JpaRepository<Tourname
 
     @Query("SELECT r FROM TournamentRegistrationEntity r WHERE r.tournament.tournament_id = :tournamentId AND r.status = :status")
     List<TournamentRegistrationEntity> findAllByTournament_Tournament_idAndStatus(@Param("tournamentId") Long tournamentId, @Param("status") RegisterTournamentStatus status);
+
+    @Query("SELECT r FROM TournamentRegistrationEntity r WHERE r.team.id = :teamId AND r.tournament.status IN ('INPROGRESS', 'FINALIZED')")
+    List<TournamentRegistrationEntity> findActiveOrFinalizedByTeam_Id(@Param("teamId") Long teamId);
 }

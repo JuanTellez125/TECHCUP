@@ -9,6 +9,7 @@ import edu.dosw.TECHCUP.controller.mapper.InvitationMapper;
 import edu.dosw.TECHCUP.controller.mapper.SportProfileMapper;
 import edu.dosw.TECHCUP.controller.mapper.TeamMapper;
 import edu.dosw.TECHCUP.controller.mapper.UserMapper;
+import edu.dosw.TECHCUP.core.exception.TeamNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.*;
@@ -170,6 +171,12 @@ public class TeamService {
                     .collect(Collectors.toList());
         }
 
+        if (semester != null && position != null){
+            profiles = profiles.stream()
+                    .filter(p -> semester.equals(p.getSemester()))
+                    .collect(Collectors.toList());
+        }
+
         return profiles.stream()
                 .map(e -> sportProfileMapper.toDto(sportProfilePersistenceMapper.toModel(e)))
                 .collect(Collectors.toList());
@@ -193,5 +200,43 @@ public class TeamService {
                 .stream()
                 .map(r -> teamMapper.toDto(teamPersistenceMapper.toModel(r.getTeam())))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void removePlayer(Long captainId, Long teamId, Long playerId) {
+        UserEntity captain = userRepository.findById(captainId)
+                .orElseThrow(() -> new UserNotFoundException(captainId));
+        if (captain.getUserType() != Role.CAPTAIN)
+            throw new UserValidationException("Only the captain can remove players");
+
+        TeamEntity team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new TeamNotFoundException(teamId));
+        if (!team.getCaptain().getUser_id().equals(captainId))
+            throw new UserValidationException("Only the captain can remove players");
+
+        List<TournamentRegistrationEntity> activeRegistrations =
+                tournamentRegistrationRepository.findActiveOrFinalizedByTeam_Id(teamId);
+        if (!activeRegistrations.isEmpty())
+            throw new UserValidationException("No roster changes can be made during the tournament");
+
+        if (captainId.equals(playerId))
+            throw new UserValidationException("The team captain cannot be removed");
+
+        TeamMemberEntity member = teamMemberRepository.findByTeam_IdAndUser_User_id(teamId, playerId)
+                .orElseThrow(() -> new UserNotFoundException(playerId));
+        if (member.getStatus() != TeamMemberStatus.ACEPTADO)
+            throw new UserNotFoundException(playerId);
+
+        member.setStatus(TeamMemberStatus.REMOVIDO);
+        teamMemberRepository.save(member);
+
+        long activeCount = teamMemberRepository.findAllByTeam_Id(teamId).stream()
+                .filter(m -> m.getStatus() == TeamMemberStatus.ACEPTADO)
+                .count();
+        if (activeCount < 7) {
+            log.warn("Team {} now has {} active players, below the minimum of 7", teamId, activeCount);
+        }
+
+        log.info("Player {} removed from team {} by captain {}", playerId, teamId, captainId);
     }
 }

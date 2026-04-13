@@ -1,5 +1,6 @@
 package edu.dosw.TECHCUP.core.service;
 
+import edu.dosw.TECHCUP.controller.dto.request.LineUpEntryDTO;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.LineUpResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.LineUpMapper;
@@ -7,17 +8,20 @@ import edu.dosw.TECHCUP.core.exception.TeamNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.enums.Role;
+import edu.dosw.TECHCUP.core.model.enums.TeamMemberStatus;
 import edu.dosw.TECHCUP.persistence.entity.LineUpEntity;
 import edu.dosw.TECHCUP.persistence.entity.MatchEntity;
 import edu.dosw.TECHCUP.persistence.entity.TeamEntity;
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.persistence.mapper.LineUpPersistenceMapper;
 import edu.dosw.TECHCUP.persistence.repository.*;
-import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,55 +37,84 @@ public class LineUpService {
     private final UserRepository userRepository;
 
     @Transactional
-    public LineUpResponseDTO saveLineUp(Long captainId, LineUpRequestDTO dto) {
+    public List<LineUpResponseDTO> saveLineUp(Long captainId, Long matchId, LineUpRequestDTO dto) {
         UserEntity captain = userRepository.findById(captainId)
                 .orElseThrow(() -> new UserNotFoundException(captainId));
-
         if (captain.getUserType() != Role.CAPTAIN)
             throw new UserValidationException("Only the captain can define the lineup.");
 
-        MatchEntity match = matchRepository.findById(dto.getMatchId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
+        MatchEntity match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new UserNotFoundException(matchId));
 
         TeamEntity team = teamRepository.findById(dto.getTeamId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
+                .orElseThrow(() -> new TeamNotFoundException(dto.getTeamId()));
 
         if (!team.getCaptain().getUser_id().equals(captainId))
             throw new UserValidationException("Only the captain of this team can define its lineup.");
 
+        boolean participates = match.getTeam1().getId().equals(team.getId())
+                || match.getTeam2().getId().equals(team.getId());
+        if (!participates)
+            throw new UserValidationException("El equipo no participa en este partido");
 
-        UserEntity player = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
+        if (dto.getPlayers() == null || dto.getPlayers().isEmpty())
+            throw new UserValidationException("La alineación no puede estar vacía");
 
-        if (!teamMemberRepository.existsByTeam_IdAndUser_User_id(team.getId(), player.getUser_id()))
-            throw new UserValidationException("The player does not belong to this team.");
+        for (LineUpEntryDTO entry : dto.getPlayers()) {
+            UserEntity player = userRepository.findById(entry.getUserId())
+                    .orElseThrow(() -> new UserNotFoundException(entry.getUserId()));
 
-        boolean alreadyRegistered = lineUpRepository
-                .findAllByMatch_Match_idAndTeam_Id(dto.getMatchId(), dto.getTeamId())
-                .stream()
-                .anyMatch(l -> l.getUser().getUser_id().equals(player.getUser_id()));
+            teamMemberRepository.findByTeam_IdAndUser_User_id(team.getId(), player.getUser_id())
+                    .filter(m -> m.getStatus() == TeamMemberStatus.ACEPTADO)
+                    .orElseThrow(() -> new UserValidationException(
+                            "El jugador " + entry.getUserId() + " no es miembro activo del equipo"));
+        }
 
-        if (alreadyRegistered)
-            throw new UserValidationException("The player is already registered in the lineup for this match.");
+        long distinctJerseys = dto.getPlayers().stream()
+                .map(LineUpEntryDTO::getJerseyNumber)
+                .distinct()
+                .count();
+        if (distinctJerseys < dto.getPlayers().size())
+            throw new UserValidationException("No puede haber dos titulares con el mismo número de dorsal");
 
-        LineUpEntity lineUp = LineUpEntity.builder()
-                .match(match)
-                .team(team)
-                .user(player)
-                .role(dto.getRole())
-                .position(dto.getPosition())
-                .jerseyNumber(dto.getJerseyNumber())
-                .build();
+        List<LineUpEntity> existing = lineUpRepository
+                .findAllByMatch_Match_idAndTeam_Id(matchId, team.getId());
+        if (!existing.isEmpty())
+            lineUpRepository.deleteAll(existing);
 
-        LineUpEntity saved = lineUpRepository.save(lineUp);
-        log.info("Player {} added to team lineup {} in match {} as {}",
-                player.getUser_id(), team.getId(), match.getMatch_id(), dto.getRole());
-        return lineUpMapper.toDto(lineUpPersistenceMapper.toModel(saved));
+        List<LineUpEntity> saved = dto.getPlayers().stream()
+                .map(entry -> {
+                    UserEntity player = userRepository.findById(entry.getUserId())
+                            .orElseThrow(() -> new UserNotFoundException(entry.getUserId()));
+                    return LineUpEntity.builder()
+                            .match(match)
+                            .team(team)
+                            .user(player)
+                            .role(entry.getRole())
+                            .position(entry.getPosition())
+                            .jerseyNumber(entry.getJerseyNumber())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        List<LineUpEntity> savedAll = lineUpRepository.saveAll(saved);
+        log.info("Lineup of {} players saved for team {} in match {} by captain {}",
+                savedAll.size(), team.getId(), matchId, captainId);
+
+        return savedAll.stream()
+                .map(e -> lineUpMapper.toDto(lineUpPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 
-    public LineUpResponseDTO getLineUp(Long teamId, Long matchId) {
-        LineUpEntity lineUp = lineUpRepository.findByMatchAndTeam(teamId, matchId)
-                .orElseThrow(() -> new TeamNotFoundException(teamId, matchId));
-        return lineUpMapper.toDto(lineUpPersistenceMapper.toModel(lineUp));
+    public List<LineUpResponseDTO> getLineUp(Long matchId, Long teamId) {
+        matchRepository.findById(matchId)
+                .orElseThrow(() -> new UserNotFoundException(matchId));
+        teamRepository.findById(teamId)
+                .orElseThrow(() -> new TeamNotFoundException(teamId));
+
+        return lineUpRepository.findAllByMatch_Match_idAndTeam_Id(matchId, teamId)
+                .stream()
+                .map(e -> lineUpMapper.toDto(lineUpPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
     }
 }
