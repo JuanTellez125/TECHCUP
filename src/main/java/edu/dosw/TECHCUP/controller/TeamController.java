@@ -94,4 +94,15 @@ public class TeamController {
         teamService.validateTeam(teamId);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{teamId}/members/{playerId}")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
+    @Operation(summary = "Remove player from team")
+    public ResponseEntity<Void> removePlayer(
+            @RequestParam Long captainId,
+            @PathVariable Long teamId,
+            @PathVariable Long playerId) {
+        teamService.removePlayer(captainId, teamId, playerId);
+        return ResponseEntity.noContent().build();
+    }
 }
