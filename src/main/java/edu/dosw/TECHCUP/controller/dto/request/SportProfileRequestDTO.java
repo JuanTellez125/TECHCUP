@@ -1,6 +1,8 @@
 package edu.dosw.TECHCUP.controller.dto.request;
 
 import edu.dosw.TECHCUP.core.model.enums.Position;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -27,4 +29,8 @@ public class SportProfileRequestDTO {
 
     @NotNull(message = "Available cannot be empty.")
     private boolean available;
+
+    @Min(value =  1, message = "The semester grade must be between 1 and 10.")
+    @Max(value = 10, message = "The semester grade must be between 1 and 10.")
+    private Integer semester;
 }

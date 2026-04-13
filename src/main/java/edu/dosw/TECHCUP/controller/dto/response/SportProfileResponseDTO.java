@@ -30,4 +30,6 @@ public class SportProfileResponseDTO {
     private LocalDate birthDate;
 
     private boolean available;
+
+    private Integer semester;
 }

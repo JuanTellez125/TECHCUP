@@ -170,6 +170,12 @@ public class TeamService {
                     .collect(Collectors.toList());
         }
 
+        if (semester != null && position != null){
+            profiles = profiles.stream()
+                    .filter(p -> semester.equals(p.getSemester()))
+                    .collect(Collectors.toList());
+        }
+
         return profiles.stream()
                 .map(e -> sportProfileMapper.toDto(sportProfilePersistenceMapper.toModel(e)))
                 .collect(Collectors.toList());
