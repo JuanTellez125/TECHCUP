@@ -84,6 +84,13 @@ public class TournamentController {
         return ResponseEntity.ok(tournamentService.configTournament(organizerId, tournamentId, dto));
     }
 
+    @GetMapping("/{tournamentId}/config")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get tournament configuration")
+    public ResponseEntity<TournamentConfigResponseDTO> getConfig(@PathVariable Long tournamentId) {
+        return ResponseEntity.ok(tournamentService.getConfig(tournamentId));
+    }
+
     @PostMapping("/{tournamentId}/venues")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
     @Operation(summary = "Add venue to tournament")

@@ -8,13 +8,10 @@ import edu.dosw.TECHCUP.controller.dto.response.TournamentResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.VenueResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.TournamentConfigMapper;
 import edu.dosw.TECHCUP.controller.mapper.VenueMapper;
+import edu.dosw.TECHCUP.core.exception.TournamentFinalizedException;
 import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
-import edu.dosw.TECHCUP.core.model.TournamentConfig;
-import edu.dosw.TECHCUP.core.model.Venue;
 import edu.dosw.TECHCUP.core.model.enums.Role;
-import edu.dosw.TECHCUP.core.model.Tournament;
-import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.TournamentStatus;
 import edu.dosw.TECHCUP.persistence.entity.TournamentConfigEntity;
 import edu.dosw.TECHCUP.persistence.entity.TournamentEntity;
@@ -24,7 +21,6 @@ import edu.dosw.TECHCUP.persistence.mapper.TournamentConfigPersistenceMapper;
 import edu.dosw.TECHCUP.persistence.mapper.TournamentPersistenceMapper;
 import edu.dosw.TECHCUP.persistence.mapper.VenuePersistenceMapper;
 import edu.dosw.TECHCUP.persistence.repository.TournamentRepository;
-import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import edu.dosw.TECHCUP.core.validator.TournamentValidator;
 import edu.dosw.TECHCUP.persistence.repository.TournamentConfigRepository;
 import edu.dosw.TECHCUP.persistence.repository.VenueRepository;
@@ -105,6 +101,16 @@ public class TournamentService {
         TournamentEntity tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
 
+        if (tournament.getStatus() == TournamentStatus.FINALIZED){
+            throw new TournamentFinalizedException("The tournament status cannot be finalized");
+        }
+
+        if (dto.getInscriptionDeadline() != null &&
+                !dto.getInscriptionDeadline().isBefore(tournament.getStartDate())) {
+            throw new TournamentValidationException("The inscription deadline must be before the tournament start date.");
+        }
+
+
         TournamentConfigEntity config = tournamentConfigRepository
                 .findByTournament_Tournament_id(tournamentId)
                 .orElse(TournamentConfigEntity.builder().tournament(tournament).build());
@@ -159,6 +165,17 @@ public class TournamentService {
                 .stream()
                 .map(e -> venueMapper.toDto(venuePersistenceMapper.toModel(e)))
                 .collect(Collectors.toList());
+    }
+
+    public TournamentConfigResponseDTO getConfig(Long tournamentId) {
+        tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
+
+        TournamentConfigEntity config = tournamentConfigRepository
+                .findByTournament_Tournament_id(tournamentId)
+                .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
+
+        return tournamentConfigMapper.toDto(tournamentConfigPersistenceMapper.toModel(config));
     }
 
 }
