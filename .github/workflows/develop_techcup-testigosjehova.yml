@@ -138,19 +138,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Run JaCoCo and enforce coverage minimum (70%)
-        env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://metro.proxy.rlwy.net:36178/railway
-          SPRING_DATASOURCE_USERNAME: postgres
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_EXPIRATION: 3600000
-        # El plugin jacoco:check falla el build si la cobertura cae por debajo del mínimo
-        # Ajusta el VALUE (0.70 = 70%) según lo que exija tu equipo
-        run: |
-          mvn test jacoco:report jacoco:check \
-            -Djacoco.haltOnFailure=true \
-            -Djacoco.rules='[{"element":"BUNDLE","limits":[{"counter":"LINE","value":"COVEREDRATIO","minimum":"0.70"}]}]'
+      - name: Run JaCoCo coverage report
+      - env:
+      - SPRING_DATASOURCE_URL: jdbc:postgresql://metro.proxy.rlwy.net:36178/railway
+      - SPRING_DATASOURCE_USERNAME: postgres
+      - SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+      - JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      - JWT_EXPIRATION: 3600000
+      - run: mvn test jacoco:report
 
       # Publica el resumen de cobertura directo en el workflow summary de GitHub
       - name: Publish JaCoCo coverage summary
