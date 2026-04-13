@@ -5,6 +5,7 @@ import edu.dosw.TECHCUP.controller.dto.request.MatchRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchResultRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.*;
 import edu.dosw.TECHCUP.controller.mapper.*;
+import edu.dosw.TECHCUP.core.exception.MatchResultAlreadyExistsException;
 import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
@@ -84,7 +85,7 @@ public class MatchService {
     }
 
     @Transactional
-    public MatchResultResponseDTO registerResult(Long organizerId, MatchResultRequestDTO dto) {
+    public MatchSummaryResponseDTO registerResult(Long organizerId, MatchResultRequestDTO dto) {
         UserEntity organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new UserNotFoundException(organizerId));
         if (organizer.getUserType() != Role.ORGANIZER)
@@ -92,6 +93,9 @@ public class MatchService {
 
         MatchEntity match = matchRepository.findById(dto.getMatchId())
                 .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
+
+        if (matchResultRepository.findByMatch_Match_id(dto.getMatchId()).isPresent())
+            throw new MatchResultAlreadyExistsException(dto.getMatchId());
 
         MatchResultEntity result = MatchResultEntity.builder()
                 .match(match)
@@ -105,12 +109,41 @@ public class MatchService {
         matchRepository.save(match);
 
         MatchResultEntity saved = matchResultRepository.save(result);
-
         updateStandings(match, dto.getTeam1Goals(), dto.getTeam2Goals());
 
         log.info("Registered match result {}: {} - {}", dto.getMatchId(), dto.getTeam1Goals(), dto.getTeam2Goals());
-        return matchResultMapper.toDto(matchResultPersistenceMapper.toModel(saved));
+
+        return buildSummary(match, saved);
     }
+
+    public MatchSummaryResponseDTO getMatchSummary(Long matchId) {
+        MatchEntity match = matchRepository.findById(matchId)
+                .orElseThrow(() -> new UserNotFoundException(matchId));
+
+        MatchResultEntity result = matchResultRepository.findByMatch_Match_id(matchId)
+                .orElseThrow(() -> new UserNotFoundException(matchId));
+
+        return buildSummary(match, result);
+    }
+
+    private MatchSummaryResponseDTO buildSummary(MatchEntity match, MatchResultEntity result) {
+        List<MatchEventResponseDTO> events = matchEventRepository
+                .findAllByMatch_Match_id(match.getMatch_id())
+                .stream()
+                .map(e -> matchEventMapper.toDto(matchEventPersistenceMapper.toModel(e)))
+                .collect(Collectors.toList());
+
+        return MatchSummaryResponseDTO.builder()
+                .matchId(match.getMatch_id())
+                .team1Name(match.getTeam1().getName())
+                .team1Goals(result.getTeam1Goals())
+                .team2Name(match.getTeam2().getName())
+                .team2Goals(result.getTeam2Goals())
+                .registeredAt(result.getRegisteredAt())
+                .events(events)
+                .build();
+    }
+
 
     @Transactional
     public MatchEventResponseDTO registerEvent(MatchEventRequestDTO dto) {

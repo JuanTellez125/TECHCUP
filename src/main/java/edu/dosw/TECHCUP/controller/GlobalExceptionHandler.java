@@ -7,6 +7,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import edu.dosw.TECHCUP.core.exception.MatchResultAlreadyExistsException;
+
 
 import java.util.stream.Collectors;
 
@@ -84,6 +86,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(500, e.getMessage()));
+    }
+
+    @ExceptionHandler(MatchResultAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleMatchResultAlreadyExists(MatchResultAlreadyExistsException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(409, e.getMessage()));
     }
 
     public record ErrorResponse(int status, String message) {}

@@ -36,10 +36,17 @@ public class MatchController {
     @PostMapping("/result")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
     @Operation(summary = "Record match result (organizer only)")
-    public ResponseEntity<MatchResultResponseDTO> registerResult(
+    public ResponseEntity<MatchSummaryResponseDTO> registerResult(
             @RequestParam Long organizerId,
             @RequestBody MatchResultRequestDTO dto) {
         return ResponseEntity.ok(matchService.registerResult(organizerId, dto));
+    }
+
+    @GetMapping("/{matchId}/summary")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get match summary with result and events")
+    public ResponseEntity<MatchSummaryResponseDTO> getMatchSummary(@PathVariable Long matchId) {
+        return ResponseEntity.ok(matchService.getMatchSummary(matchId));
     }
 
     @PostMapping("/event")
