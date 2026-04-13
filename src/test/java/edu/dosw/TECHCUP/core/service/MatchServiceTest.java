@@ -145,8 +145,6 @@ class MatchServiceTest {
         VenueEntity venue = buildVenueEntity(20L);
         MatchEntity match = buildMatchEntity(100L, tournament, team1, team2, venue);
         MatchResultEntity saved = buildMatchResultEntity(200L, match, organizer);
-        MatchResult model = new MatchResult();
-        MatchResultResponseDTO dto = new MatchResultResponseDTO();
         MatchResultRequestDTO request = MatchResultRequestDTO.builder()
                 .matchId(100L).team1Goals(2).team2Goals(1).build();
 
@@ -155,12 +153,10 @@ class MatchServiceTest {
         when(matchResultRepository.save(any())).thenReturn(saved);
         when(standingRepository.findByTournament_Tournament_idAndTeam_Id(anyLong(), anyLong()))
                 .thenReturn(Optional.empty());
-        when(matchResultPersistenceMapper.toModel(saved)).thenReturn(model);
-        when(matchResultMapper.toDto(model)).thenReturn(dto);
 
-        MatchResultResponseDTO result = service.registerResult(1L, request);
+        MatchSummaryResponseDTO result = service.registerResult(1L, request);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isNotNull();
         assertThat(match.getStatus()).isEqualTo("JUGADO");
     }
 

@@ -1,14 +1,15 @@
 package edu.dosw.TECHCUP.core.service;
 
+import edu.dosw.TECHCUP.controller.dto.request.LineUpEntryDTO;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.LineUpResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.LineUpMapper;
-import edu.dosw.TECHCUP.core.exception.TeamNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.LineUp;
 import edu.dosw.TECHCUP.core.model.enums.LineUpRole;
 import edu.dosw.TECHCUP.core.model.enums.Role;
+import edu.dosw.TECHCUP.core.model.enums.TeamMemberStatus;
 import edu.dosw.TECHCUP.persistence.entity.*;
 import edu.dosw.TECHCUP.persistence.mapper.LineUpPersistenceMapper;
 import edu.dosw.TECHCUP.persistence.repository.*;
@@ -43,27 +44,28 @@ class LineUpServiceTest {
     @Test
     void saveLineUp_success() {
         UserEntity captain = buildUserEntity(1L, Role.CAPTAIN);
-        MatchEntity match = buildMatchEntity(5L);
         TeamEntity team = buildTeamEntity(10L, captain);
+        MatchEntity match = buildMatchEntity(5L, team, buildTeamEntity(11L, captain));
         UserEntity player = buildUserEntity(2L, Role.PLAYER);
+        TeamMemberEntity member = TeamMemberEntity.builder().status(TeamMemberStatus.ACEPTADO).build();
         LineUpEntity saved = buildLineUpEntity(100L, match, team, player);
         LineUp model = new LineUp();
         LineUpResponseDTO dto = new LineUpResponseDTO();
-        LineUpRequestDTO request = buildRequest(5L, 10L, 2L);
+        LineUpRequestDTO request = buildRequest(10L, 2L);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(matchRepository.findById(5L)).thenReturn(Optional.of(match));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
         when(userRepository.findById(2L)).thenReturn(Optional.of(player));
-        when(teamMemberRepository.existsByTeam_IdAndUser_User_id(10L, 2L)).thenReturn(true);
+        when(teamMemberRepository.findByTeam_IdAndUser_User_id(10L, 2L)).thenReturn(Optional.of(member));
         when(lineUpRepository.findAllByMatch_Match_idAndTeam_Id(5L, 10L)).thenReturn(List.of());
-        when(lineUpRepository.save(any())).thenReturn(saved);
+        when(lineUpRepository.saveAll(anyList())).thenReturn(List.of(saved));
         when(lineUpPersistenceMapper.toModel(saved)).thenReturn(model);
         when(lineUpMapper.toDto(model)).thenReturn(dto);
 
-        LineUpResponseDTO result = service.saveLineUp(1L, request);
+        List<LineUpResponseDTO> result = service.saveLineUp(1L, 5L, request);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).containsExactly(dto);
     }
 
     @Test
@@ -71,7 +73,7 @@ class LineUpServiceTest {
         UserEntity player = buildUserEntity(1L, Role.PLAYER);
         when(userRepository.findById(1L)).thenReturn(Optional.of(player));
 
-        assertThatThrownBy(() -> service.saveLineUp(1L, buildRequest(5L, 10L, 2L)))
+        assertThatThrownBy(() -> service.saveLineUp(1L, 5L, buildRequest(10L, 2L)))
                 .isInstanceOf(UserValidationException.class)
                 .hasMessageContaining("captain");
     }
@@ -80,7 +82,7 @@ class LineUpServiceTest {
     void saveLineUp_captainNotFound_throws() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.saveLineUp(99L, buildRequest(5L, 10L, 2L)))
+        assertThatThrownBy(() -> service.saveLineUp(99L, 5L, buildRequest(10L, 2L)))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -90,7 +92,7 @@ class LineUpServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(matchRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.saveLineUp(1L, buildRequest(99L, 10L, 2L)))
+        assertThatThrownBy(() -> service.saveLineUp(1L, 99L, buildRequest(10L, 2L)))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -98,95 +100,94 @@ class LineUpServiceTest {
     void saveLineUp_notCaptainOfTeam_throws() {
         UserEntity captain = buildUserEntity(1L, Role.CAPTAIN);
         UserEntity otherCaptain = buildUserEntity(99L, Role.CAPTAIN);
-        MatchEntity match = buildMatchEntity(5L);
+        MatchEntity match = buildMatchEntity(5L, null, null);
         TeamEntity team = buildTeamEntity(10L, otherCaptain);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(matchRepository.findById(5L)).thenReturn(Optional.of(match));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
 
-        assertThatThrownBy(() -> service.saveLineUp(1L, buildRequest(5L, 10L, 2L)))
+        assertThatThrownBy(() -> service.saveLineUp(1L, 5L, buildRequest(10L, 2L)))
                 .isInstanceOf(UserValidationException.class)
                 .hasMessageContaining("captain of this team");
     }
 
     @Test
-    void saveLineUp_playerNotInTeam_throws() {
+    void saveLineUp_playerNotMember_throws() {
         UserEntity captain = buildUserEntity(1L, Role.CAPTAIN);
-        MatchEntity match = buildMatchEntity(5L);
         TeamEntity team = buildTeamEntity(10L, captain);
+        MatchEntity match = buildMatchEntity(5L, team, buildTeamEntity(11L, captain));
         UserEntity player = buildUserEntity(2L, Role.PLAYER);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(matchRepository.findById(5L)).thenReturn(Optional.of(match));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
         when(userRepository.findById(2L)).thenReturn(Optional.of(player));
-        when(teamMemberRepository.existsByTeam_IdAndUser_User_id(10L, 2L)).thenReturn(false);
+        when(teamMemberRepository.findByTeam_IdAndUser_User_id(10L, 2L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.saveLineUp(1L, buildRequest(5L, 10L, 2L)))
-                .isInstanceOf(UserValidationException.class)
-                .hasMessageContaining("not belong");
+        assertThatThrownBy(() -> service.saveLineUp(1L, 5L, buildRequest(10L, 2L)))
+                .isInstanceOf(UserValidationException.class);
     }
 
     @Test
-    void saveLineUp_playerAlreadyInLineUp_throws() {
+    void saveLineUp_emptyPlayers_throws() {
         UserEntity captain = buildUserEntity(1L, Role.CAPTAIN);
-        MatchEntity match = buildMatchEntity(5L);
         TeamEntity team = buildTeamEntity(10L, captain);
-        UserEntity player = buildUserEntity(2L, Role.PLAYER);
-        LineUpEntity existing = buildLineUpEntity(100L, match, team, player);
+        MatchEntity match = buildMatchEntity(5L, team, buildTeamEntity(11L, captain));
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(matchRepository.findById(5L)).thenReturn(Optional.of(match));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
-        when(userRepository.findById(2L)).thenReturn(Optional.of(player));
-        when(teamMemberRepository.existsByTeam_IdAndUser_User_id(10L, 2L)).thenReturn(true);
-        when(lineUpRepository.findAllByMatch_Match_idAndTeam_Id(5L, 10L)).thenReturn(List.of(existing));
 
-        assertThatThrownBy(() -> service.saveLineUp(1L, buildRequest(5L, 10L, 2L)))
-                .isInstanceOf(UserValidationException.class)
-                .hasMessageContaining("already registered");
+        LineUpRequestDTO request = LineUpRequestDTO.builder().teamId(10L).players(List.of()).build();
+
+        assertThatThrownBy(() -> service.saveLineUp(1L, 5L, request))
+                .isInstanceOf(UserValidationException.class);
     }
 
     // ─── getLineUp ────────────────────────────────────────────────────────────
 
     @Test
-    void getLineUp_found_returnsDto() {
+    void getLineUp_found_returnsList() {
         UserEntity captain = buildUserEntity(1L, Role.CAPTAIN);
-        MatchEntity match = buildMatchEntity(5L);
+        MatchEntity match = buildMatchEntity(5L, null, null);
         TeamEntity team = buildTeamEntity(10L, captain);
         UserEntity player = buildUserEntity(2L, Role.PLAYER);
         LineUpEntity entity = buildLineUpEntity(100L, match, team, player);
         LineUp model = new LineUp();
         LineUpResponseDTO dto = new LineUpResponseDTO();
 
-        when(lineUpRepository.findByMatchAndTeam(10L, 5L)).thenReturn(Optional.of(entity));
+        when(matchRepository.findById(5L)).thenReturn(Optional.of(match));
+        when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
+        when(lineUpRepository.findAllByMatch_Match_idAndTeam_Id(5L, 10L)).thenReturn(List.of(entity));
         when(lineUpPersistenceMapper.toModel(entity)).thenReturn(model);
         when(lineUpMapper.toDto(model)).thenReturn(dto);
 
-        LineUpResponseDTO result = service.getLineUp(10L, 5L);
+        List<LineUpResponseDTO> result = service.getLineUp(5L, 10L);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).containsExactly(dto);
     }
 
     @Test
-    void getLineUp_notFound_throws() {
-        when(lineUpRepository.findByMatchAndTeam(99L, 99L)).thenReturn(Optional.empty());
+    void getLineUp_matchNotFound_throws() {
+        when(matchRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.getLineUp(99L, 99L))
-                .isInstanceOf(TeamNotFoundException.class);
+        assertThatThrownBy(() -> service.getLineUp(99L, 10L))
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
-    private LineUpRequestDTO buildRequest(Long matchId, Long teamId, Long userId) {
-        return LineUpRequestDTO.builder()
-                .matchId(matchId)
-                .teamId(teamId)
+    private LineUpRequestDTO buildRequest(Long teamId, Long userId) {
+        LineUpEntryDTO entry = LineUpEntryDTO.builder()
                 .userId(userId)
                 .role(LineUpRole.TITULAR)
                 .position("Portero")
                 .jerseyNumber(1)
+                .build();
+        return LineUpRequestDTO.builder()
+                .teamId(teamId)
+                .players(List.of(entry))
                 .build();
     }
 
@@ -201,9 +202,11 @@ class LineUpServiceTest {
                 .build();
     }
 
-    private MatchEntity buildMatchEntity(Long id) {
+    private MatchEntity buildMatchEntity(Long id, TeamEntity team1, TeamEntity team2) {
         return MatchEntity.builder()
                 .match_id(id)
+                .team1(team1)
+                .team2(team2)
                 .status("PROGRAMADO")
                 .build();
     }

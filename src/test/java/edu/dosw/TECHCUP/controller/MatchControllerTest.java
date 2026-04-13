@@ -2,6 +2,7 @@ package edu.dosw.TECHCUP.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import edu.dosw.TECHCUP.controller.dto.request.LineUpEntryDTO;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchEventRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchRequestDTO;
@@ -10,7 +11,9 @@ import edu.dosw.TECHCUP.controller.dto.response.*;
 import edu.dosw.TECHCUP.core.model.enums.Event;
 import edu.dosw.TECHCUP.core.model.enums.LineUpRole;
 import edu.dosw.TECHCUP.core.model.enums.MatchPhase;
+import edu.dosw.TECHCUP.core.service.LineUpService;
 import edu.dosw.TECHCUP.core.service.MatchService;
+import edu.dosw.TECHCUP.core.service.StatisticsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +39,8 @@ class MatchControllerTest {
     ObjectMapper objectMapper;
 
     @Mock MatchService matchService;
+    @Mock LineUpService lineUpService;
+    @Mock StatisticsService statisticsService;
 
     @InjectMocks MatchController controller;
 
@@ -64,7 +69,7 @@ class MatchControllerTest {
     void registerResult_returns200() throws Exception {
         MatchResultRequestDTO request = MatchResultRequestDTO.builder()
                 .matchId(100L).team1Goals(2).team2Goals(1).build();
-        when(matchService.registerResult(eq(1L), any())).thenReturn(new MatchResultResponseDTO());
+        when(matchService.registerResult(eq(1L), any())).thenReturn(new MatchSummaryResponseDTO());
 
         mockMvc.perform(post("/api/matches/result")
                         .param("organizerId", "1")
@@ -87,12 +92,14 @@ class MatchControllerTest {
 
     @Test
     void saveLineUp_returns200() throws Exception {
-        LineUpRequestDTO request = LineUpRequestDTO.builder()
-                .matchId(100L).teamId(10L).userId(2L).role(LineUpRole.TITULAR)
+        LineUpEntryDTO entry = LineUpEntryDTO.builder()
+                .userId(2L).role(LineUpRole.TITULAR)
                 .position("Portero").jerseyNumber(1).build();
-        when(matchService.saveLineUp(eq(1L), any())).thenReturn(new LineUpResponseDTO());
+        LineUpRequestDTO request = LineUpRequestDTO.builder()
+                .teamId(10L).players(List.of(entry)).build();
+        when(lineUpService.saveLineUp(eq(1L), eq(100L), any())).thenReturn(List.of(new LineUpResponseDTO()));
 
-        mockMvc.perform(post("/api/matches/lineup")
+        mockMvc.perform(post("/api/matches/100/lineup")
                         .param("captainId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -101,10 +108,9 @@ class MatchControllerTest {
 
     @Test
     void getLineUpByMatchAndTeam_returns200() throws Exception {
-        when(matchService.getLineUpByMatchAndTeam(100L, 10L)).thenReturn(List.of(new LineUpResponseDTO()));
+        when(lineUpService.getLineUp(100L, 10L)).thenReturn(List.of(new LineUpResponseDTO()));
 
-        mockMvc.perform(get("/api/matches/lineup")
-                        .param("matchId", "100")
+        mockMvc.perform(get("/api/matches/100/lineup")
                         .param("teamId", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
@@ -153,7 +159,7 @@ class MatchControllerTest {
 
     @Test
     void getTopScorers_returns200() throws Exception {
-        when(matchService.getTopScorers(10L)).thenReturn(List.of(new MatchEventResponseDTO()));
+        when(statisticsService.getTopScorers(10L)).thenReturn(List.of());
 
         mockMvc.perform(get("/api/matches/tournament/10/top-scorers"))
                 .andExpect(status().isOk());
