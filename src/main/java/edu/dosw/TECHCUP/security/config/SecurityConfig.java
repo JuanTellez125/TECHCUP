@@ -24,7 +24,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -35,56 +34,32 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${cors.allowed-origins:http://localhost:5173}")
-    private String allowedOrigins;
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Deshabilitar CSRF
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // Habilitar CORS con la configuracion definida en corsConfigurationSource()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-                // Sin sesion HTTP: cada request debe enviar su JWT
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // Reglas de acceso globales
                 .authorizeHttpRequests(auth -> auth
-/*                        // Endpoints publicos: registro y login no requieren token
                         .requestMatchers("/auth/**").permitAll()
-
-                        // Swagger / OpenAPI (documentacion)
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
-
-                        // Todo lo demas requiere autenticacion;
-                        // la autorizacion fina se delega a @PreAuthorize
-                        .anyRequest().authenticated()*/
-                                .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
-
-                // Proveedor de autenticacion DAO (usuario + BCrypt)
                 .authenticationProvider(authenticationProvider())
-
-                // Filtro JWT antes del filtro de usuario/password estandar
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // CORS
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(allowedOrigins.split(",")));
+        config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -94,10 +69,6 @@ public class SecurityConfig {
         return source;
     }
 
-    // Beans de autenticacion
-
-    //Delaga la validacion a la contraseña en BCrypt
-
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -105,7 +76,6 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
