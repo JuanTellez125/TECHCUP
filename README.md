@@ -14,7 +14,6 @@
 
 **- Juan Sebastian González Aranguren**
 
-
 ## Titulo del proyecto
 **TECHCUP**
 
