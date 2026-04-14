@@ -24,4 +24,5 @@ public class TournamentHistoryResponseDTO {
     private List<StandingResponseDTO> finalStandings;
 
     private List<TopScorerResponseDTO> topScorers;
+
 }

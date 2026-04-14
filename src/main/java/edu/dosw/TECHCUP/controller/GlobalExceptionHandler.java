@@ -1,6 +1,8 @@
 package edu.dosw.TECHCUP.controller;
 
 import edu.dosw.TECHCUP.core.exception.*;
+import edu.dosw.TECHCUP.core.exception.InvalidAdminException;
+import edu.dosw.TECHCUP.core.exception.UnauthorizedRoleAssignmentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -100,6 +102,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(400, e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidAdminException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAdmin(InvalidAdminException e) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(403, e.getMessage()));
+    }
+
+    @ExceptionHandler(UnauthorizedRoleAssignmentException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedRoleAssignment(UnauthorizedRoleAssignmentException e) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(403, e.getMessage()));
     }
 
     public record ErrorResponse(int status, String message) {}

@@ -44,7 +44,7 @@ public class TournamentHistoryService {
 
 
     public List<TournamentResponseDTO> getFinishedTournaments() {
-        log.debug("Todos los torneos finalizados");
+        log.debug("All completed tournaments");
         return tournamentRepository.findAllByStatus(TournamentStatus.FINALIZED)
                 .stream()
                 .map(e -> tournamentMapper.toDto(tournamentPersistenceMapper.toModel(e)))
@@ -52,13 +52,13 @@ public class TournamentHistoryService {
     }
 
     public TournamentHistoryResponseDTO getTournamentHistory(Long tournamentId) {
-        log.debug("Historial para el torneo {}", tournamentId);
+        log.debug("History for the tournament {}", tournamentId);
 
         TournamentEntity tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
 
         if (tournament.getStatus() != TournamentStatus.FINALIZED) {
-            log.warn("Torneo {} no ha finalizado (estado: {})", tournamentId, tournament.getStatus());
+            log.warn("Tournament {} has not finished (state: {})", tournamentId, tournament.getStatus());
             throw new TournamentNotFinalizedException(tournamentId);
         }
 
@@ -74,7 +74,7 @@ public class TournamentHistoryService {
 
         List<TopScorerResponseDTO> topScorers = statisticsService.getTopScorers(tournamentId);
 
-        log.info("Historial para el torneo {}, campeon: {}", tournamentId, champion);
+        log.info("History for the tournament {}, champion: {}", tournamentId, champion);
 
         return TournamentHistoryResponseDTO.builder()
                 .tournamentId(tournamentId)
@@ -92,15 +92,15 @@ public class TournamentHistoryService {
                 .findAllByTournament_Tournament_idAndPhase(tournamentId, MatchPhase.FINAL);
 
         if (finalMatches.isEmpty()) {
-            log.warn("No se encontró ningún partido de la fase FINAL para el torneo {}", tournamentId);
-            return "Desconocido";
+            log.warn("No matches from the FINAL phase were found for the tournament {}", tournamentId);
+            return "Unknown";
         }
 
         MatchEntity finalMatch = finalMatches.get(0);
 
         if (finalMatch.getResult() == null) {
-            log.warn("El partido FINAL del torneo {} no tiene un resultado registrado", tournamentId);
-            return "Desconocido";
+            log.warn("The FINAL match of the tournament {} has no recorded result", tournamentId);
+            return "Unknown";
         }
 
         int goals1 = finalMatch.getResult().getTeam1Goals();

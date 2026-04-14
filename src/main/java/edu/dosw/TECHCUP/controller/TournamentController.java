@@ -126,7 +126,7 @@ public class TournamentController {
 
     @GetMapping("/historial")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
-    @Operation(summary = "List all finalized tournaments (RF20)")
+    @Operation(summary = "List all finalized tournaments")
     public ResponseEntity<List<TournamentResponseDTO>> getFinishedTournaments() {
         return ResponseEntity.ok(tournamentHistoryService.getFinishedTournaments());
     }
@@ -134,7 +134,7 @@ public class TournamentController {
 
     @GetMapping("/{tournamentId}/historial")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
-    @Operation(summary = "Get full history of a finalized tournament (RF20)")
+    @Operation(summary = "Get full history of a finalized tournament")
     public ResponseEntity<TournamentHistoryResponseDTO> getTournamentHistory(
             @PathVariable Long tournamentId) {
         return ResponseEntity.ok(tournamentHistoryService.getTournamentHistory(tournamentId));

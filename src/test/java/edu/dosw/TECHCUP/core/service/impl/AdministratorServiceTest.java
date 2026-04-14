@@ -1,12 +1,16 @@
 package edu.dosw.TECHCUP.core.service.impl;
 
+import edu.dosw.TECHCUP.core.exception.InvalidAdminException;
+import edu.dosw.TECHCUP.core.exception.UnauthorizedRoleAssignmentException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
+import edu.dosw.TECHCUP.persistence.entity.RoleAuditLogEntity;
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.persistence.mapper.UserPersistenceMapper;
+import edu.dosw.TECHCUP.persistence.repository.RoleAuditLogRepository;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +33,7 @@ class AdministratorServiceTest {
     @Mock UserPersistenceMapper userPersistenceMapper;
     @Mock UserValidator userValidator;
     @Mock PasswordEncoder passwordEncoder;
+    @Mock RoleAuditLogRepository roleAuditLogRepository;
 
     @InjectMocks AdministratorService service;
 
@@ -171,11 +176,18 @@ class AdministratorServiceTest {
         when(userRepository.findById(2L)).thenReturn(Optional.of(target));
         when(userRepository.save(target)).thenReturn(target);
         when(userPersistenceMapper.toModel(target)).thenReturn(model);
+        when(roleAuditLogRepository.save(any(RoleAuditLogEntity.class))).thenAnswer(i -> i.getArgument(0));
 
         User result = service.assignRole(1L, 2L, Role.CAPTAIN);
 
         assertThat(result).isEqualTo(model);
         assertThat(target.getUserType()).isEqualTo(Role.CAPTAIN);
+        verify(roleAuditLogRepository).save(argThat(log ->
+                log.getAdminId().equals(1L) &&
+                log.getTargetUserId().equals(2L) &&
+                log.getPreviousRole() == Role.PLAYER &&
+                log.getNewRole() == Role.CAPTAIN
+        ));
     }
 
     @Test
@@ -184,8 +196,16 @@ class AdministratorServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(notAdmin));
 
         assertThatThrownBy(() -> service.assignRole(1L, 2L, Role.CAPTAIN))
-                .isInstanceOf(UserValidationException.class)
-                .hasMessageContaining("administrator");
+                .isInstanceOf(InvalidAdminException.class)
+                .hasMessageContaining("1");
+    }
+
+    @Test
+    void assignRole_adminNotFound_throws() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.assignRole(99L, 2L, Role.CAPTAIN))
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
@@ -196,6 +216,36 @@ class AdministratorServiceTest {
 
         assertThatThrownBy(() -> service.assignRole(1L, 99L, Role.CAPTAIN))
                 .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    void assignRole_newRoleIsAdministrator_throws() {
+        UserEntity admin = buildUserEntity(1L, Role.ADMINISTRATOR);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(admin));
+
+        assertThatThrownBy(() -> service.assignRole(1L, 2L, Role.ADMINISTRATOR))
+                .isInstanceOf(UnauthorizedRoleAssignmentException.class);
+    }
+
+    @Test
+    void assignRole_auditLogPersisted_withCorrectTimestamp() {
+        UserEntity admin = buildUserEntity(1L, Role.ADMINISTRATOR);
+        UserEntity target = buildUserEntity(2L, Role.REFEREE);
+        User model = buildUserModel();
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(admin));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(target));
+        when(userRepository.save(target)).thenReturn(target);
+        when(userPersistenceMapper.toModel(target)).thenReturn(model);
+        when(roleAuditLogRepository.save(any(RoleAuditLogEntity.class))).thenAnswer(i -> i.getArgument(0));
+
+        service.assignRole(1L, 2L, Role.ORGANIZER);
+
+        verify(roleAuditLogRepository).save(argThat(log ->
+                log.getTimestamp() != null &&
+                log.getPreviousRole() == Role.REFEREE &&
+                log.getNewRole() == Role.ORGANIZER
+        ));
     }
 
     // ─── getAllUsers / getAdminById ────────────────────────────────────────────
