@@ -1,5 +1,8 @@
 package edu.dosw.TECHCUP.controller;
 
+
+import edu.dosw.TECHCUP.controller.dto.response.TournamentHistoryResponseDTO;
+import edu.dosw.TECHCUP.core.service.TournamentHistoryService;
 import edu.dosw.TECHCUP.controller.dto.request.TournamentConfigRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.TournamentRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.VenueRequestDTO;
@@ -27,7 +30,7 @@ public class TournamentController {
 
     private final TournamentService tournamentService;
     private final StatisticsService statisticsService;
-
+    private final TournamentHistoryService tournamentHistoryService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
@@ -119,5 +122,21 @@ public class TournamentController {
     public ResponseEntity<TournamentStatisticsResponseDTO> getTournamentStatistics(
             @PathVariable Long tournamentId) {
         return ResponseEntity.ok(statisticsService.getTournamentStatistics(tournamentId));
+    }
+
+    @GetMapping("/historial")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "List all finalized tournaments")
+    public ResponseEntity<List<TournamentResponseDTO>> getFinishedTournaments() {
+        return ResponseEntity.ok(tournamentHistoryService.getFinishedTournaments());
+    }
+
+
+    @GetMapping("/{tournamentId}/historial")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
+    @Operation(summary = "Get full history of a finalized tournament")
+    public ResponseEntity<TournamentHistoryResponseDTO> getTournamentHistory(
+            @PathVariable Long tournamentId) {
+        return ResponseEntity.ok(tournamentHistoryService.getTournamentHistory(tournamentId));
     }
 }

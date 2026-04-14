@@ -1,13 +1,17 @@
 package edu.dosw.TECHCUP.core.service.impl;
 
+import edu.dosw.TECHCUP.core.exception.InvalidAdminException;
+import edu.dosw.TECHCUP.core.exception.UnauthorizedRoleAssignmentException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.service.UserService;
 import edu.dosw.TECHCUP.core.validator.UserValidator;
+import edu.dosw.TECHCUP.persistence.entity.RoleAuditLogEntity;
 import edu.dosw.TECHCUP.persistence.entity.UserEntity;
 import edu.dosw.TECHCUP.persistence.mapper.UserPersistenceMapper;
+import edu.dosw.TECHCUP.persistence.repository.RoleAuditLogRepository;
 import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +33,7 @@ public class AdministratorService implements UserService {
     private final UserPersistenceMapper userPersistenceMapper;
     private final UserValidator userValidator;
     private final PasswordEncoder passwordEncoder;
+    private final RoleAuditLogRepository roleAuditLogRepository;
 
     @Transactional
     @Override
@@ -84,16 +90,34 @@ public class AdministratorService implements UserService {
 
     @Transactional
     public User assignRole(Long adminId, Long targetUserId, Role newRole) {
-        userRepository.findById(adminId)
-                .filter(u -> u.getUserType() == Role.ADMINISTRATOR)
-                .orElseThrow(() -> new UserValidationException("Only an administrator can assign roles."));
+        UserEntity admin = userRepository.findById(adminId)
+                .orElseThrow(() -> new UserNotFoundException(adminId));
+
+        if (admin.getUserType() != Role.ADMINISTRATOR) {
+            throw new InvalidAdminException(adminId);
+        }
+
+        if (newRole == Role.ADMINISTRATOR) {
+            throw new UnauthorizedRoleAssignmentException();
+        }
 
         UserEntity target = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException(targetUserId));
 
+        Role previousRole = target.getUserType();
         target.setUserType(newRole);
-        log.info("Role {} assigned to the user {}", newRole, targetUserId);
-        return userPersistenceMapper.toModel(userRepository.save(target));
+        UserEntity saved = userRepository.save(target);
+
+        roleAuditLogRepository.save(RoleAuditLogEntity.builder()
+                .adminId(adminId)
+                .targetUserId(targetUserId)
+                .previousRole(previousRole)
+                .newRole(newRole)
+                .timestamp(LocalDateTime.now())
+                .build());
+
+        log.info("Admin {} changed role of user {} from {} to {}", adminId, targetUserId, previousRole, newRole);
+        return userPersistenceMapper.toModel(saved);
     }
 
     public List<User> getAllUsers() {
