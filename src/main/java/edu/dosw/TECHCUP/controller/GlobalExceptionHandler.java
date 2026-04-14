@@ -95,5 +95,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(409, e.getMessage()));
     }
 
+    @ExceptionHandler(TournamentNotFinalizedException.class)
+    public ResponseEntity<ErrorResponse> handleTournamentNotFinalized(TournamentNotFinalizedException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, e.getMessage()));
+    }
+
     public record ErrorResponse(int status, String message) {}
 }
