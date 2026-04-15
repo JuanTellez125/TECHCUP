@@ -15,5 +15,6 @@ public interface VenueMapper {
     @Mapping(source = "location",                target = "venueLocation")
     VenueResponseDTO toDto(Venue venue);
 
+    @Mapping(target = "location", source = "venueLocation")
     Venue toModel(VenueRequestDTO dto);
 }

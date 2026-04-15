@@ -2,8 +2,7 @@ package edu.dosw.TECHCUP.core.service;
 
 import edu.dosw.TECHCUP.controller.dto.request.LineUpEntryDTO;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.response.LineUpResponseDTO;
-import edu.dosw.TECHCUP.controller.mapper.LineUpMapper;
+import edu.dosw.TECHCUP.core.model.LineUp;
 import edu.dosw.TECHCUP.core.exception.TeamNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 public class LineUpService {
 
     private final LineUpRepository lineUpRepository;
-    private final LineUpMapper lineUpMapper;
     private final LineUpPersistenceMapper lineUpPersistenceMapper;
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
@@ -37,7 +35,7 @@ public class LineUpService {
     private final UserRepository userRepository;
 
     @Transactional
-    public List<LineUpResponseDTO> saveLineUp(Long captainId, Long matchId, LineUpRequestDTO dto) {
+    public List<LineUp> saveLineUp(Long captainId, Long matchId, LineUpRequestDTO dto) {
         UserEntity captain = userRepository.findById(captainId)
                 .orElseThrow(() -> new UserNotFoundException(captainId));
         if (captain.getUserType() != Role.CAPTAIN)
@@ -102,11 +100,11 @@ public class LineUpService {
                 savedAll.size(), team.getId(), matchId, captainId);
 
         return savedAll.stream()
-                .map(e -> lineUpMapper.toDto(lineUpPersistenceMapper.toModel(e)))
+                .map(lineUpPersistenceMapper::toModel)
                 .collect(Collectors.toList());
     }
 
-    public List<LineUpResponseDTO> getLineUp(Long matchId, Long teamId) {
+    public List<LineUp> getLineUp(Long matchId, Long teamId) {
         matchRepository.findById(matchId)
                 .orElseThrow(() -> new UserNotFoundException(matchId));
         teamRepository.findById(teamId)
@@ -114,7 +112,7 @@ public class LineUpService {
 
         return lineUpRepository.findAllByMatch_Match_idAndTeam_Id(matchId, teamId)
                 .stream()
-                .map(e -> lineUpMapper.toDto(lineUpPersistenceMapper.toModel(e)))
+                .map(lineUpPersistenceMapper::toModel)
                 .collect(Collectors.toList());
     }
 }

@@ -4,6 +4,8 @@ import edu.dosw.TECHCUP.controller.dto.request.PaymentRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.TournamentRegistrationRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.PaymentResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentRegistrationResponseDTO;
+import edu.dosw.TECHCUP.controller.mapper.PaymentMapper;
+import edu.dosw.TECHCUP.controller.mapper.TournamentRegistrationMapper;
 import edu.dosw.TECHCUP.core.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -22,6 +25,8 @@ import java.util.List;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final PaymentMapper paymentMapper;
+    private final TournamentRegistrationMapper registrationMapper;
 
     @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
     @PostMapping("/register")
@@ -29,7 +34,7 @@ public class PaymentController {
             @RequestParam Long captainId,
             @RequestBody TournamentRegistrationRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(paymentService.registerTeam(captainId, dto));
+                .body(registrationMapper.toDto(paymentService.registerTeam(captainId, registrationMapper.toModel(dto))));
     }
 
     @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
@@ -38,7 +43,7 @@ public class PaymentController {
             @RequestParam Long captainId,
             @RequestBody PaymentRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(paymentService.submitPayment(captainId, dto));
+                .body(paymentMapper.toDto(paymentService.submitPayment(captainId, paymentMapper.toModel(dto))));
     }
 
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
@@ -46,7 +51,7 @@ public class PaymentController {
     public ResponseEntity<PaymentResponseDTO> approvePayment(
             @RequestParam Long organizerId,
             @PathVariable Long paymentId) {
-        return ResponseEntity.ok(paymentService.approvePayment(organizerId, paymentId));
+        return ResponseEntity.ok(paymentMapper.toDto(paymentService.approvePayment(organizerId, paymentId)));
     }
 
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
@@ -55,7 +60,7 @@ public class PaymentController {
             @RequestParam Long organizerId,
             @PathVariable Long paymentId,
             @RequestParam String reason) {
-        return ResponseEntity.ok(paymentService.rejectPayment(organizerId, paymentId, reason));
+        return ResponseEntity.ok(paymentMapper.toDto(paymentService.rejectPayment(organizerId, paymentId, reason)));
     }
 
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
@@ -63,13 +68,21 @@ public class PaymentController {
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId) {
-        return ResponseEntity.ok(paymentService.getPaymentsByTournament(organizerId, tournamentId));
+        return ResponseEntity.ok(
+                paymentService.getPaymentsByTournament(organizerId, tournamentId).stream()
+                        .map(paymentMapper::toDto)
+                        .collect(Collectors.toList())
+        );
     }
 
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @GetMapping("/registrations/tournament/{tournamentId}")
     public ResponseEntity<List<TournamentRegistrationResponseDTO>> getRegistrationsByTournament(
             @PathVariable Long tournamentId) {
-        return ResponseEntity.ok(paymentService.getRegistrationsByTournament(tournamentId));
+        return ResponseEntity.ok(
+                paymentService.getRegistrationsByTournament(tournamentId).stream()
+                        .map(registrationMapper::toDto)
+                        .collect(Collectors.toList())
+        );
     }
 }

@@ -1,7 +1,7 @@
 package edu.dosw.TECHCUP.core.validator;
 
-import edu.dosw.TECHCUP.controller.dto.request.TournamentRequestDTO;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
+import edu.dosw.TECHCUP.core.model.Tournament;
 import edu.dosw.TECHCUP.core.model.enums.TournamentStatus;
 import org.springframework.stereotype.Component;
 
@@ -9,10 +9,10 @@ import java.time.LocalDate;
 @Component
 public class TournamentValidator {
 
-    public void validate(TournamentRequestDTO dto) {
-        validateDates(dto.getStartDate(), dto.getEndDate());
-        validateTotalTeams(dto.getTotalTeams());
-        validateRegistrationCost(dto.getRegistrationCost());
+    public void validate(Tournament tournament) {
+        validateDates(tournament.getStartDate(), tournament.getEndDate());
+        validateTotalTeams(tournament.getTotalTeams());
+        validateRegistrationCost(tournament.getRegistrationCost());
     }
 
     private void validateDates(LocalDate startDate, LocalDate endDate) {

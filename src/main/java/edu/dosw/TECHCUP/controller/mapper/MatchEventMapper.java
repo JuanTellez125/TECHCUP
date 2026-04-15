@@ -19,5 +19,8 @@ public interface MatchEventMapper {
    // @Mapping(source = "eventType.name",   target = "eventType")
     MatchEventResponseDTO toDto(MatchEvent matchEvent);
 
+    @Mapping(target = "match.matchId", source = "matchId")
+    @Mapping(target = "user.userId",   source = "userId")
+    @Mapping(target = "team.id",       source = "teamId")
     MatchEvent toModel(MatchEventRequestDTO dto);
 }

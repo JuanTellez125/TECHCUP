@@ -22,5 +22,10 @@ public interface MatchMapper {
     @Mapping(source = "referee.firstName",      target = "refereeName")
     MatchResponseDTO toDto(Match match);
 
+    @Mapping(target = "tournament.tournamentId", source = "tournamentId")
+    @Mapping(target = "team1.id",               source = "team1Id")
+    @Mapping(target = "team2.id",               source = "team2Id")
+    @Mapping(target = "venue.venueId",           source = "venueId")
+    @Mapping(target = "referee.userId",          source = "refereeId")
     Match toModel(MatchRequestDTO dto);
 }

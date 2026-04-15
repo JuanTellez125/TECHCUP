@@ -16,5 +16,7 @@ public interface TournamentRegistrationMapper {
     @Mapping(source = "team.name",                    target = "teamName")
     TournamentRegistrationResponseDTO toDto(TournamentRegistration registration);
 
+    @Mapping(target = "tournament.tournamentId", source = "tournamentId")
+    @Mapping(target = "team.id",                 source = "teamId")
     TournamentRegistration toModel(TournamentRegistrationRequestDTO dto);
 }

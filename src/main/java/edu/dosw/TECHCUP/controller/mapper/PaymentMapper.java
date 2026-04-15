@@ -14,5 +14,6 @@ public interface PaymentMapper {
     @Mapping(source = "registration.tournamentRegistrationId",   target = "registrationId")
     PaymentResponseDTO toDto(Payment payment);
 
+    @Mapping(target = "registration.tournamentRegistrationId", source = "registrationId")
     Payment toModel(PaymentRequestDTO dto);
 }

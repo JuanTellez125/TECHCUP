@@ -2,6 +2,7 @@ package edu.dosw.TECHCUP.controller;
 
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.LineUpResponseDTO;
+import edu.dosw.TECHCUP.controller.mapper.LineUpMapper;
 import edu.dosw.TECHCUP.core.service.LineUpService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +20,7 @@ import java.util.List;
 public class LineUpController {
 
     private final LineUpService lineUpService;
+    private final LineUpMapper lineUpMapper;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
@@ -27,7 +29,7 @@ public class LineUpController {
             @RequestParam Long captainId,
             @RequestParam Long matchId,
             @RequestBody LineUpRequestDTO dto) {
-        return ResponseEntity.ok(lineUpService.saveLineUp(captainId, matchId, dto));
+        return ResponseEntity.ok(lineUpMapper.toDtoList(lineUpService.saveLineUp(captainId, matchId, dto)));
     }
 
     @GetMapping
@@ -36,6 +38,6 @@ public class LineUpController {
     public ResponseEntity<List<LineUpResponseDTO>> getLineUp(
             @RequestParam Long matchId,
             @RequestParam Long teamId) {
-        return ResponseEntity.ok(lineUpService.getLineUp(matchId, teamId));
+        return ResponseEntity.ok(lineUpMapper.toDtoList(lineUpService.getLineUp(matchId, teamId)));
     }
 }

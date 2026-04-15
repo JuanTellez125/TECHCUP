@@ -1,10 +1,8 @@
 package edu.dosw.TECHCUP.core.service;
 
-import edu.dosw.TECHCUP.controller.dto.request.MatchEventRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.request.MatchRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchResultRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.*;
-import edu.dosw.TECHCUP.controller.mapper.*;
+import edu.dosw.TECHCUP.controller.mapper.MatchEventMapper;
 import edu.dosw.TECHCUP.core.exception.MatchResultAlreadyExistsException;
 import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
@@ -13,7 +11,6 @@ import edu.dosw.TECHCUP.core.model.*;
 import edu.dosw.TECHCUP.core.model.enums.Event;
 import edu.dosw.TECHCUP.core.model.enums.MatchPhase;
 import edu.dosw.TECHCUP.core.model.enums.Role;
-import edu.dosw.TECHCUP.core.util.IdGeneratorUtil;
 import edu.dosw.TECHCUP.persistence.entity.*;
 import edu.dosw.TECHCUP.persistence.mapper.*;
 import edu.dosw.TECHCUP.persistence.repository.*;
@@ -42,46 +39,44 @@ public class MatchService {
     private final VenueRepository venueRepository;
     private final UserRepository userRepository;
     private final StandingRepository standingRepository;
-    private final MatchMapper matchMapper;
-    private final MatchResultMapper matchResultMapper;
     private final MatchEventMapper matchEventMapper;
-    private final StandingMapper standingMapper;
     private final MatchPersistenceMapper matchPersistenceMapper;
     private final MatchResultPersistenceMapper matchResultPersistenceMapper;
     private final MatchEventPersistenceMapper matchEventPersistenceMapper;
     private final StandingPersistenceMapper standingPersistenceMapper;
 
     @Transactional
-    public MatchResponseDTO scheduleMatch(MatchRequestDTO dto) {
-        TournamentEntity tournament = tournamentRepository.findById(dto.getTournamentId())
-                .orElseThrow(() -> new TournamentNotFoundException(dto.getTournamentId()));
-        TeamEntity team1 = teamRepository.findById(dto.getTeam1Id())
-                .orElseThrow(() -> new UserNotFoundException(dto.getTeam1Id()));
-        TeamEntity team2 = teamRepository.findById(dto.getTeam2Id())
-                .orElseThrow(() -> new UserNotFoundException(dto.getTeam2Id()));
-        VenueEntity venue = venueRepository.findById(dto.getVenueId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getVenueId()));
+    public Match scheduleMatch(Match match) {
+        TournamentEntity tournament = tournamentRepository.findById(match.getTournament().getTournamentId())
+                .orElseThrow(() -> new TournamentNotFoundException(match.getTournament().getTournamentId()));
+        TeamEntity team1 = teamRepository.findById(match.getTeam1().getId())
+                .orElseThrow(() -> new UserNotFoundException(match.getTeam1().getId()));
+        TeamEntity team2 = teamRepository.findById(match.getTeam2().getId())
+                .orElseThrow(() -> new UserNotFoundException(match.getTeam2().getId()));
+        VenueEntity venue = venueRepository.findById(match.getVenue().getVenueId())
+                .orElseThrow(() -> new UserNotFoundException(match.getVenue().getVenueId()));
 
         if (team1.getId().equals(team2.getId()))
             throw new TournamentValidationException("The home and visiting teams cannot be the same.");
 
-        UserEntity referee = dto.getRefereeId() != null
-                ? userRepository.findById(dto.getRefereeId()).orElse(null) : null;
+        Long refereeId = match.getReferee() != null ? match.getReferee().getUserId() : null;
+        UserEntity referee = refereeId != null
+                ? userRepository.findById(refereeId).orElse(null) : null;
 
-        MatchEntity match = MatchEntity.builder()
+        MatchEntity matchEntity = MatchEntity.builder()
                 .tournament(tournament)
                 .team1(team1)
                 .team2(team2)
                 .venue(venue)
                 .referee(referee)
-                .phase(dto.getPhase())
-                .scheduledAt(dto.getScheduledAt())
+                .phase(match.getPhase())
+                .scheduledAt(match.getScheduledAt())
                 .status("PROGRAMADO")
                 .build();
 
-        MatchEntity saved = matchRepository.save(match);
+        MatchEntity saved = matchRepository.save(matchEntity);
         log.info("Scheduled match: {} vs {}", team1.getName(), team2.getName());
-        return matchMapper.toDto(matchPersistenceMapper.toModel(saved));
+        return matchPersistenceMapper.toModel(saved);
     }
 
     @Transactional
@@ -144,37 +139,35 @@ public class MatchService {
                 .build();
     }
 
-
     @Transactional
-    public MatchEventResponseDTO registerEvent(MatchEventRequestDTO dto) {
-        MatchEntity match = matchRepository.findById(dto.getMatchId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getMatchId()));
-        UserEntity user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
-        TeamEntity team = teamRepository.findById(dto.getTeamId())
-                .orElseThrow(() -> new UserNotFoundException(dto.getTeamId()));
+    public MatchEvent registerEvent(MatchEvent event) {
+        MatchEntity match = matchRepository.findById(event.getMatch().getMatchId())
+                .orElseThrow(() -> new UserNotFoundException(event.getMatch().getMatchId()));
+        UserEntity user = userRepository.findById(event.getUser().getUserId())
+                .orElseThrow(() -> new UserNotFoundException(event.getUser().getUserId()));
+        TeamEntity team = teamRepository.findById(event.getTeam().getId())
+                .orElseThrow(() -> new UserNotFoundException(event.getTeam().getId()));
 
-        MatchEventEntity event = MatchEventEntity.builder()
+        MatchEventEntity eventEntity = MatchEventEntity.builder()
                 .match(match)
                 .user(user)
                 .team(team)
-                .eventType(dto.getEventType())
-                .minute(dto.getMinute())
+                .eventType(event.getEventType())
+                .minute(event.getMinute())
                 .build();
 
-        return matchEventMapper.toDto(matchEventPersistenceMapper.toModel(matchEventRepository.save(event)));
+        return matchEventPersistenceMapper.toModel(matchEventRepository.save(eventEntity));
     }
 
-
-    public List<MatchResponseDTO> getMatchesByReferee(Long refereeId) {
+    public List<Match> getMatchesByReferee(Long refereeId) {
         return matchRepository.findAllByReferee_User_id(refereeId)
                 .stream()
-                .map(e -> matchMapper.toDto(matchPersistenceMapper.toModel(e)))
+                .map(matchPersistenceMapper::toModel)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<MatchResponseDTO> generateBracket(Long organizerId, Long tournamentId) {
+    public List<Match> generateBracket(Long organizerId, Long tournamentId) {
         TournamentEntity tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
 
@@ -189,26 +182,26 @@ public class MatchService {
         List<MatchEntity> bracket = new ArrayList<>();
 
         for (int i = 0; i + 1 < teams.size(); i += 2) {
-            MatchEntity match = MatchEntity.builder()
+            MatchEntity matchEntity = MatchEntity.builder()
                     .tournament(tournament)
                     .team1(teams.get(i))
                     .team2(teams.get(i + 1))
                     .phase(phase)
                     .status("PROGRAMADO")
                     .build();
-            bracket.add(match);
+            bracket.add(matchEntity);
         }
 
         return matchRepository.saveAll(bracket)
                 .stream()
-                .map(e -> matchMapper.toDto(matchPersistenceMapper.toModel(e)))
+                .map(matchPersistenceMapper::toModel)
                 .collect(Collectors.toList());
     }
 
-    public List<StandingResponseDTO> getStandings(Long tournamentId) {
+    public List<Standing> getStandings(Long tournamentId) {
         return standingRepository.findAllByTournament_Tournament_idOrderByPointsDesc(tournamentId)
                 .stream()
-                .map(e -> standingMapper.toDto(standingPersistenceMapper.toModel(e)))
+                .map(standingPersistenceMapper::toModel)
                 .collect(Collectors.toList());
     }
 
@@ -220,17 +213,17 @@ public class MatchService {
                 .collect(Collectors.toList());
     }
 
-    public List<MatchResponseDTO> getMatchHistory(Long tournamentId) {
+    public List<Match> getMatchHistory(Long tournamentId) {
         return matchRepository.findAllByTournament_Tournament_id(tournamentId).stream()
                 .filter(m -> "JUGADO".equals(m.getStatus()))
-                .map(e -> matchMapper.toDto(matchPersistenceMapper.toModel(e)))
+                .map(matchPersistenceMapper::toModel)
                 .collect(Collectors.toList());
     }
 
-    public List<MatchResponseDTO> getMatchesByTournament(Long tournamentId) {
+    public List<Match> getMatchesByTournament(Long tournamentId) {
         return matchRepository.findAllByTournament_Tournament_id(tournamentId)
                 .stream()
-                .map(e -> matchMapper.toDto(matchPersistenceMapper.toModel(e)))
+                .map(matchPersistenceMapper::toModel)
                 .collect(Collectors.toList());
     }
 

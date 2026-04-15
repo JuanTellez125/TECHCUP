@@ -1,6 +1,5 @@
 package edu.dosw.TECHCUP.controller;
 
-
 import edu.dosw.TECHCUP.controller.dto.response.TournamentHistoryResponseDTO;
 import edu.dosw.TECHCUP.core.service.TournamentHistoryService;
 import edu.dosw.TECHCUP.controller.dto.request.TournamentConfigRequestDTO;
@@ -10,6 +9,9 @@ import edu.dosw.TECHCUP.controller.dto.response.TournamentConfigResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentStatisticsResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.VenueResponseDTO;
+import edu.dosw.TECHCUP.controller.mapper.TournamentConfigMapper;
+import edu.dosw.TECHCUP.controller.mapper.TournamentMapper;
+import edu.dosw.TECHCUP.controller.mapper.VenueMapper;
 import edu.dosw.TECHCUP.core.service.StatisticsService;
 import edu.dosw.TECHCUP.core.service.TournamentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tournaments")
@@ -31,6 +34,9 @@ public class TournamentController {
     private final TournamentService tournamentService;
     private final StatisticsService statisticsService;
     private final TournamentHistoryService tournamentHistoryService;
+    private final TournamentMapper tournamentMapper;
+    private final TournamentConfigMapper tournamentConfigMapper;
+    private final VenueMapper venueMapper;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
@@ -39,28 +45,36 @@ public class TournamentController {
             @RequestParam Long organizerId,
             @RequestBody TournamentRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(tournamentService.createTournament(organizerId, dto));
+                .body(tournamentMapper.toDto(tournamentService.createTournament(organizerId, tournamentMapper.toModel(dto))));
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @Operation(summary = "Get all tournaments")
     public ResponseEntity<List<TournamentResponseDTO>> getAllTournaments() {
-        return ResponseEntity.ok(tournamentService.getAllTournaments());
+        return ResponseEntity.ok(
+                tournamentService.getAllTournaments().stream()
+                        .map(tournamentMapper::toDto)
+                        .collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/finalized")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @Operation(summary = "Obtain completed tournaments")
     public ResponseEntity<List<TournamentResponseDTO>> getFinalizedTournaments() {
-        return ResponseEntity.ok(tournamentService.getFinalizedTournaments());
+        return ResponseEntity.ok(
+                tournamentService.getFinalizedTournaments().stream()
+                        .map(tournamentMapper::toDto)
+                        .collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/{tournamentId}")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @Operation(summary = "Get tournament by ID")
     public ResponseEntity<TournamentResponseDTO> getTournamentById(@PathVariable String tournamentId) {
-        return ResponseEntity.ok(tournamentService.getTournamentById(tournamentId));
+        return ResponseEntity.ok(tournamentMapper.toDto(tournamentService.getTournamentById(tournamentId)));
     }
 
     @PatchMapping("/{tournamentId}/start")
@@ -69,7 +83,7 @@ public class TournamentController {
     public ResponseEntity<TournamentResponseDTO> startTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId) {
-        return ResponseEntity.ok(tournamentService.startTournament(organizerId, tournamentId));
+        return ResponseEntity.ok(tournamentMapper.toDto(tournamentService.startTournament(organizerId, tournamentId)));
     }
 
     @PatchMapping("/{tournamentId}/finish")
@@ -78,7 +92,7 @@ public class TournamentController {
     public ResponseEntity<TournamentResponseDTO> finishTournament(
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId) {
-        return ResponseEntity.ok(tournamentService.finishTournament(organizerId, tournamentId));
+        return ResponseEntity.ok(tournamentMapper.toDto(tournamentService.finishTournament(organizerId, tournamentId)));
     }
 
     @PostMapping("/{tournamentId}/config")
@@ -88,14 +102,18 @@ public class TournamentController {
             @RequestParam Long organizerId,
             @PathVariable Long tournamentId,
             @RequestBody TournamentConfigRequestDTO dto) {
-        return ResponseEntity.ok(tournamentService.configTournament(organizerId, tournamentId, dto));
+        return ResponseEntity.ok(
+                tournamentConfigMapper.toDto(
+                        tournamentService.configTournament(organizerId, tournamentId, tournamentConfigMapper.toModel(dto))
+                )
+        );
     }
 
     @GetMapping("/{tournamentId}/config")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @Operation(summary = "Get tournament configuration")
     public ResponseEntity<TournamentConfigResponseDTO> getConfig(@PathVariable Long tournamentId) {
-        return ResponseEntity.ok(tournamentService.getConfig(tournamentId));
+        return ResponseEntity.ok(tournamentConfigMapper.toDto(tournamentService.getConfig(tournamentId)));
     }
 
     @PostMapping("/{tournamentId}/venues")
@@ -106,14 +124,18 @@ public class TournamentController {
             @PathVariable Long tournamentId,
             @RequestBody VenueRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(tournamentService.addVenue(organizerId, tournamentId, dto));
+                .body(venueMapper.toDto(tournamentService.addVenue(organizerId, tournamentId, venueMapper.toModel(dto))));
     }
 
     @GetMapping("/{tournamentId}/venues")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @Operation(summary = "Secure tournament venues")
     public ResponseEntity<List<VenueResponseDTO>> getVenuesByTournament(@PathVariable Long tournamentId) {
-        return ResponseEntity.ok(tournamentService.getVenuesByTournament(tournamentId));
+        return ResponseEntity.ok(
+                tournamentService.getVenuesByTournament(tournamentId).stream()
+                        .map(venueMapper::toDto)
+                        .collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/{tournamentId}/statistics")
@@ -130,7 +152,6 @@ public class TournamentController {
     public ResponseEntity<List<TournamentResponseDTO>> getFinishedTournaments() {
         return ResponseEntity.ok(tournamentHistoryService.getFinishedTournaments());
     }
-
 
     @GetMapping("/{tournamentId}/historial")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
