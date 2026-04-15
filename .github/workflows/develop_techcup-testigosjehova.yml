@@ -97,7 +97,7 @@ jobs:
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         run: |
           mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=Shidokum23_TECHCUP-BackEnd \
+            -Dsonar.projectKey=JuanTellez125_TECHCUP-BackEnd \
             -Dsonar.organization=shidokum23 \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
