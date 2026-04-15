@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import edu.dosw.TECHCUP.security.JwtService;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -34,6 +35,9 @@ class AssignRoleIntegrationTest {
 
     @MockitoBean
     UserMapper userMapper;
+
+    @MockitoBean
+    JwtService jwtService;
 
     // ─── PATCH /api/administrators/{adminId}/assign-role ─────────────────────
 
