@@ -17,6 +17,7 @@
 ## Titulo del proyecto
 **TECHCUP**
 
+
 ## Enunciado del problema
 Los programas de Ingeniería de Sistemas, IA, Ciberseguridad y Estadística realizan cada semestre un torneo interno de 
 fútbol en el que participan estudiantes de distintos semestres. Aunque la actividad tiene alta acogida, su organización 
