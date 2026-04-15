@@ -1,5 +1,6 @@
 package edu.dosw.TECHCUP.core.service;
 
+import edu.dosw.TECHCUP.controller.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.dosw.TECHCUP.controller.TournamentController;
 import edu.dosw.TECHCUP.controller.dto.response.*;
@@ -62,7 +63,9 @@ class TournamentHistoryServiceTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -115,7 +118,7 @@ class TournamentHistoryServiceTest {
 
         assertThatThrownBy(() -> historyService.getTournamentHistory(1L))
                 .isInstanceOf(TournamentNotFinalizedException.class)
-                .hasMessageContaining("not finalized");
+                .hasMessageContaining("No ha finalizado");
     }
 
     @Test
