@@ -1,12 +1,5 @@
 package edu.dosw.TECHCUP.core.service;
 
-import edu.dosw.TECHCUP.controller.dto.request.TeamRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.response.InvitationResponseDTO;
-import edu.dosw.TECHCUP.controller.dto.response.SportProfileResponseDTO;
-import edu.dosw.TECHCUP.controller.dto.response.TeamResponseDTO;
-import edu.dosw.TECHCUP.controller.mapper.InvitationMapper;
-import edu.dosw.TECHCUP.controller.mapper.SportProfileMapper;
-import edu.dosw.TECHCUP.controller.mapper.TeamMapper;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.Invitation;
@@ -43,9 +36,6 @@ class TeamServiceTest {
     @Mock TeamMemberRepository teamMemberRepository;
     @Mock SportProfileRepository sportProfileRepository;
     @Mock TournamentRegistrationRepository tournamentRegistrationRepository;
-    @Mock TeamMapper teamMapper;
-    @Mock InvitationMapper invitationMapper;
-    @Mock SportProfileMapper sportProfileMapper;
     @Mock TeamValidator teamValidator;
     @Mock TeamPersistenceMapper teamPersistenceMapper;
     @Mock InvitationPersistenceMapper invitationPersistenceMapper;
@@ -60,19 +50,17 @@ class TeamServiceTest {
         UserEntity captain = buildUserEntity(1L, Role.CAPTAIN);
         TeamEntity saved = buildTeamEntity(10L, captain);
         Team model = new Team();
-        TeamResponseDTO dto = new TeamResponseDTO();
-        TeamRequestDTO request = TeamRequestDTO.builder().name("Los Campeones").build();
+        Team teamInput = Team.builder().name("Los Campeones").build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(teamRepository.existsByName("Los Campeones")).thenReturn(false);
         when(teamMemberRepository.existsByTeam_IdAndUser_User_id(null, 1L)).thenReturn(false);
         when(teamRepository.save(any())).thenReturn(saved);
         when(teamPersistenceMapper.toModel(saved)).thenReturn(model);
-        when(teamMapper.toDto(model)).thenReturn(dto);
 
-        TeamResponseDTO result = service.createTeam(1L, request);
+        Team result = service.createTeam(1L, teamInput);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
         verify(teamValidator).validateCaptainRole(captain);
         verify(teamValidator).validateTeamName("Los Campeones");
     }
@@ -81,7 +69,7 @@ class TeamServiceTest {
     void createTeam_captainNotFound_throws() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.createTeam(99L, TeamRequestDTO.builder().name("Team").build()))
+        assertThatThrownBy(() -> service.createTeam(99L, Team.builder().name("Team").build()))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -91,7 +79,7 @@ class TeamServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(teamRepository.existsByName("Existing")).thenReturn(true);
 
-        assertThatThrownBy(() -> service.createTeam(1L, TeamRequestDTO.builder().name("Existing").build()))
+        assertThatThrownBy(() -> service.createTeam(1L, Team.builder().name("Existing").build()))
                 .isInstanceOf(UserValidationException.class)
                 .hasMessageContaining("name");
     }
@@ -103,7 +91,7 @@ class TeamServiceTest {
         when(teamRepository.existsByName("New Team")).thenReturn(false);
         when(teamMemberRepository.existsByTeam_IdAndUser_User_id(null, 1L)).thenReturn(true);
 
-        assertThatThrownBy(() -> service.createTeam(1L, TeamRequestDTO.builder().name("New Team").build()))
+        assertThatThrownBy(() -> service.createTeam(1L, Team.builder().name("New Team").build()))
                 .isInstanceOf(UserValidationException.class)
                 .hasMessageContaining("captain");
     }
@@ -111,19 +99,17 @@ class TeamServiceTest {
     // ─── getTeamById ──────────────────────────────────────────────────────────
 
     @Test
-    void getTeamById_found_returnsDto() {
+    void getTeamById_found_returnsModel() {
         UserEntity captain = buildUserEntity(1L, Role.CAPTAIN);
         TeamEntity team = buildTeamEntity(10L, captain);
         Team model = new Team();
-        TeamResponseDTO dto = new TeamResponseDTO();
 
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
         when(teamPersistenceMapper.toModel(team)).thenReturn(model);
-        when(teamMapper.toDto(model)).thenReturn(dto);
 
-        TeamResponseDTO result = service.getTeamById(10L);
+        Team result = service.getTeamById(10L);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
     }
 
     @Test
@@ -143,7 +129,6 @@ class TeamServiceTest {
         TeamEntity team = buildTeamEntity(10L, captain);
         InvitationEntity saved = buildInvitationEntity(100L, team, player, captain);
         Invitation model = new Invitation();
-        InvitationResponseDTO dto = new InvitationResponseDTO();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
@@ -152,11 +137,10 @@ class TeamServiceTest {
         when(teamMemberRepository.findAllByTeam_Id(10L)).thenReturn(List.of());
         when(invitationRepository.save(any())).thenReturn(saved);
         when(invitationPersistenceMapper.toModel(saved)).thenReturn(model);
-        when(invitationMapper.toDto(model)).thenReturn(dto);
 
-        InvitationResponseDTO result = service.invitePlayer(1L, 10L, 2L);
+        Invitation result = service.invitePlayer(1L, 10L, 2L);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
     }
 
     @Test
@@ -199,16 +183,14 @@ class TeamServiceTest {
         InvitationEntity invitation = buildInvitationEntity(100L, team, player, captain);
         invitation.setStatus(InvitationStatus.PENDIENTE);
         Invitation model = new Invitation();
-        InvitationResponseDTO dto = new InvitationResponseDTO();
 
         when(invitationRepository.findById(100L)).thenReturn(Optional.of(invitation));
         when(invitationRepository.save(invitation)).thenReturn(invitation);
         when(invitationPersistenceMapper.toModel(invitation)).thenReturn(model);
-        when(invitationMapper.toDto(model)).thenReturn(dto);
 
-        InvitationResponseDTO result = service.respondInvitation(2L, 100L, true);
+        Invitation result = service.respondInvitation(2L, 100L, true);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
         assertThat(invitation.getStatus()).isEqualTo(InvitationStatus.ACEPTADA);
         verify(teamMemberRepository).save(any());
     }
@@ -221,16 +203,14 @@ class TeamServiceTest {
         InvitationEntity invitation = buildInvitationEntity(100L, team, player, captain);
         invitation.setStatus(InvitationStatus.PENDIENTE);
         Invitation model = new Invitation();
-        InvitationResponseDTO dto = new InvitationResponseDTO();
 
         when(invitationRepository.findById(100L)).thenReturn(Optional.of(invitation));
         when(invitationRepository.save(invitation)).thenReturn(invitation);
         when(invitationPersistenceMapper.toModel(invitation)).thenReturn(model);
-        when(invitationMapper.toDto(model)).thenReturn(dto);
 
-        InvitationResponseDTO result = service.respondInvitation(2L, 100L, false);
+        Invitation result = service.respondInvitation(2L, 100L, false);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
         assertThat(invitation.getStatus()).isEqualTo(InvitationStatus.RECHAZADA);
     }
 
@@ -272,15 +252,13 @@ class TeamServiceTest {
         TeamEntity team = buildTeamEntity(10L, captain);
         InvitationEntity inv = buildInvitationEntity(100L, team, player, captain);
         Invitation model = new Invitation();
-        InvitationResponseDTO dto = new InvitationResponseDTO();
 
         when(invitationRepository.findAllByInvitedUser_User_id(2L)).thenReturn(List.of(inv));
         when(invitationPersistenceMapper.toModel(inv)).thenReturn(model);
-        when(invitationMapper.toDto(model)).thenReturn(dto);
 
-        List<InvitationResponseDTO> result = service.getInvitationsByPlayer(2L);
+        List<Invitation> result = service.getInvitationsByPlayer(2L);
 
-        assertThat(result).hasSize(1).contains(dto);
+        assertThat(result).hasSize(1).contains(model);
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────

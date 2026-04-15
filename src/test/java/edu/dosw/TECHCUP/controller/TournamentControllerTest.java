@@ -8,6 +8,14 @@ import edu.dosw.TECHCUP.controller.dto.request.VenueRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentConfigResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.VenueResponseDTO;
+import edu.dosw.TECHCUP.controller.mapper.TournamentConfigMapper;
+import edu.dosw.TECHCUP.controller.mapper.TournamentMapper;
+import edu.dosw.TECHCUP.controller.mapper.VenueMapper;
+import edu.dosw.TECHCUP.core.model.Tournament;
+import edu.dosw.TECHCUP.core.model.TournamentConfig;
+import edu.dosw.TECHCUP.core.model.Venue;
+import edu.dosw.TECHCUP.core.service.StatisticsService;
+import edu.dosw.TECHCUP.core.service.TournamentHistoryService;
 import edu.dosw.TECHCUP.core.service.TournamentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +42,11 @@ class TournamentControllerTest {
     ObjectMapper objectMapper;
 
     @Mock TournamentService tournamentService;
+    @Mock StatisticsService statisticsService;
+    @Mock TournamentHistoryService tournamentHistoryService;
+    @Mock TournamentMapper tournamentMapper;
+    @Mock TournamentConfigMapper tournamentConfigMapper;
+    @Mock VenueMapper venueMapper;
 
     @InjectMocks TournamentController controller;
 
@@ -52,9 +65,9 @@ class TournamentControllerTest {
                 .totalTeams(8)
                 .registrationCost(50.0)
                 .build();
-        TournamentResponseDTO response = new TournamentResponseDTO();
 
-        when(tournamentService.createTournament(eq(1L), any())).thenReturn(response);
+        when(tournamentService.createTournament(eq(1L), any())).thenReturn(new Tournament());
+        when(tournamentMapper.toDto(any())).thenReturn(new TournamentResponseDTO());
 
         mockMvc.perform(post("/api/tournaments")
                         .param("organizerId", "1")
@@ -65,7 +78,8 @@ class TournamentControllerTest {
 
     @Test
     void getAllTournaments_returns200() throws Exception {
-        when(tournamentService.getAllTournaments()).thenReturn(List.of(new TournamentResponseDTO()));
+        when(tournamentService.getAllTournaments()).thenReturn(List.of(new Tournament()));
+        when(tournamentMapper.toDto(any())).thenReturn(new TournamentResponseDTO());
 
         mockMvc.perform(get("/api/tournaments"))
                 .andExpect(status().isOk())
@@ -74,7 +88,8 @@ class TournamentControllerTest {
 
     @Test
     void getFinalizedTournaments_returns200() throws Exception {
-        when(tournamentService.getFinalizedTournaments()).thenReturn(List.of(new TournamentResponseDTO()));
+        when(tournamentService.getFinalizedTournaments()).thenReturn(List.of(new Tournament()));
+        when(tournamentMapper.toDto(any())).thenReturn(new TournamentResponseDTO());
 
         mockMvc.perform(get("/api/tournaments/finalized"))
                 .andExpect(status().isOk());
@@ -82,7 +97,8 @@ class TournamentControllerTest {
 
     @Test
     void getTournamentById_returns200() throws Exception {
-        when(tournamentService.getTournamentById("10")).thenReturn(new TournamentResponseDTO());
+        when(tournamentService.getTournamentById("10")).thenReturn(new Tournament());
+        when(tournamentMapper.toDto(any())).thenReturn(new TournamentResponseDTO());
 
         mockMvc.perform(get("/api/tournaments/10"))
                 .andExpect(status().isOk());
@@ -90,7 +106,8 @@ class TournamentControllerTest {
 
     @Test
     void startTournament_returns200() throws Exception {
-        when(tournamentService.startTournament(1L, 10L)).thenReturn(new TournamentResponseDTO());
+        when(tournamentService.startTournament(1L, 10L)).thenReturn(new Tournament());
+        when(tournamentMapper.toDto(any())).thenReturn(new TournamentResponseDTO());
 
         mockMvc.perform(patch("/api/tournaments/10/start")
                         .param("organizerId", "1"))
@@ -99,7 +116,8 @@ class TournamentControllerTest {
 
     @Test
     void finishTournament_returns200() throws Exception {
-        when(tournamentService.finishTournament(1L, 10L)).thenReturn(new TournamentResponseDTO());
+        when(tournamentService.finishTournament(1L, 10L)).thenReturn(new Tournament());
+        when(tournamentMapper.toDto(any())).thenReturn(new TournamentResponseDTO());
 
         mockMvc.perform(patch("/api/tournaments/10/finish")
                         .param("organizerId", "1"))
@@ -111,7 +129,8 @@ class TournamentControllerTest {
         TournamentConfigRequestDTO request = TournamentConfigRequestDTO.builder()
                 .rulebook("Rules v1")
                 .build();
-        when(tournamentService.configTournament(eq(1L), eq(10L), any())).thenReturn(new TournamentConfigResponseDTO());
+        when(tournamentService.configTournament(eq(1L), eq(10L), any())).thenReturn(new TournamentConfig());
+        when(tournamentConfigMapper.toDto(any())).thenReturn(new TournamentConfigResponseDTO());
 
         mockMvc.perform(post("/api/tournaments/10/config")
                         .param("organizerId", "1")
@@ -127,7 +146,8 @@ class TournamentControllerTest {
                 .venueLocation("Bogota")
                 .description("Main field")
                 .build();
-        when(tournamentService.addVenue(eq(1L), eq(10L), any())).thenReturn(new VenueResponseDTO());
+        when(tournamentService.addVenue(eq(1L), eq(10L), any())).thenReturn(new Venue());
+        when(venueMapper.toDto(any())).thenReturn(new VenueResponseDTO());
 
         mockMvc.perform(post("/api/tournaments/10/venues")
                         .param("organizerId", "1")
@@ -138,7 +158,8 @@ class TournamentControllerTest {
 
     @Test
     void getVenuesByTournament_returns200() throws Exception {
-        when(tournamentService.getVenuesByTournament(10L)).thenReturn(List.of(new VenueResponseDTO()));
+        when(tournamentService.getVenuesByTournament(10L)).thenReturn(List.of(new Venue()));
+        when(venueMapper.toDto(any())).thenReturn(new VenueResponseDTO());
 
         mockMvc.perform(get("/api/tournaments/10/venues"))
                 .andExpect(status().isOk());

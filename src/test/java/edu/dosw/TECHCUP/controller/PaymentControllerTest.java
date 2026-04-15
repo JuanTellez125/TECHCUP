@@ -5,6 +5,10 @@ import edu.dosw.TECHCUP.controller.dto.request.PaymentRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.TournamentRegistrationRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.PaymentResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.TournamentRegistrationResponseDTO;
+import edu.dosw.TECHCUP.controller.mapper.PaymentMapper;
+import edu.dosw.TECHCUP.controller.mapper.TournamentRegistrationMapper;
+import edu.dosw.TECHCUP.core.model.Payment;
+import edu.dosw.TECHCUP.core.model.TournamentRegistration;
 import edu.dosw.TECHCUP.core.service.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +34,8 @@ class PaymentControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Mock PaymentService paymentService;
+    @Mock PaymentMapper paymentMapper;
+    @Mock TournamentRegistrationMapper registrationMapper;
 
     @InjectMocks PaymentController controller;
 
@@ -42,7 +48,8 @@ class PaymentControllerTest {
     void registerTeam_returns201() throws Exception {
         TournamentRegistrationRequestDTO request = TournamentRegistrationRequestDTO.builder()
                 .teamId(10L).tournamentId(20L).build();
-        when(paymentService.registerTeam(eq(1L), any())).thenReturn(new TournamentRegistrationResponseDTO());
+        when(paymentService.registerTeam(eq(1L), any())).thenReturn(new TournamentRegistration());
+        when(registrationMapper.toDto(any())).thenReturn(new TournamentRegistrationResponseDTO());
 
         mockMvc.perform(post("/api/payments/register")
                         .param("captainId", "1")
@@ -55,7 +62,8 @@ class PaymentControllerTest {
     void submitPayment_returns201() throws Exception {
         PaymentRequestDTO request = PaymentRequestDTO.builder()
                 .registrationId(100L).fileUrl("http://proof.jpg").paymentMethod("TRANSFER").build();
-        when(paymentService.submitPayment(eq(1L), any())).thenReturn(new PaymentResponseDTO());
+        when(paymentService.submitPayment(eq(1L), any())).thenReturn(new Payment());
+        when(paymentMapper.toDto(any())).thenReturn(new PaymentResponseDTO());
 
         mockMvc.perform(post("/api/payments/submit")
                         .param("captainId", "1")
@@ -66,7 +74,8 @@ class PaymentControllerTest {
 
     @Test
     void approvePayment_returns200() throws Exception {
-        when(paymentService.approvePayment(1L, 200L)).thenReturn(new PaymentResponseDTO());
+        when(paymentService.approvePayment(1L, 200L)).thenReturn(new Payment());
+        when(paymentMapper.toDto(any())).thenReturn(new PaymentResponseDTO());
 
         mockMvc.perform(patch("/api/payments/200/approve")
                         .param("organizerId", "1"))
@@ -75,7 +84,8 @@ class PaymentControllerTest {
 
     @Test
     void rejectPayment_returns200() throws Exception {
-        when(paymentService.rejectPayment(1L, 200L, "Invalid")).thenReturn(new PaymentResponseDTO());
+        when(paymentService.rejectPayment(1L, 200L, "Invalid")).thenReturn(new Payment());
+        when(paymentMapper.toDto(any())).thenReturn(new PaymentResponseDTO());
 
         mockMvc.perform(patch("/api/payments/200/reject")
                         .param("organizerId", "1")
@@ -85,7 +95,8 @@ class PaymentControllerTest {
 
     @Test
     void getPaymentsByTournament_returns200() throws Exception {
-        when(paymentService.getPaymentsByTournament(1L, 20L)).thenReturn(List.of(new PaymentResponseDTO()));
+        when(paymentService.getPaymentsByTournament(1L, 20L)).thenReturn(List.of(new Payment()));
+        when(paymentMapper.toDto(any())).thenReturn(new PaymentResponseDTO());
 
         mockMvc.perform(get("/api/payments/tournament/20")
                         .param("organizerId", "1"))
@@ -96,7 +107,8 @@ class PaymentControllerTest {
     @Test
     void getRegistrationsByTournament_returns200() throws Exception {
         when(paymentService.getRegistrationsByTournament(20L))
-                .thenReturn(List.of(new TournamentRegistrationResponseDTO()));
+                .thenReturn(List.of(new TournamentRegistration()));
+        when(registrationMapper.toDto(any())).thenReturn(new TournamentRegistrationResponseDTO());
 
         mockMvc.perform(get("/api/payments/registrations/tournament/20"))
                 .andExpect(status().isOk())

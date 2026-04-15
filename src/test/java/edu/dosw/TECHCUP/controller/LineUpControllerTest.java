@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpEntryDTO;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.LineUpResponseDTO;
+import edu.dosw.TECHCUP.controller.mapper.LineUpMapper;
+import edu.dosw.TECHCUP.core.model.LineUp;
 import edu.dosw.TECHCUP.core.model.enums.LineUpRole;
 import edu.dosw.TECHCUP.core.service.LineUpService;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +32,7 @@ class LineUpControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Mock LineUpService lineUpService;
+    @Mock LineUpMapper lineUpMapper;
 
     @InjectMocks LineUpController controller;
 
@@ -47,9 +50,9 @@ class LineUpControllerTest {
                 .teamId(10L)
                 .players(List.of(entry))
                 .build();
-        LineUpResponseDTO response = new LineUpResponseDTO();
 
-        when(lineUpService.saveLineUp(eq(1L), eq(100L), any())).thenReturn(List.of(response));
+        when(lineUpService.saveLineUp(eq(1L), eq(100L), any())).thenReturn(List.of(new LineUp()));
+        when(lineUpMapper.toDtoList(any())).thenReturn(List.of(new LineUpResponseDTO()));
 
         mockMvc.perform(post("/api/lineups")
                         .param("captainId", "1")
@@ -61,8 +64,8 @@ class LineUpControllerTest {
 
     @Test
     void getLineUp_returns200() throws Exception {
-        LineUpResponseDTO response = new LineUpResponseDTO();
-        when(lineUpService.getLineUp(100L, 10L)).thenReturn(List.of(response));
+        when(lineUpService.getLineUp(100L, 10L)).thenReturn(List.of(new LineUp()));
+        when(lineUpMapper.toDtoList(any())).thenReturn(List.of(new LineUpResponseDTO()));
 
         mockMvc.perform(get("/api/lineups")
                         .param("matchId", "100")

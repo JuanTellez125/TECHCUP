@@ -2,8 +2,6 @@ package edu.dosw.TECHCUP.core.service;
 
 import edu.dosw.TECHCUP.controller.dto.request.LineUpEntryDTO;
 import edu.dosw.TECHCUP.controller.dto.request.LineUpRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.response.LineUpResponseDTO;
-import edu.dosw.TECHCUP.controller.mapper.LineUpMapper;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.LineUp;
@@ -30,7 +28,6 @@ import static org.mockito.Mockito.*;
 class LineUpServiceTest {
 
     @Mock LineUpRepository lineUpRepository;
-    @Mock LineUpMapper lineUpMapper;
     @Mock LineUpPersistenceMapper lineUpPersistenceMapper;
     @Mock TeamRepository teamRepository;
     @Mock MatchRepository matchRepository;
@@ -50,7 +47,6 @@ class LineUpServiceTest {
         TeamMemberEntity member = TeamMemberEntity.builder().status(TeamMemberStatus.ACEPTADO).build();
         LineUpEntity saved = buildLineUpEntity(100L, match, team, player);
         LineUp model = new LineUp();
-        LineUpResponseDTO dto = new LineUpResponseDTO();
         LineUpRequestDTO request = buildRequest(10L, 2L);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
@@ -61,11 +57,10 @@ class LineUpServiceTest {
         when(lineUpRepository.findAllByMatch_Match_idAndTeam_Id(5L, 10L)).thenReturn(List.of());
         when(lineUpRepository.saveAll(anyList())).thenReturn(List.of(saved));
         when(lineUpPersistenceMapper.toModel(saved)).thenReturn(model);
-        when(lineUpMapper.toDto(model)).thenReturn(dto);
 
-        List<LineUpResponseDTO> result = service.saveLineUp(1L, 5L, request);
+        List<LineUp> result = service.saveLineUp(1L, 5L, request);
 
-        assertThat(result).containsExactly(dto);
+        assertThat(result).containsExactly(model);
     }
 
     @Test
@@ -155,17 +150,15 @@ class LineUpServiceTest {
         UserEntity player = buildUserEntity(2L, Role.PLAYER);
         LineUpEntity entity = buildLineUpEntity(100L, match, team, player);
         LineUp model = new LineUp();
-        LineUpResponseDTO dto = new LineUpResponseDTO();
 
         when(matchRepository.findById(5L)).thenReturn(Optional.of(match));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
         when(lineUpRepository.findAllByMatch_Match_idAndTeam_Id(5L, 10L)).thenReturn(List.of(entity));
         when(lineUpPersistenceMapper.toModel(entity)).thenReturn(model);
-        when(lineUpMapper.toDto(model)).thenReturn(dto);
 
-        List<LineUpResponseDTO> result = service.getLineUp(5L, 10L);
+        List<LineUp> result = service.getLineUp(5L, 10L);
 
-        assertThat(result).containsExactly(dto);
+        assertThat(result).containsExactly(model);
     }
 
     @Test

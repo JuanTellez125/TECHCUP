@@ -1,16 +1,12 @@
 package edu.dosw.TECHCUP.core.service;
 
-import edu.dosw.TECHCUP.controller.dto.request.PaymentRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.request.TournamentRegistrationRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.response.PaymentResponseDTO;
-import edu.dosw.TECHCUP.controller.dto.response.TournamentRegistrationResponseDTO;
-import edu.dosw.TECHCUP.controller.mapper.PaymentMapper;
-import edu.dosw.TECHCUP.controller.mapper.TournamentRegistrationMapper;
 import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
 import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.exception.UserValidationException;
 import edu.dosw.TECHCUP.core.model.Payment;
+import edu.dosw.TECHCUP.core.model.Team;
+import edu.dosw.TECHCUP.core.model.Tournament;
 import edu.dosw.TECHCUP.core.model.TournamentRegistration;
 import edu.dosw.TECHCUP.core.model.enums.PaymentStatus;
 import edu.dosw.TECHCUP.core.model.enums.RegisterTournamentStatus;
@@ -41,8 +37,6 @@ class PaymentServiceTest {
     @Mock TeamRepository teamRepository;
     @Mock TournamentRepository tournamentRepository;
     @Mock UserRepository userRepository;
-    @Mock PaymentMapper paymentMapper;
-    @Mock TournamentRegistrationMapper registrationMapper;
     @Mock PaymentPersistenceMapper paymentPersistenceMapper;
     @Mock TournamentRegistrationPersistenceMapper registrationPersistenceMapper;
 
@@ -57,9 +51,7 @@ class PaymentServiceTest {
         TournamentEntity tournament = buildTournamentEntity(20L);
         TournamentRegistrationEntity saved = buildRegistrationEntity(100L, tournament, team);
         TournamentRegistration model = new TournamentRegistration();
-        TournamentRegistrationResponseDTO dto = new TournamentRegistrationResponseDTO();
-        TournamentRegistrationRequestDTO request = TournamentRegistrationRequestDTO.builder()
-                .teamId(10L).tournamentId(20L).build();
+        TournamentRegistration registrationInput = buildRegistrationModel(10L, 20L);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
@@ -67,11 +59,10 @@ class PaymentServiceTest {
         when(registrationRepository.findByTeam_IdAndTournament_Tournament_id(10L, 20L)).thenReturn(Optional.empty());
         when(registrationRepository.save(any())).thenReturn(saved);
         when(registrationPersistenceMapper.toModel(saved)).thenReturn(model);
-        when(registrationMapper.toDto(model)).thenReturn(dto);
 
-        TournamentRegistrationResponseDTO result = service.registerTeam(1L, request);
+        TournamentRegistration result = service.registerTeam(1L, registrationInput);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
     }
 
     @Test
@@ -79,8 +70,7 @@ class PaymentServiceTest {
         UserEntity player = buildUserEntity(1L, Role.PLAYER);
         when(userRepository.findById(1L)).thenReturn(Optional.of(player));
 
-        assertThatThrownBy(() -> service.registerTeam(1L,
-                TournamentRegistrationRequestDTO.builder().teamId(10L).tournamentId(20L).build()))
+        assertThatThrownBy(() -> service.registerTeam(1L, buildRegistrationModel(10L, 20L)))
                 .isInstanceOf(UserValidationException.class)
                 .hasMessageContaining("captain");
     }
@@ -89,8 +79,7 @@ class PaymentServiceTest {
     void registerTeam_captainNotFound_throws() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.registerTeam(99L,
-                TournamentRegistrationRequestDTO.builder().teamId(10L).tournamentId(20L).build()))
+        assertThatThrownBy(() -> service.registerTeam(99L, buildRegistrationModel(10L, 20L)))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -103,8 +92,7 @@ class PaymentServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team));
 
-        assertThatThrownBy(() -> service.registerTeam(1L,
-                TournamentRegistrationRequestDTO.builder().teamId(10L).tournamentId(20L).build()))
+        assertThatThrownBy(() -> service.registerTeam(1L, buildRegistrationModel(10L, 20L)))
                 .isInstanceOf(UserValidationException.class)
                 .hasMessageContaining("captain");
     }
@@ -122,8 +110,7 @@ class PaymentServiceTest {
         when(registrationRepository.findByTeam_IdAndTournament_Tournament_id(10L, 20L))
                 .thenReturn(Optional.of(existing));
 
-        assertThatThrownBy(() -> service.registerTeam(1L,
-                TournamentRegistrationRequestDTO.builder().teamId(10L).tournamentId(20L).build()))
+        assertThatThrownBy(() -> service.registerTeam(1L, buildRegistrationModel(10L, 20L)))
                 .isInstanceOf(UserValidationException.class)
                 .hasMessageContaining("already registered");
     }
@@ -138,20 +125,17 @@ class PaymentServiceTest {
         TournamentRegistrationEntity registration = buildRegistrationEntity(100L, tournament, team);
         PaymentEntity saved = buildPaymentEntity(200L, registration, captain);
         Payment model = new Payment();
-        PaymentResponseDTO dto = new PaymentResponseDTO();
-        PaymentRequestDTO request = PaymentRequestDTO.builder()
-                .registrationId(100L).fileUrl("http://proof.jpg").paymentMethod("TRANSFER").build();
+        Payment paymentInput = buildPaymentModel(100L);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
         when(registrationRepository.findById(100L)).thenReturn(Optional.of(registration));
         when(paymentRepository.findByRegistration_TournamentRegistration_id(100L)).thenReturn(Optional.empty());
         when(paymentRepository.save(any())).thenReturn(saved);
         when(paymentPersistenceMapper.toModel(saved)).thenReturn(model);
-        when(paymentMapper.toDto(model)).thenReturn(dto);
 
-        PaymentResponseDTO result = service.submitPayment(1L, request);
+        Payment result = service.submitPayment(1L, paymentInput);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
         assertThat(registration.getStatus()).isEqualTo(RegisterTournamentStatus.EN_REVISION);
     }
 
@@ -160,8 +144,7 @@ class PaymentServiceTest {
         UserEntity player = buildUserEntity(1L, Role.PLAYER);
         when(userRepository.findById(1L)).thenReturn(Optional.of(player));
 
-        assertThatThrownBy(() -> service.submitPayment(1L,
-                PaymentRequestDTO.builder().registrationId(100L).build()))
+        assertThatThrownBy(() -> service.submitPayment(1L, buildPaymentModel(100L)))
                 .isInstanceOf(UserValidationException.class)
                 .hasMessageContaining("captain");
     }
@@ -179,8 +162,7 @@ class PaymentServiceTest {
         when(paymentRepository.findByRegistration_TournamentRegistration_id(100L))
                 .thenReturn(Optional.of(existing));
 
-        assertThatThrownBy(() -> service.submitPayment(1L,
-                PaymentRequestDTO.builder().registrationId(100L).build()))
+        assertThatThrownBy(() -> service.submitPayment(1L, buildPaymentModel(100L)))
                 .isInstanceOf(UserValidationException.class)
                 .hasMessageContaining("proof");
     }
@@ -197,17 +179,15 @@ class PaymentServiceTest {
         PaymentEntity payment = buildPaymentEntity(200L, registration, captain);
         payment.setStatus(PaymentStatus.IN_REVIEW);
         Payment model = new Payment();
-        PaymentResponseDTO dto = new PaymentResponseDTO();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(organizer));
         when(paymentRepository.findById(200L)).thenReturn(Optional.of(payment));
         when(paymentRepository.save(payment)).thenReturn(payment);
         when(paymentPersistenceMapper.toModel(payment)).thenReturn(model);
-        when(paymentMapper.toDto(model)).thenReturn(dto);
 
-        PaymentResponseDTO result = service.approvePayment(1L, 200L);
+        Payment result = service.approvePayment(1L, 200L);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
         assertThat(payment.getStatus()).isEqualTo(PaymentStatus.APPROVED);
         assertThat(registration.getStatus()).isEqualTo(RegisterTournamentStatus.APROBADO);
     }
@@ -233,17 +213,15 @@ class PaymentServiceTest {
         TournamentRegistrationEntity registration = buildRegistrationEntity(100L, tournament, team);
         PaymentEntity payment = buildPaymentEntity(200L, registration, captain);
         Payment model = new Payment();
-        PaymentResponseDTO dto = new PaymentResponseDTO();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(organizer));
         when(paymentRepository.findById(200L)).thenReturn(Optional.of(payment));
         when(paymentRepository.save(payment)).thenReturn(payment);
         when(paymentPersistenceMapper.toModel(payment)).thenReturn(model);
-        when(paymentMapper.toDto(model)).thenReturn(dto);
 
-        PaymentResponseDTO result = service.rejectPayment(1L, 200L, "Invalid voucher");
+        Payment result = service.rejectPayment(1L, 200L, "Invalid voucher");
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
         assertThat(payment.getStatus()).isEqualTo(PaymentStatus.REJECTED);
         assertThat(payment.getRejectionReason()).isEqualTo("Invalid voucher");
         assertThat(registration.getStatus()).isEqualTo(RegisterTournamentStatus.RECHAZADO);
@@ -260,17 +238,15 @@ class PaymentServiceTest {
         TournamentRegistrationEntity registration = buildRegistrationEntity(100L, tournament, team);
         PaymentEntity payment = buildPaymentEntity(200L, registration, captain);
         Payment model = new Payment();
-        PaymentResponseDTO dto = new PaymentResponseDTO();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(organizer));
         when(paymentRepository.findAllByRegistration_Tournament_Tournament_id(20L))
                 .thenReturn(List.of(payment));
         when(paymentPersistenceMapper.toModel(payment)).thenReturn(model);
-        when(paymentMapper.toDto(model)).thenReturn(dto);
 
-        List<PaymentResponseDTO> result = service.getPaymentsByTournament(1L, 20L);
+        List<Payment> result = service.getPaymentsByTournament(1L, 20L);
 
-        assertThat(result).hasSize(1).contains(dto);
+        assertThat(result).hasSize(1).contains(model);
     }
 
     @Test
@@ -280,18 +256,33 @@ class PaymentServiceTest {
         TournamentEntity tournament = buildTournamentEntity(20L);
         TournamentRegistrationEntity reg = buildRegistrationEntity(100L, tournament, team);
         TournamentRegistration model = new TournamentRegistration();
-        TournamentRegistrationResponseDTO dto = new TournamentRegistrationResponseDTO();
 
         when(registrationRepository.findAllByTournament_Tournament_id(20L)).thenReturn(List.of(reg));
         when(registrationPersistenceMapper.toModel(reg)).thenReturn(model);
-        when(registrationMapper.toDto(model)).thenReturn(dto);
 
-        List<TournamentRegistrationResponseDTO> result = service.getRegistrationsByTournament(20L);
+        List<TournamentRegistration> result = service.getRegistrationsByTournament(20L);
 
-        assertThat(result).hasSize(1).contains(dto);
+        assertThat(result).hasSize(1).contains(model);
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
+
+    private TournamentRegistration buildRegistrationModel(Long teamId, Long tournamentId) {
+        return TournamentRegistration.builder()
+                .team(Team.builder().id(teamId).build())
+                .tournament(Tournament.builder().tournamentId(tournamentId).build())
+                .build();
+    }
+
+    private Payment buildPaymentModel(Long registrationId) {
+        return Payment.builder()
+                .registration(TournamentRegistration.builder()
+                        .tournamentRegistrationId(registrationId)
+                        .build())
+                .fileUrl("http://proof.jpg")
+                .paymentMethod("TRANSFER")
+                .build();
+    }
 
     private UserEntity buildUserEntity(Long id, Role role) {
         return UserEntity.builder()

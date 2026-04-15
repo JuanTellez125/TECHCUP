@@ -1,13 +1,10 @@
 package edu.dosw.TECHCUP.core.service;
 
-import edu.dosw.TECHCUP.controller.dto.request.MatchEventRequestDTO;
-import edu.dosw.TECHCUP.controller.dto.request.MatchRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.request.MatchResultRequestDTO;
 import edu.dosw.TECHCUP.controller.dto.response.*;
-import edu.dosw.TECHCUP.controller.mapper.*;
+import edu.dosw.TECHCUP.controller.mapper.MatchEventMapper;
 import edu.dosw.TECHCUP.core.exception.TournamentNotFoundException;
 import edu.dosw.TECHCUP.core.exception.TournamentValidationException;
-import edu.dosw.TECHCUP.core.exception.UserNotFoundException;
 import edu.dosw.TECHCUP.core.model.*;
 import edu.dosw.TECHCUP.core.model.enums.Event;
 import edu.dosw.TECHCUP.core.model.enums.MatchPhase;
@@ -43,16 +40,10 @@ class MatchServiceTest {
     @Mock VenueRepository venueRepository;
     @Mock UserRepository userRepository;
     @Mock StandingRepository standingRepository;
-    @Mock LineUpService lineUpService;
-    @Mock MatchMapper matchMapper;
-    @Mock MatchResultMapper matchResultMapper;
     @Mock MatchEventMapper matchEventMapper;
-    @Mock LineUpMapper lineUpMapper;
-    @Mock StandingMapper standingMapper;
     @Mock MatchPersistenceMapper matchPersistenceMapper;
     @Mock MatchResultPersistenceMapper matchResultPersistenceMapper;
     @Mock MatchEventPersistenceMapper matchEventPersistenceMapper;
-    @Mock LineUpPersistenceMapper lineUpPersistenceMapper;
     @Mock StandingPersistenceMapper standingPersistenceMapper;
 
     @InjectMocks MatchService service;
@@ -67,8 +58,7 @@ class MatchServiceTest {
         VenueEntity venue = buildVenueEntity(20L);
         MatchEntity saved = buildMatchEntity(100L, tournament, team1, team2, venue);
         Match model = new Match();
-        MatchResponseDTO dto = new MatchResponseDTO();
-        MatchRequestDTO request = buildMatchRequest(1L, 10L, 11L, 20L, null);
+        Match matchInput = buildMatchModel(1L, 10L, 11L, 20L, null);
 
         when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team1));
@@ -76,11 +66,10 @@ class MatchServiceTest {
         when(venueRepository.findById(20L)).thenReturn(Optional.of(venue));
         when(matchRepository.save(any())).thenReturn(saved);
         when(matchPersistenceMapper.toModel(saved)).thenReturn(model);
-        when(matchMapper.toDto(model)).thenReturn(dto);
 
-        MatchResponseDTO result = service.scheduleMatch(request);
+        Match result = service.scheduleMatch(matchInput);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
     }
 
     @Test
@@ -88,13 +77,13 @@ class MatchServiceTest {
         TournamentEntity tournament = buildTournamentEntity(1L);
         TeamEntity team1 = buildTeamEntity(10L, "Team A");
         VenueEntity venue = buildVenueEntity(20L);
-        MatchRequestDTO request = buildMatchRequest(1L, 10L, 10L, 20L, null);
+        Match matchInput = buildMatchModel(1L, 10L, 10L, 20L, null);
 
         when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team1)).thenReturn(Optional.of(team1));
         when(venueRepository.findById(20L)).thenReturn(Optional.of(venue));
 
-        assertThatThrownBy(() -> service.scheduleMatch(request))
+        assertThatThrownBy(() -> service.scheduleMatch(matchInput))
                 .isInstanceOf(TournamentValidationException.class)
                 .hasMessageContaining("same");
     }
@@ -103,7 +92,7 @@ class MatchServiceTest {
     void scheduleMatch_tournamentNotFound_throws() {
         when(tournamentRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.scheduleMatch(buildMatchRequest(99L, 10L, 11L, 20L, null)))
+        assertThatThrownBy(() -> service.scheduleMatch(buildMatchModel(99L, 10L, 11L, 20L, null)))
                 .isInstanceOf(TournamentNotFoundException.class);
     }
 
@@ -116,8 +105,7 @@ class MatchServiceTest {
         UserEntity referee = buildUserEntity(30L, Role.REFEREE);
         MatchEntity saved = buildMatchEntity(100L, tournament, team1, team2, venue);
         Match model = new Match();
-        MatchResponseDTO dto = new MatchResponseDTO();
-        MatchRequestDTO request = buildMatchRequest(1L, 10L, 11L, 20L, 30L);
+        Match matchInput = buildMatchModel(1L, 10L, 11L, 20L, 30L);
 
         when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team1));
@@ -126,11 +114,10 @@ class MatchServiceTest {
         when(userRepository.findById(30L)).thenReturn(Optional.of(referee));
         when(matchRepository.save(any())).thenReturn(saved);
         when(matchPersistenceMapper.toModel(saved)).thenReturn(model);
-        when(matchMapper.toDto(model)).thenReturn(dto);
 
-        MatchResponseDTO result = service.scheduleMatch(request);
+        Match result = service.scheduleMatch(matchInput);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
         verify(userRepository).findById(30L);
     }
 
@@ -183,20 +170,23 @@ class MatchServiceTest {
         UserEntity player = buildUserEntity(2L, Role.PLAYER);
         MatchEventEntity saved = buildMatchEventEntity(300L, match, player, team1);
         MatchEvent model = new MatchEvent();
-        MatchEventResponseDTO dto = new MatchEventResponseDTO();
-        MatchEventRequestDTO request = MatchEventRequestDTO.builder()
-                .matchId(100L).userId(2L).teamId(10L).eventType(Event.GOL).minute(30).build();
+        MatchEvent eventInput = MatchEvent.builder()
+                .match(Match.builder().matchId(100L).build())
+                .user(User.builder().userId(2L).build())
+                .team(Team.builder().id(10L).build())
+                .eventType(Event.GOL)
+                .minute(30)
+                .build();
 
         when(matchRepository.findById(100L)).thenReturn(Optional.of(match));
         when(userRepository.findById(2L)).thenReturn(Optional.of(player));
         when(teamRepository.findById(10L)).thenReturn(Optional.of(team1));
         when(matchEventRepository.save(any())).thenReturn(saved);
         when(matchEventPersistenceMapper.toModel(saved)).thenReturn(model);
-        when(matchEventMapper.toDto(model)).thenReturn(dto);
 
-        MatchEventResponseDTO result = service.registerEvent(request);
+        MatchEvent result = service.registerEvent(eventInput);
 
-        assertThat(result).isEqualTo(dto);
+        assertThat(result).isEqualTo(model);
     }
 
     // ─── getMatchesByReferee / getMatchHistory / getMatchesByTournament ───────
@@ -209,15 +199,13 @@ class MatchServiceTest {
         VenueEntity venue = buildVenueEntity(20L);
         MatchEntity m = buildMatchEntity(100L, tournament, team1, team2, venue);
         Match model = new Match();
-        MatchResponseDTO dto = new MatchResponseDTO();
 
         when(matchRepository.findAllByReferee_User_id(1L)).thenReturn(List.of(m));
         when(matchPersistenceMapper.toModel(m)).thenReturn(model);
-        when(matchMapper.toDto(model)).thenReturn(dto);
 
-        List<MatchResponseDTO> result = service.getMatchesByReferee(1L);
+        List<Match> result = service.getMatchesByReferee(1L);
 
-        assertThat(result).hasSize(1).contains(dto);
+        assertThat(result).hasSize(1).contains(model);
     }
 
     @Test
@@ -231,15 +219,13 @@ class MatchServiceTest {
         MatchEntity scheduled = buildMatchEntity(101L, tournament, team1, team2, venue);
         scheduled.setStatus("PROGRAMADO");
         Match model = new Match();
-        MatchResponseDTO dto = new MatchResponseDTO();
 
         when(matchRepository.findAllByTournament_Tournament_id(1L)).thenReturn(List.of(played, scheduled));
         when(matchPersistenceMapper.toModel(played)).thenReturn(model);
-        when(matchMapper.toDto(model)).thenReturn(dto);
 
-        List<MatchResponseDTO> result = service.getMatchHistory(1L);
+        List<Match> result = service.getMatchHistory(1L);
 
-        assertThat(result).hasSize(1).contains(dto);
+        assertThat(result).hasSize(1).contains(model);
     }
 
     @Test
@@ -250,15 +236,13 @@ class MatchServiceTest {
         VenueEntity venue = buildVenueEntity(20L);
         MatchEntity m = buildMatchEntity(100L, tournament, team1, team2, venue);
         Match model = new Match();
-        MatchResponseDTO dto = new MatchResponseDTO();
 
         when(matchRepository.findAllByTournament_Tournament_id(1L)).thenReturn(List.of(m));
         when(matchPersistenceMapper.toModel(m)).thenReturn(model);
-        when(matchMapper.toDto(model)).thenReturn(dto);
 
-        List<MatchResponseDTO> result = service.getMatchesByTournament(1L);
+        List<Match> result = service.getMatchesByTournament(1L);
 
-        assertThat(result).hasSize(1).contains(dto);
+        assertThat(result).hasSize(1).contains(model);
     }
 
     // ─── generateBracket ──────────────────────────────────────────────────────
@@ -270,15 +254,13 @@ class MatchServiceTest {
         TeamEntity team2 = buildTeamEntity(11L, "B");
         MatchEntity saved = buildMatchEntity(100L, tournament, team1, team2, null);
         Match model = new Match();
-        MatchResponseDTO dto = new MatchResponseDTO();
 
         when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
         when(teamRepository.findAll()).thenReturn(List.of(team1, team2));
         when(matchRepository.saveAll(anyList())).thenReturn(List.of(saved));
         when(matchPersistenceMapper.toModel(saved)).thenReturn(model);
-        when(matchMapper.toDto(model)).thenReturn(dto);
 
-        List<MatchResponseDTO> result = service.generateBracket(1L, 1L);
+        List<Match> result = service.generateBracket(1L, 1L);
 
         assertThat(result).hasSize(1);
     }
@@ -297,6 +279,21 @@ class MatchServiceTest {
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
+
+    private Match buildMatchModel(Long tournamentId, Long team1Id, Long team2Id,
+                                   Long venueId, Long refereeId) {
+        Match.MatchBuilder builder = Match.builder()
+                .tournament(Tournament.builder().tournamentId(tournamentId).build())
+                .team1(Team.builder().id(team1Id).build())
+                .team2(Team.builder().id(team2Id).build())
+                .venue(Venue.builder().venueId(venueId).build())
+                .phase(MatchPhase.GROUPSTAGE)
+                .scheduledAt(LocalDateTime.now().plusDays(5));
+        if (refereeId != null) {
+            builder.referee(User.builder().userId(refereeId).build());
+        }
+        return builder.build();
+    }
 
     private UserEntity buildUserEntity(Long id, Role role) {
         return UserEntity.builder()
@@ -363,19 +360,6 @@ class MatchServiceTest {
                 .team(team)
                 .eventType(Event.GOL)
                 .minute(30)
-                .build();
-    }
-
-    private MatchRequestDTO buildMatchRequest(Long tournamentId, Long team1Id, Long team2Id,
-                                               Long venueId, Long refereeId) {
-        return MatchRequestDTO.builder()
-                .tournamentId(tournamentId)
-                .team1Id(team1Id)
-                .team2Id(team2Id)
-                .venueId(venueId)
-                .refereeId(refereeId)
-                .phase(MatchPhase.GROUPSTAGE)
-                .scheduledAt(LocalDateTime.now().plusDays(5))
                 .build();
     }
 }
