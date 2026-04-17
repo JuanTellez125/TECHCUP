@@ -28,6 +28,10 @@
 
 ![Captura](/docs/uml/DiagramaComponentesEspecificos.png)
 ---
-## 5. Diagrama de la base de datos.
+## 5. Diagrama Entidad-Relación.
 
 ![Captura](/docs/uml/DiagramaBaseDatosTechCup.png)
+---
+
+## 6. Diagrama de despliegue.
+![Captura](/docs/uml/DiagramaDespliegue.png)

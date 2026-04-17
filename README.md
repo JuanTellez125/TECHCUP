@@ -624,12 +624,12 @@ Esta separación permite:
 
 ### Torneos
 
-| Método | Endpoint | Descripción | Auth |
-|--------|----------|-------------|------|
-| GET | `/api/tournaments` | Listar torneos | No |
-| GET | `/api/tournaments/{id}/standings` | Tabla de posiciones | No |
-| GET | `/api/tournaments/{id}/stats` | Estadísticas | No |
-| POST | `/api/tournaments` | Crear torneo | Sí (Admin) |
+| Método | Endpoint | Descripción | Auth                 |
+|--------|----------|-------------|----------------------|
+| GET | `/api/tournaments` | Listar torneos | No                   |
+| GET | `/api/tournaments/{id}/standings` | Tabla de posiciones | No                   |
+| GET | `/api/tournaments/{id}/stats` | Estadísticas | No                   |
+| POST | `/api/tournaments` | Crear torneo | Sí (Admin/Organizer) |
 
 ### Ejemplo de Request/Response
 
@@ -662,58 +662,7 @@ Response:
 
 ---
 
-## Base de Datos
 
-### Modelo Entidad-Relación
-```bash
-┌──────────────┐         ┌──────────────┐
-│     User     │         │     Role     │
-├──────────────┤         ├──────────────┤
-│ id (PK)      │◄───────►│ id (PK)      │
-│ email        │         │ name         │
-│ password     │         └──────────────┘
-│ name         │
-│ created_at   │
-└──────┬───────┘
-│
-│ 1:1
-↓
-┌──────────────┐         ┌──────────────┐
-│   Player     │    N:1  │     Team     │
-├──────────────┤◄────────┤──────────────┤
-│ id (PK)      │         │ id (PK)      │
-│ user_id (FK) │         │ name         │
-│ team_id (FK) │         │ logo_url     │
-│ position     │         │ captain_id   │
-│ jersey_num   │         │ created_at   │
-└──────────────┘         └──────┬───────┘
-│
-│ N:M
-↓
-┌──────────────┐
-│    Match     │
-├──────────────┤
-│ id (PK)      │
-│ home_team_id │
-│ away_team_id │
-│ home_score   │
-│ away_score   │
-│ match_date   │
-│ status       │
-└──────┬───────┘
-│
-│ N:1
-↓
-┌──────────────┐
-│ Tournament   │
-├──────────────┤
-│ id (PK)      │
-│ name         │
-│ start_date   │
-│ end_date     │
-│ status       │
-└──────────────┘
-```
 
 ### Scripts de Migración
 
@@ -824,6 +773,8 @@ mvn clean verify
 
 El reporte HTML se genera en: `target/site/jacoco/index.html`
 
+![Captura](docs/images/CoberturaJaCoCo.png)
+
 ### Análisis Estático (SonarQube)
 
 ```bash
@@ -832,6 +783,8 @@ mvn clean verify sonar:sonar \
   -Dsonar.host.url=http://localhost:9000 \
   -Dsonar.login=your-token
 ```
+
+![Captura](docs/images/AnalisisSonarQube.png)
 
 ### Estructura de Pruebas
 ```bash
@@ -896,6 +849,8 @@ Una vez la aplicación esté corriendo, acceder a:
 
 **URL:** `http://localhost:8080/swagger-ui/index.html`
 
+![Captura](docs/images/SwaggerUI.png)
+
 ### OpenAPI JSON
 
 **URL:** `http://localhost:8080/v3/api-docs`
@@ -932,7 +887,7 @@ public class TeamController {
 #### Dockerfile
 
 ```dockerfile
-FROM openjdk:17-jdk-slim
+FROM openjdk:21-jdk-slim
 WORKDIR /app
 COPY target/*.jar app.jar
 EXPOSE 8080
@@ -1001,6 +956,8 @@ Ejecutar:
 docker-compose up -d
 ```
 
+![Captura](docs/images/Docker.png)
+
 ### CI/CD Pipeline (GitHub Actions)
 
 El proyecto utiliza GitHub Actions para despliegue automático en Azure.
@@ -1018,7 +975,7 @@ El proyecto utiliza GitHub Actions para despliegue automático en Azure.
 
 Pasos:
 1. Checkout del código
-2. Setup de Java 17
+2. Setup de Java 21
 3. Build con Maven
 4. Ejecución de tests
 5. Análisis de cobertura (JaCoCo)
@@ -1097,6 +1054,10 @@ Variables configuradas en GitHub Actions:
 
 ---
 
+### Despliegue Microsoft Azure
+
+![Captura](docs/images/DespliegueAzure.png)
+
 ## Contribución
 
 ### Flujo de Trabajo Git
@@ -1146,14 +1107,17 @@ git push origin feature/nombre-funcionalidad
 
 ### Documentos del Proyecto
 
-- [Documento de Arquitectura Backend](./docs/arquitectura-backend.pdf)
-- [Análisis de Requerimientos](./docs/analisis-requerimientos.pdf)
-- [Matriz de Trazabilidad](./docs/matriz-trazabilidad.xlsx)
-- [Diagramas UML](./docs/diagramas/)
+- [Documento de Arquitectura Backend](docs/DocumentoArquitecturaTechcup.pdf)
+- [Análisis de Requerimientos](docs/requirements/Analisis_RF_TechCup.pdf)
+- [Matriz de Trazabilidad](docs/MatrizTrazabilidad.pdf)
+- [Diagramas UML](docs/uml/README.md)
+    - Diagrama de Contexto
     - Diagrama de Clases
+    - Diagrama de Componentes Generales
+    - Diagrama de Componentes Especificos
     - Diagrama de Secuencia
-    - Diagrama de Componentes
     - Diagrama Entidad-Relación
+    - Diagrama de Despliegue
 
 ### Repositorios Relacionados
 
