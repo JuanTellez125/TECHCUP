@@ -71,7 +71,7 @@ public class AuthController {
 
         var user = userRepository.findByEmail(email).orElseThrow();
         return new LoginResponseDTO(
-                token, "Bearer", email,
+                user.getUser_id(), token, "Bearer", email,
                 user.getFirstName(), user.getLastName(),
                 user.getUserType().name()
         );
