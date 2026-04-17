@@ -1,11 +1,15 @@
 package edu.dosw.TECHCUP.controller;
 
 import edu.dosw.TECHCUP.controller.dto.request.UserRequestDTO;
+import edu.dosw.TECHCUP.controller.dto.response.AdminStatsResponseDTO;
 import edu.dosw.TECHCUP.controller.dto.response.UserResponseDTO;
 import edu.dosw.TECHCUP.controller.mapper.UserMapper;
 import edu.dosw.TECHCUP.core.model.User;
 import edu.dosw.TECHCUP.core.model.enums.Role;
 import edu.dosw.TECHCUP.core.service.impl.AdministratorService;
+import edu.dosw.TECHCUP.persistence.repository.MatchRepository;
+import edu.dosw.TECHCUP.persistence.repository.TeamRepository;
+import edu.dosw.TECHCUP.persistence.repository.TournamentRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,9 @@ public class AdministratorController {
 
     private final AdministratorService administratorService;
     private final UserMapper userMapper;
+    private final TournamentRepository tournamentRepository;
+    private final TeamRepository teamRepository;
+    private final MatchRepository matchRepository;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMINISTRATOR')")
@@ -69,6 +76,17 @@ public class AdministratorController {
     public ResponseEntity<Void> deleteAdministrator(@PathVariable Long id) {
         administratorService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/stats")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER')")
+    @Operation(summary = "Get global stats for admin/coordinator profile")
+    public ResponseEntity<AdminStatsResponseDTO> getStats() {
+        return ResponseEntity.ok(AdminStatsResponseDTO.builder()
+                .torneos(tournamentRepository.count())
+                .equipos(teamRepository.findAllByActiveTrue().size())
+                .partidos(matchRepository.count())
+                .build());
     }
 
     @PatchMapping("/{adminId}/assign-role")
