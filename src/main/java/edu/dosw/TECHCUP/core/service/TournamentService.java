@@ -52,6 +52,7 @@ public class TournamentService {
         tournamentValidator.validate(tournament);
 
         TournamentEntity tournamentEntity = TournamentEntity.builder()
+                .name(tournament.getName())
                 .startDate(tournament.getStartDate())
                 .endDate(tournament.getEndDate())
                 .totalTeams(tournament.getTotalTeams())
@@ -162,5 +163,43 @@ public class TournamentService {
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
 
         return tournamentConfigPersistenceMapper.toModel(config);
+    }
+
+    @Transactional
+    public Tournament updateTournament(Long tournamentId, Tournament updates) {
+        TournamentEntity tournament = tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
+
+        if (tournament.getStatus() != TournamentStatus.SKETCH)
+            throw new TournamentValidationException("Solo se pueden editar torneos en estado SKETCH.");
+
+        if (updates.getName() != null)           tournament.setName(updates.getName());
+        if (updates.getStartDate() != null)      tournament.setStartDate(updates.getStartDate());
+        if (updates.getEndDate() != null)        tournament.setEndDate(updates.getEndDate());
+        if (updates.getTotalTeams() > 0)         tournament.setTotalTeams(updates.getTotalTeams());
+        if (updates.getRegistrationCost() >= 0)  tournament.setRegistrationCost(updates.getRegistrationCost());
+
+        return tournamentPersistenceMapper.toModel(tournamentRepository.save(tournament));
+    }
+
+    @Transactional
+    public Tournament progressTournament(Long tournamentId) {
+        TournamentEntity tournament = tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
+        tournamentValidator.validateStatusTransition(tournament.getStatus(), TournamentStatus.INPROGRESS);
+        tournament.setStatus(TournamentStatus.INPROGRESS);
+        return tournamentPersistenceMapper.toModel(tournamentRepository.save(tournament));
+    }
+
+    @Transactional
+    public void deleteTournament(Long tournamentId) {
+        TournamentEntity tournament = tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
+
+        if (tournament.getStatus() != TournamentStatus.SKETCH)
+            throw new TournamentValidationException("Solo se pueden eliminar torneos en estado SKETCH.");
+
+        tournamentRepository.delete(tournament);
+        log.info("Tournament {} deleted", tournamentId);
     }
 }

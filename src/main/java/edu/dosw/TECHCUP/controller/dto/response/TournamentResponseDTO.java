@@ -13,6 +13,8 @@ public class TournamentResponseDTO {
 
     private Long id;
 
+    private String name;
+
     private Long organizerId;
 
     private String organizerName;

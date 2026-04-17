@@ -146,6 +146,31 @@ public class TournamentController {
         return ResponseEntity.ok(statisticsService.getTournamentStatistics(tournamentId));
     }
 
+    @PatchMapping("/{tournamentId}")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Update tournament (SKETCH only)")
+    public ResponseEntity<TournamentResponseDTO> updateTournament(
+            @PathVariable Long tournamentId,
+            @RequestBody TournamentRequestDTO dto) {
+        return ResponseEntity.ok(tournamentMapper.toDto(
+                tournamentService.updateTournament(tournamentId, tournamentMapper.toModel(dto))));
+    }
+
+    @PatchMapping("/{tournamentId}/progress")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Progress tournament from ACTIVE to INPROGRESS")
+    public ResponseEntity<TournamentResponseDTO> progressTournament(@PathVariable Long tournamentId) {
+        return ResponseEntity.ok(tournamentMapper.toDto(tournamentService.progressTournament(tournamentId)));
+    }
+
+    @DeleteMapping("/{tournamentId}")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Delete tournament in SKETCH status")
+    public ResponseEntity<Void> deleteTournament(@PathVariable Long tournamentId) {
+        tournamentService.deleteTournament(tournamentId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/historial")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @Operation(summary = "List all finalized tournaments")

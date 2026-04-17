@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Tournament {
     private Long tournamentId;
+    private String name;
     private LocalDate startDate;
     private LocalDate endDate;
     private int totalTeams;
