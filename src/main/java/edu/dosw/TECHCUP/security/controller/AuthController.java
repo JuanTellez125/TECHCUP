@@ -5,6 +5,7 @@ import edu.dosw.TECHCUP.security.controller.dto.LoginResponseDTO;
 import edu.dosw.TECHCUP.security.controller.dto.RegisterRequestDTO;
 import edu.dosw.TECHCUP.security.AuthService;
 import edu.dosw.TECHCUP.security.JwtService;
+import edu.dosw.TECHCUP.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,10 +14,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -27,6 +27,17 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final AuthService authService;
+    private final UserRepository userRepository;
+
+    @GetMapping("/check-availability")
+    public ResponseEntity<Map<String, Boolean>> checkAvailability(
+            @RequestParam String email,
+            @RequestParam String documentId) {
+        return ResponseEntity.ok(Map.of(
+                "emailTaken",      userRepository.existsByEmail(email),
+                "documentIdTaken", userRepository.existsByDocumentId(documentId)
+        ));
+    }
 
     @PostMapping("/register")
     public ResponseEntity<LoginResponseDTO> register(@RequestBody RegisterRequestDTO request) {
