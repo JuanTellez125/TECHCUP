@@ -146,6 +146,14 @@ public class TournamentController {
         return ResponseEntity.ok(statisticsService.getTournamentStatistics(tournamentId));
     }
 
+    @DeleteMapping("/{tournamentId}")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Delete tournament in SKETCH status")
+    public ResponseEntity<Void> deleteTournament(@PathVariable Long tournamentId) {
+        tournamentService.deleteTournament(tournamentId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/historial")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @Operation(summary = "List all finalized tournaments")

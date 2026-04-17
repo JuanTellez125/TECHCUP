@@ -52,6 +52,7 @@ public class TournamentService {
         tournamentValidator.validate(tournament);
 
         TournamentEntity tournamentEntity = TournamentEntity.builder()
+                .name(tournament.getName())
                 .startDate(tournament.getStartDate())
                 .endDate(tournament.getEndDate())
                 .totalTeams(tournament.getTotalTeams())
@@ -162,5 +163,17 @@ public class TournamentService {
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
 
         return tournamentConfigPersistenceMapper.toModel(config);
+    }
+
+    @Transactional
+    public void deleteTournament(Long tournamentId) {
+        TournamentEntity tournament = tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
+
+        if (tournament.getStatus() != TournamentStatus.SKETCH)
+            throw new TournamentValidationException("Solo se pueden eliminar torneos en estado SKETCH.");
+
+        tournamentRepository.delete(tournament);
+        log.info("Tournament {} deleted", tournamentId);
     }
 }
