@@ -22,6 +22,7 @@ public class TournamentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tournament_id;
 
+    private String name;
     private LocalDate startDate;
     private LocalDate endDate;
     private int totalTeams;

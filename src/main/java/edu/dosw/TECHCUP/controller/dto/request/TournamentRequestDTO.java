@@ -12,6 +12,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class TournamentRequestDTO {
 
+    private String name;
+
     @NotNull(message = "The start date cannot be empty.")
     private LocalDate startDate;
 
