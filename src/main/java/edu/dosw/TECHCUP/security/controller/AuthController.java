@@ -69,6 +69,11 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String token = jwtService.generateToken(userDetails);
 
-        return new LoginResponseDTO(token, "Bearer", email);
+        var user = userRepository.findByEmail(email).orElseThrow();
+        return new LoginResponseDTO(
+                token, "Bearer", email,
+                user.getFirstName(), user.getLastName(),
+                user.getUserType().name()
+        );
     }
 }

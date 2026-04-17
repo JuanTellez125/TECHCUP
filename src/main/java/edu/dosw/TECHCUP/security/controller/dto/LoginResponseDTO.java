@@ -12,8 +12,11 @@ import lombok.Setter;
 public class LoginResponseDTO {
 
     private String token;
-    private String type;//en este caso siempre se usa el Barer
+    private String type;
     private String email;
+    private String firstName;
+    private String lastName;
+    private String userType;
 }
 
 
