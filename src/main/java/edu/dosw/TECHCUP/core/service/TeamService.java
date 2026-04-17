@@ -82,6 +82,12 @@ public class TeamService {
         return teamPersistenceMapper.toModel(team);
     }
 
+    public Team getTeamByCaptain(Long captainId) {
+        TeamEntity team = teamRepository.findByCaptain_User_id(captainId)
+                .orElseThrow(() -> new TeamNotFoundException(captainId));
+        return teamPersistenceMapper.toModel(team);
+    }
+
     @Transactional
     public Invitation invitePlayer(Long captainId, Long teamId, Long playerId) {
         UserEntity captain = userRepository.findById(captainId)

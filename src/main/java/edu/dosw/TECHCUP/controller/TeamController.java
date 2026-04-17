@@ -48,6 +48,13 @@ public class TeamController {
         return ResponseEntity.ok(teamMapper.toDto(teamService.getTeamById(teamId)));
     }
 
+    @GetMapping("/captain/{captainId}")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
+    @Operation(summary = "Get team by captain ID")
+    public ResponseEntity<TeamResponseDTO> getTeamByCaptain(@PathVariable Long captainId) {
+        return ResponseEntity.ok(teamMapper.toDto(teamService.getTeamByCaptain(captainId)));
+    }
+
     @GetMapping("/tournament/{tournamentId}")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE', 'CAPTAIN', 'PLAYER')")
     @Operation(summary = "Get teams by tournament")
