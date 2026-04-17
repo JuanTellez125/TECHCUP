@@ -122,6 +122,8 @@ public class PlayerService implements UserService {
                 .orElse(SportProfileEntity.builder().user(user).build());
 
         profile.setPrimaryPosition(dto.getPrimaryPosition());
+        profile.setSecondaryPosition(dto.getSecondaryPosition());
+        profile.setJerseyNumber(dto.getJerseyNumber());
         profile.setAvailable(dto.isAvailable());
         profile.setSemester(dto.getSemester());
 
